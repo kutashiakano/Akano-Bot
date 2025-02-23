@@ -181,7 +181,7 @@ async before(m, { match, participants, groupMetadata, user, bot, isROwner, isOwn
 <summary><b>Standard Installation</b></summary>
 
 ```bash
-git clone https://github.com/kutashiakano/Akano-bot
+git clone https://github.com/kutashiakano/Akano-Bot
 cd Akano-Bot
 npm install #--no-bin-links
 npm start
