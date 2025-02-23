@@ -59,8 +59,7 @@ module.exports = {
 			m, {
 				thumbnail: await Buffer.from((await sock.getFile('https://files.catbox.moe/0eklgs.jpg')).data),
 				body: `Runtime: ${moment().format('DD/MM/YYYY HH:mm:ss')}`,
-				title: "Command Interface System",
-                withExternalAd: false
+				title: "Command Interface System"
 			}
 		);
 	},

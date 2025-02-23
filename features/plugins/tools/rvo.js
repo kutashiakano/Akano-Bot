@@ -1,11 +1,10 @@
 const { downloadContentFromMessage } = require('baileys');
 
 module.exports = {
-	help: ["rvo"],
-    command: ["rvo"],
+	help: "rvo"],
+    command: "rvo",
     tags: "tools",
-    owner: true,
-    async run(m, { sock, usedPrefix, command }) {
+    async run(m, { sock }) {
         try {
             const msg = m.quoted.message;
             const type = Object.keys(msg)[0];
@@ -49,7 +48,7 @@ module.exports = {
                     break;
             }
         } catch (e) {
-            return m.reply(Func.texted('bold', "Make sure you reply to a valid one-time view media message."));
+            return m.reply("Make sure you reply to a valid one-time view media message.");
         }
     },
     example: "%cmd [ reply to a one-time view message ]"
