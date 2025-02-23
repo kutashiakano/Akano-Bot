@@ -65,7 +65,7 @@ let handler = async (m, { sock, args, usedPrefix, command }) => {
 
             setTimeout(async () => {
             	let randomPairing = Array.from({ length: 8 }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]).join('');
-                let codeBot = await sock.requestPairingCode(cleanedNumber || randomPairing);
+                let codeBot = await sock.requestPairingCode(cleanedNumber, randomPairing);
                 codeBot = codeBot?.match(/.{1,4}/g)?.join("-") || codeBot;
                 let txt = `*WhatsApp Pairing Code* \n\n\`Pairing Code: ${codeBot}\` \n\n*Connection Steps:* \n- Step 1: Open WhatsApp \n- Step 2: Tap "Linked Devices" \n- Step 3: Select "Link a Device" \n- Step 4: Enter Pairing Code \n\n*Expires in 20 seconds* \n\n*Note:* Keep this code confidential.`;
                 await __sock.reply(m.chat, txt, m);
