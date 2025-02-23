@@ -24,10 +24,10 @@ let handler = async(m, { sock, usedPrefix }) => {
     let runtime = i.connectTime ? getRuntimeString(i.connectTime) : '-';
     
     list += `${no++}. ${pushname}\n`;
-    list += `   • Number: wa.me/${number}\n`;
-    list += `   • Connected: ${connectTime}\n`;
-    list += `   • Runtime: ${runtime}\n`; 
-    list += `   • Auth Folder: ${i.authFolder || '-'}\n\n`;
+    list += `${global.settings.dot}  Number: wa.me/${number}\n`;
+    list += `${global.settings.dot}  Connected: ${connectTime}\n`;
+    list += `${global.settings.dot}  Runtime: ${runtime}\n`; 
+    list += `${global.settings.dot}  Auth Folder: ${i.authFolder || '-'}\n\n`;
 
     if (userInfo) {
       i.user.name = userInfo.status.name;
