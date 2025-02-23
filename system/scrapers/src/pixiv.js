@@ -25,4 +25,4 @@ async function pixiv(q, r18) {
   });
 }
 
-module.exports = pixiv
+module.exports = pixiv;

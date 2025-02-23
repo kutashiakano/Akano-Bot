@@ -20,4 +20,4 @@ async function translate(query = "", lang) {
   }
 }
 
-module.exports = translate
+module.exports = translate;

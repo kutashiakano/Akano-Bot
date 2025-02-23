@@ -1,7 +1,7 @@
 const { fetch } = require("undici");
 
 class TeraboxHnn {
- getInfo = async (inputUrl) => {
+  getInfo = async (inputUrl) => {
     try {
       const url = `https://terabox.hnn.workers.dev/api/get-info?shorturl=${inputUrl.split("/").pop()}&pwd=`;
       const headers = {
@@ -22,7 +22,7 @@ class TeraboxHnn {
       console.error("Gagal mengambil informasi file:", error);
       throw error;
     }
-  }
+  };
   getDownloadLink = async (fsId, shareid, uk, sign, timestamp) => {
     try {
       const url = "https://terabox.hnn.workers.dev/api/get-download";
@@ -54,7 +54,7 @@ class TeraboxHnn {
       console.error("Gagal mengambil link download:", error);
       throw error;
     }
-  }
+  };
   download = async (inputUrl) => {
     try {
       const { list, shareid, uk, sign, timestamp } =
@@ -83,6 +83,6 @@ class TeraboxHnn {
       console.error("Gagal mengunduh file:", error);
       throw error;
     }
-  }
+  };
 }
 module.exports = new TeraboxHnn();

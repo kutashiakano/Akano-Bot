@@ -4,7 +4,7 @@
 
 <img src="https://files.catbox.moe/aonira.jpg" alt="Akano Bot Logo" width="200"/>
 
-*A powerful WhatsApp Bot with extensive features and customization options*
+_A powerful WhatsApp Bot with extensive features and customization options_
 
 </div>
 
@@ -21,18 +21,18 @@
 <details>
 <summary><b>View Configuration Options</b></summary>
 
-```javascript
+````javascript
 global.owner = ["628xxxxxxx"]; // Your WhatsApp number
 
-global.settings = {  
+global.settings = {
   cover: "https://file/path.jpg", // Custom cover image
   footer: "Akano Bot WhatsApp", // Message footer
-  
+
   packname: { name: "Akano", author: "Canzy" }, // Sticker branding
-  
+
   version: require(process.cwd() + "/package.json").version, // Bot version
-  
-  message: {  
+
+  message: {
     wait: "```Processing...```",
     errorF: "Feature temporarily unavailable due to technical issues",
     admin: "Admin-only feature",
@@ -41,21 +41,21 @@ global.settings = {
     group: "Group-only feature",
     private: "Private chat only",
     botadmin: "Bot needs admin privileges",
-  },  
-  
+  },
+
   dataname: "database.json", // Database filename
   sessions: "sessions", // Session storage
   sessionbot: "system/jadibot", // Bot clone sessions
   max_uploud: 50, // Max file upload size (MB)
   dot: "◦", // List marker
-  
-  sockection: {  
+
+  sockection: {
     code_pairing: "AKANOBOT", // Pairing code
     use_pairing: true, // Enable pairing
-    browser: "opera" // Browser signature
-  },  
-  
-  opts: {  
+    browser: "opera", // Browser signature
+  },
+
+  opts: {
     autoRead: true, // Auto-read messages
     selfMode: false, // Self-mode
     dmOnly: false, // DM-only mode
@@ -63,22 +63,23 @@ global.settings = {
     statusOnly: false, // Status-only mode
     queque: true, // Message queue
     multiprefix: true, // Multiple command prefixes
-    noprefix: false // No-prefix mode
-  }  
+    noprefix: false, // No-prefix mode
+  },
 };
-```
+````
+
 </details>
 
 ## Database
 
 [![Database](https://img.shields.io/badge/Database-Lowdb-ff69b4?style=flat&logo=json)](https://github.com/typicode/lowdb)
 
-| Feature | Description |
-|---------|-------------|
-| Access Speed | Quick data access and retrieval |
-| Backup | Easy backup and restore functionality |
-| Persistence | Reliable data persistence |
-| Structure | Simple and intuitive data structure |
+| Feature      | Description                           |
+| ------------ | ------------------------------------- |
+| Access Speed | Quick data access and retrieval       |
+| Backup       | Easy backup and restore functionality |
+| Persistence  | Reliable data persistence             |
+| Structure    | Simple and intuitive data structure   |
 
 ## Plugin Development
 
@@ -86,35 +87,30 @@ global.settings = {
 <summary><b>Standard Plugin Format</b></summary>
 
 **Method 1:**
-```javascript
-let handler = async(m, {
-  sock,
-  usedPrefix,
-  command,
-  args,
-  text,
-  isOwner
-}) => {
-  // Your code here
-  sock.reply(m.chat, `Command *${command}* received!`, m)
-}
 
-handler.command = Array|String // Command trigger
-handler.help = Array|String // Help text
-handler.example = String // Usage example
-handler.wait = Boolean // Show wait message
-handler.owner = Boolean // Owner-only
-handler.rowner = Boolean // Real owner only
-handler.group = Boolean // Group-only
-handler.private = Boolean // Private chat only
-handler.botAdmin = Boolean // Requires bot admin
-handler.premium = Boolean // Premium users only
-handler.admin = Boolean // Admin-only
-handler.error = Boolean // Error tracking
-handler.customPrefix = String // Custom prefix
+```javascript
+let handler = async (m, { sock, usedPrefix, command, args, text, isOwner }) => {
+  // Your code here
+  sock.reply(m.chat, `Command *${command}* received!`, m);
+};
+
+handler.command = Array | String; // Command trigger
+handler.help = Array | String; // Help text
+handler.example = String; // Usage example
+handler.wait = Boolean; // Show wait message
+handler.owner = Boolean; // Owner-only
+handler.rowner = Boolean; // Real owner only
+handler.group = Boolean; // Group-only
+handler.private = Boolean; // Private chat only
+handler.botAdmin = Boolean; // Requires bot admin
+handler.premium = Boolean; // Premium users only
+handler.admin = Boolean; // Admin-only
+handler.error = Boolean; // Error tracking
+handler.customPrefix = String; // Custom prefix
 ```
 
 **Method 2:**
+
 ```javascript
 module.exports = {
    run: async (m, { sock }) => {
@@ -135,7 +131,9 @@ module.exports = {
    customPrefix: String // Custom prefix
 }
 ```
+
 **Other** :
+
 ```Javascript
 async run(m, { match, usedPrefix, noPrefix, args, command, text, participants, groupMetadata, user, bot, isROwner, isOwner, isRAdmin, isAdmin, isBotAdmin, isPrems, isBans, chatUpdate })
 ```
@@ -143,30 +141,33 @@ async run(m, { match, usedPrefix, noPrefix, args, command, text, participants, g
 ### Event Handler Format
 
 **Method 1:**
+
 ```javascript
-let handler = (m) => m
-handler.before = async (m, {
-  sock
-}) => {
- sock.reply(m.chat, `Event detected!`, m)
-  return true
-}
-module.exports = handler
+let handler = (m) => m;
+handler.before = async (m, { sock }) => {
+  sock.reply(m.chat, `Event detected!`, m);
+  return true;
+};
+module.exports = handler;
 ```
 
 **Method 2:**
+
 ```javascript
 module.exports = {
-   async before(m, { sock }) {
-      sock.reply(m.chat, `Event detected!`, m)
-      return true
-   }
-}
+  async before(m, { sock }) {
+    sock.reply(m.chat, `Event detected!`, m);
+    return true;
+  },
+};
 ```
+
 **Other** :
+
 ```Javascript
 async before(m, { match, participants, groupMetadata, user, bot, isROwner, isOwner, isRAdmin, isAdmin, isBotAdmin, isPrems, isBans, chatUpdate })
 ```
+
 </details>
 
 ## Scraper Integration
@@ -186,6 +187,7 @@ cd Akano-Bot
 npm install #--no-bin-links
 npm start
 ```
+
 </details>
 
 <details>
@@ -196,6 +198,7 @@ npm install pm2 -g
 npm install
 pm2 start index.js && pm2 save && pm2 logs
 ```
+
 </details>
 
 ## Notes

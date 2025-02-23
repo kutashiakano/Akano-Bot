@@ -10,7 +10,7 @@ const Scandir = async (dir) => {
       let res = path.resolve(dir, subdir);
       let stats = await fs.stat(res);
       return stats.isDirectory() ? Scandir(res) : res;
-    })
+    }),
   );
   return files.flat();
 };

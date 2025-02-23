@@ -1,10 +1,10 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 /*
-  * This Scape Make By Zivly Canzy
-  * @zivly_san
-*/
+ * This Scrape Make By Zivly Canzy
+ * @zivly_san
+ */
 
 async function furaffinity(query, maxResults = 10) {
   async function fetchDetails(link) {
@@ -12,16 +12,16 @@ async function furaffinity(query, maxResults = 10) {
       const response = await axios.get(link);
       const html = response.data;
       const $ = cheerio.load(html);
-      const description = $('.submission-description').text().trim();
-      const image = $('#submissionImg').attr('data-fullview-src');
+      const description = $(".submission-description").text().trim();
+      const image = $("#submissionImg").attr("data-fullview-src");
       return {
         description: description || null,
-        image: image ? `https:${image}` : null
+        image: image ? `https:${image}` : null,
       };
     } catch (error) {
       return {
-        status: '404',
-        massage: 'Not Found'
+        status: "404",
+        massage: "Not Found",
       };
     }
   }
@@ -35,14 +35,14 @@ async function furaffinity(query, maxResults = 10) {
       const response = await axios.get(url);
       const html = response.data;
       const $ = cheerio.load(html);
-      $('figure').each((index, element) => {
-        const title = $(element).find('p a').attr('title');
-        const titleLink = $(element).find('p a').attr('href');
-        const username = $(element).find('a[title]').last().attr('title');
+      $("figure").each((index, element) => {
+        const title = $(element).find("p a").attr("title");
+        const titleLink = $(element).find("p a").attr("href");
+        const username = $(element).find("a[title]").last().attr("title");
         results.push({
           title: title || null,
           link: titleLink ? `https://www.furaffinity.net${titleLink}` : null,
-          username: username || null
+          username: username || null,
         });
       });
       hasNextPage = $('button[name="next_page"]').length > 0;
@@ -62,4 +62,4 @@ async function furaffinity(query, maxResults = 10) {
   return results;
 }
 
-module.exports = furaffinity
+module.exports = furaffinity;

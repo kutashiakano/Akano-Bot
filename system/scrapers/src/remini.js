@@ -16,5 +16,4 @@ async function Upscale(imageBuffer) {
   }
 }
 
-
-module.exports = Upscale
+module.exports = Upscale;

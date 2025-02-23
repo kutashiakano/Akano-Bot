@@ -16,12 +16,14 @@ function centerText(text) {
 }
 
 process.on("unhandledRejection", (err) => {
-  console.log(centerText(chalk.red.bold(`UNHANDLED ERROR: ${err.stack || err}`)));
+  console.log(
+    centerText(chalk.red.bold(`UNHANDLED ERROR: ${err.stack || err}`)),
+  );
 });
 
 function showBanner() {
   process.stdout.write("\x1Bc");
-  
+
   cfonts.say("Akano Bot", {
     font: "tiny",
     align: "center",
@@ -43,7 +45,7 @@ function start() {
   const app = spawn(
     process.argv[0],
     [path.join(__dirname, "main.js"), ...process.argv.slice(2)],
-    { stdio: ["inherit", "inherit", "inherit", "ipc"] }
+    { stdio: ["inherit", "inherit", "inherit", "ipc"] },
   );
 
   app.on("error", (err) => {

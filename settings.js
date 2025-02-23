@@ -10,7 +10,7 @@ global.settings = {
   version: require(process.cwd() + "/package.json").version,
   message: {
     wait: "```Processing. . .```",
-    errorF:"This feature is currently disabled due to a bug/error!",
+    errorF: "This feature is currently disabled due to a bug/error!",
     admin: "This feature is only for group admins!",
     owner: "This feature is only for the bot owner!",
     premium: "This feature is only for premium users!",
@@ -24,20 +24,20 @@ global.settings = {
   max_uploud: 50,
   dot: "◦",
   connection: {
-  code_pairing: "",
-  use_pairing: true,
-  browser: "opera"
+    code_pairing: "",
+    use_pairing: true,
+    browser: "opera",
   },
   opts: {
     autoRead: true,
     selfMode: false,
     dmOnly: false,
-    groupOnly: false, 
+    groupOnly: false,
     statusOnly: false,
     queque: true,
     multiprefix: true,
-    noprefix: false
-  }
+    noprefix: false,
+  },
 };
 
 global.baileys = require("baileys");
@@ -52,4 +52,3 @@ fs.watchFile(file, () => {
     global.reloadHandler();
   }
 });
-

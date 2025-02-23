@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require("axios");
 
 class Tiktok {
   search = async (q) => {
@@ -133,7 +133,10 @@ class Tiktok {
           });
         })
         .catch((e) =>
-          reject({ msg: "Gagal mendapatkan data dari Web", error: e.response.data })
+          reject({
+            msg: "Gagal mendapatkan data dari Web",
+            error: e.response.data,
+          }),
         );
     });
   };
