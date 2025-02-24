@@ -208,7 +208,19 @@ pm2 start index.js && pm2 save && pm2 logs
 Saat ini, Akano-Bot masih dalam tahap pengembangan. Fitur-fitur yang tersedia masih terbatas dan akan terus dikembangkan. Jika menemukan error atau bug, silakan hubungi [Admin](https://wa.me/6285150857272) untuk bantuan lebih lanjut.
 
 ---
+## Credits
 
+> Thanks to the following projects:
+
+- **[Scraper From NekoBot](https://github.com/AxellNetwork/NekoBot/tree/master/scrapers)**  
+  (Scraper source from NekoBot)
+- **[Base From KaguyaBot](https://github.com/LT-SYAII/KaguyaBot)**  
+  (Main foundation from KaguyaBot)
+- **[Scraper From myScraper](https://github.com/SxyzAnother/myScraper)**  
+  (Additional scraper to enhance features)
+
+Thanks to all contributors who made this possible.
+---
 <div align="center">
 
 [![Love](https://img.shields.io/badge/Built_with_♥︎-ff69b4?style=for-the-badge)](https://github.com/kutashiakano)

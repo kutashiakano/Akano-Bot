@@ -2,11 +2,11 @@ const fs = require("fs");
 const path = require("path");
 const gradient = require("gradient-string");
 
-global.owner = [""];
+global.owner = ["6285150857272"];
 global.settings = {
-  cover: "",
-  footer: "",
-  packname: { name: "", author: "" },
+  cover: "https://files.catbox.moe/0eklgs.jpg",
+  footer: "Akano Bot Whatsapp",
+  packname: { name: "Akano", author: "Canzy" },
   version: require(process.cwd() + "/package.json").version,
   message: {
     wait: "```Processing. . .```",
@@ -20,13 +20,16 @@ global.settings = {
   },
   dataname: "database.json",
   sessions: "sessions",
-  sessionbot: "system/jadibot",
   max_uploud: 50,
   dot: "◦",
   connection: {
-    code_pairing: "",
-    use_pairing: true,
+    code_pairing: "AKANOBOT",
+    use_pairing: false,
     browser: "opera",
+  },
+  subbot: {
+    sessionbot: "system/jadibot",
+    AutoConnect: true,
   },
   opts: {
     autoRead: true,

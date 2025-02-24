@@ -7,7 +7,6 @@
     makeCacheableSignalKeyStore,
     DisconnectReason,
     fetchLatestBaileysVersion,
-    PHONENUMBER_MCC,
     Browsers,
     proto,
     jidNormalizedUser,
@@ -35,6 +34,17 @@
   const readdir = promisify(fs.readdir);
   const stat = promisify(fs.stat);
   const { Low, JSONFile } = await import("lowdb");
+  const qrcode = require("qrcode-terminal");
+
+  const getQrConfig = () => {
+    const isMobile = process.stdout.columns < 80;
+    return {
+      small: isMobile,
+      scale: isMobile ? 2 : 8,
+      lineChar: isMobile ? "▄" : "█",
+      spaceChar: isMobile ? " " : "░",
+    };
+  };
 
   const randomID = (length) =>
     randomBytes(Math.ceil(length * 0.5))
@@ -98,7 +108,6 @@
     class: "",
   });
   logger.level = "silent";
-  logger.level = "fatal";
 
   global.store = makeInMemoryStore({
     logger,
@@ -109,9 +118,6 @@
     const folderPath = path.join(__dirname, folderName);
     if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath);
-      if (process.env.NODE_ENV !== "production") {
-        console.log(gradientText("✓ Temporary folder created successfully"));
-      }
     }
   }
   createTmpFolder();
@@ -132,9 +138,7 @@
   store.readFromFile(process.cwd() + `/${global.authFolder}/store.json`);
 
   const connectionOptions = {
-    logger: pino({
-      level: "silent",
-    }),
+    logger: pino({ level: "silent" }),
     printQRInTerminal: !settings.connection.use_pairing,
     browser: Browsers.ubuntu(settings.connection.browser),
     auth: {
@@ -142,13 +146,7 @@
       keys: makeCacheableSignalKeyStore(state.keys, logger),
     },
     markOnlineOnConnect: true,
-    version: (
-      await (
-        await fetch(
-          "https://raw.githubusercontent.com/WhiskeySockets/Baileys/master/src/Defaults/baileys-version.json",
-        )
-      ).json()
-    ).version,
+    version,
     generateHighQualityLinkPreview: true,
     getMessage: async (key) => {
       if (store) {
@@ -164,8 +162,33 @@
   global.sock = simple.makeWASocket(connectionOptions, store);
   store?.bind(sock?.ev);
 
+  sock.ev.on("qr", (qr) => {
+    if (!settings.connection.use_pairing) {
+      const { small, scale, lineChar, spaceChar } = getQrConfig();
+      console.log(infoGradient(" Scan QR code:"));
+      qrcode.generate(qr, { small, scale }, (qrCode) => {
+        console.log(
+          gradient(
+            "#08AEEA",
+            "#2AF598",
+          )(
+            qrCode
+              .replace(/▀/g, lineChar.repeat(2))
+              .replace(/█/g, lineChar)
+              .replace(/ /g, spaceChar),
+          ),
+        );
+        console.log(
+          infoGradient(
+            ` Scan before ${moment().add(20, "seconds").format("HH:mm:ss")}`,
+          ),
+        );
+      });
+    }
+  });
+
   if (settings.connection.use_pairing && !sock.authState.creds.registered) {
-    console.log(infoGradient("Please enter your WhatsApp number:"));
+    console.log(infoGradient("Enter WhatsApp number:"));
     let randomPairing = Array.from(
       { length: 8 },
       () =>
@@ -178,9 +201,11 @@
     );
     console.log(
       infoGradient(
-        `Your pairing code: ${code?.match(/.{1,4}/g)?.join("-") || code}`,
+        `Pairing code: ${code?.match(/.{1,4}/g)?.join("-") || code}`,
       ),
     );
+  } else if (!sock.authState.creds.registered) {
+    console.log(infoGradient("Scan QR code within 20 seconds..."));
   }
 
   async function connectionUpdate(update) {
@@ -189,61 +214,37 @@
     if (isNewLogin) sock.isInit = true;
 
     if (connection == "open") {
-      if (process.env.NODE_ENV !== "production") {
-        console.log(
-          gradientText(
-            `Connected successfully to ${sock.user.id.split(":")[0]} | ${sock.user.name || "User"}`,
-          ),
-        );
-      }
+      console.log(
+        gradientText(
+          `Logged in via ${settings.connection.use_pairing ? "PAIRING" : "QR"} | ${sock.user.id.split(":")[0]}`,
+        ),
+      );
     }
 
     let reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
     if (connection === "close") {
       if (reason === DisconnectReason.badSession) {
-        if (process.env.NODE_ENV !== "production") {
-          console.log(
-            errorGradient(
-              "Bad Session! Please delete " +
-                global.authFolder +
-                " and reconnect",
-            ),
-          );
-        }
+        console.log(errorGradient("Bad session! Delete sessions folder"));
         console.log(reloadHandler(true));
       } else if (reason === DisconnectReason.connectionClosed) {
-        if (sock.ws && sock.ws.readyState === WebSocket.CLOSED) {
-          setTimeout(() => {
-            reloadHandler(true);
-          }, 5000);
-        }
+        setTimeout(() => reloadHandler(true), 5000);
       } else if (reason === DisconnectReason.connectionLost) {
-        if (process.env.NODE_ENV !== "production") {
-          console.log(errorGradient("Connection lost from server"));
-        }
+        console.log(errorGradient("Connection lost"));
         console.log(reloadHandler(true));
       } else if (reason === DisconnectReason.connectionReplaced) {
-        console.log(errorGradient("Connection replaced, please wait..."));
+        console.log(errorGradient("Connection replaced"));
         console.log(reloadHandler(true));
       } else if (reason === DisconnectReason.loggedOut) {
-        console.log(
-          errorGradient(
-            "Device logged out, please delete session and scan again",
-          ),
-        );
+        console.log(errorGradient("Logged out"));
         console.log(reloadHandler(true));
       } else if (reason === DisconnectReason.restartRequired) {
-        console.log(infoGradient("Restart required, restarting..."));
+        console.log(infoGradient("Restarting..."));
         console.log(reloadHandler(true));
       } else if (reason === DisconnectReason.timedOut) {
-        console.log(errorGradient("Connection timed out"));
+        console.log(errorGradient("Connection timeout"));
         console.log(reloadHandler(true));
       } else {
-        if (process.env.NODE_ENV !== "production") {
-          console.log(
-            errorGradient(`Connection closed with reason: ${reason || ""}`),
-          );
-        }
+        console.log(errorGradient(`Connection closed: ${reason || ""}`));
         console.log(reloadHandler(true));
       }
     }
@@ -260,10 +261,7 @@
       try {
         sock.ws.close();
       } catch {}
-      sock = {
-        ...sock,
-        ...simple.makeWASocket(connectionOptions),
-      };
+      sock = { ...sock, ...simple.makeWASocket(connectionOptions) };
     }
     if (!isInit) {
       sock.ev.off("messages.upsert", sock.handler);
@@ -297,10 +295,7 @@
       for (let contact of update) {
         let id = jidNormalizedUser(contact.id);
         if (store && store.contacts)
-          store.contacts[id] = {
-            ...(contact || {}),
-            isContact: true,
-          };
+          store.contacts[id] = { ...(contact || {}), isContact: true };
       }
     });
 
@@ -320,9 +315,7 @@
     return true;
   };
 
-  if (process.env.NODE_ENV !== "production") {
-    console.log(gradientText("Loading plugins..."));
-  }
+  console.log(gradientText("Loading plugins..."));
   global.plugin = {};
 
   let Scandir = async (dir) => {
@@ -356,30 +349,20 @@
 
     watcher
       .on("add", async (filename) => {
-        if (process.env.NODE_ENV !== "production") {
-          console.log(
-            infoGradient(
-              `New plugin detected: ${filename.replace(process.cwd(), "")}`,
-            ),
-          );
-        }
+        console.log(
+          infoGradient(`New plugin: ${filename.replace(process.cwd(), "")}`),
+        );
         plugin[filename.replace(process.cwd(), "")] = require(filename);
       })
       .on("change", async (filename) => {
-        if (
-          require.cache[filename] &&
-          require.cache[filename].id === filename
-        ) {
+        if (require.cache[filename]?.id === filename) {
           plugin[filename.replace(process.cwd(), "")] =
             require.cache[filename].exports;
-          if (process.env.NODE_ENV !== "production") {
-            console.log(
-              infoGradient(
-                `Plugin updated: ${filename.replace(process.cwd(), "")}`,
-              ),
-            );
-          }
-
+          console.log(
+            infoGradient(
+              `Updated plugin: ${filename.replace(process.cwd(), "")}`,
+            ),
+          );
           delete require.cache[filename];
         }
         let err = syntaxerror(
@@ -387,17 +370,15 @@
           filename.replace(process.cwd(), ""),
         );
         if (err)
-          console.log(errorGradient(`Syntax error in ${filename}: ${err}`));
+          console.log(errorGradient(`Syntax error: ${filename}: ${err}`));
         plugin[filename.replace(process.cwd(), "")] = require(filename);
       })
       .on("unlink", (filename) => {
-        if (process.env.NODE_ENV !== "production") {
-          console.log(
-            infoGradient(
-              `Plugin deleted: ${filename.replace(process.cwd(), "")}`,
-            ),
-          );
-        }
+        console.log(
+          infoGradient(
+            `Deleted plugin: ${filename.replace(process.cwd(), "")}`,
+          ),
+        );
         delete plugin[filename.replace(process.cwd(), "")];
       });
 
@@ -405,13 +386,7 @@
       Object.entries(plugin).sort(([a], [b]) => a.localeCompare(b)),
     );
     global.plugin = plugin;
-    if (process.env.NODE_ENV !== "production") {
-      console.log(
-        gradientText(
-          `Successfully loaded ${Object.keys(plugin).length} plugins`,
-        ),
-      );
-    }
+    console.log(gradientText(`Loaded ${Object.keys(plugin).length} plugins`));
   } catch (e) {
     console.error(e);
   }
@@ -436,3 +411,10 @@
 function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
+
+process.on("beforeExit", async () => {
+  await fs.promises.rm(path.join(__dirname, "tmp"), {
+    recursive: true,
+    force: true,
+  });
+});
