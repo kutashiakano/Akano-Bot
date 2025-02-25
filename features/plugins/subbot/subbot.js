@@ -126,7 +126,7 @@ module.exports = {
     const __sock = await global.sock;
     if (!(args[0] === "plz" || __sock.user.jid === _sock.user.jid)) {
       return m.reply(
-        `This command can only be used on the main bot! wa.me/${__sock.user.jid.split("@")[0]}?text=${usedPrefix}codebot`,
+        `This command can only be used on the main bot! wa.me/${__sock.user.jid.split("@")[0]}?text=${usedPrefix}${command}`,
       );
     }
 
