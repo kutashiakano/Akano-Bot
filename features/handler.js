@@ -66,7 +66,7 @@ module.exports = {
         queque.push(m.id || m.key.id);
         setInterval(async function () {
           if (queque.indexOf(previousID) === -1) clearInterval(this);
-          else await sock.delaytime);
+          else await sock.delay(time);
         }, time);
       }
 
