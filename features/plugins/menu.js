@@ -2,8 +2,8 @@ const { version } = require(process.cwd() + "/package.json");
 const moment = require("moment-timezone");
 
 module.exports = {
-  help: ["menu"],
-  command: ["menu"],
+  help: ["menu", "help"],
+  command: ["menu", "help"],
   run: async (m, { sock, usedPrefix }) => {
     const commandRegistry = {};
     const categoryMap = new Map();
