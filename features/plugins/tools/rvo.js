@@ -4,24 +4,25 @@ module.exports = {
   help: "rvo",
   command: "rvo",
   tags: "tools",
-  async run(m, { sock }) {
+  run: async (m, { sock, usedPrefix, command }) => {
+    if (!m.quoted || !m.quoted.message) {
+      return m.reply("Reply to a one-time view message.");
+    }
+
+    const msg = m.quoted.message;
+    const type = Object.keys(msg)[0];
+    const mediaTypes = {
+      imageMessage: "image",
+      videoMessage: "video",
+      audioMessage: "audio",
+    };
+
+    if (!mediaTypes[type]) {
+      return m.reply("Unsupported media type.");
+    }
+
     try {
-      const msg = m.quoted.message;
-      const type = Object.keys(msg)[0];
-      const mediaTypes = {
-        imageMessage: "image",
-        videoMessage: "video",
-        audioMessage: "audio",
-      };
-
-      if (!mediaTypes[type]) {
-        throw new Error("Unsupported media type.");
-      }
-
-      const media = await downloadContentFromMessage(
-        msg[type],
-        mediaTypes[type],
-      );
+      const media = await downloadContentFromMessage(msg[type], mediaTypes[type]);
       let buffer = Buffer.from([]);
 
       for await (const chunk of media) {
@@ -30,31 +31,39 @@ module.exports = {
 
       const messageOptions = {
         caption: msg[type]?.caption || "",
-        viewOnce: m.command === "torvo",
-        quoted: m,
+        viewOnce: command === "torvo",
       };
 
       switch (type) {
         case "videoMessage":
-          await sock.sendMessage(m.chat, { video: buffer, ...messageOptions });
+          await sock.sendMessage(
+            m.chat, 
+            { video: buffer, ...messageOptions }, 
+            { quoted: m }
+          );
           break;
         case "imageMessage":
-          await sock.sendMessage(m.chat, { image: buffer, ...messageOptions });
+          await sock.sendMessage(
+            m.chat, 
+            { image: buffer, ...messageOptions }, 
+            { quoted: m }
+          );
           break;
         case "audioMessage":
-          await sock.sendMessage(m.chat, {
-            audio: buffer,
-            mimetype: "audio/mpeg",
-            ptt: true,
-            ...messageOptions,
-          });
+          await sock.sendMessage(
+            m.chat, 
+            { 
+              audio: buffer, 
+              mimetype: "audio/mpeg", 
+              ptt: true, 
+              ...messageOptions 
+            }, 
+            { quoted: m }
+          );
           break;
       }
-    } catch (e) {
-      return m.reply(
-        "Make sure you reply to a valid one-time view media message.",
-      );
+    } catch {
+      m.reply("Failed to download media. Make sure you reply to a valid one-time view message.");
     }
   },
-  example: "%cmd [ reply to a one-time view message ]",
 };
