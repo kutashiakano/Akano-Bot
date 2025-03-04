@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const gradient = require("gradient-string");
 
-global.owner = ["6285150857272"];
+global.owner = [""];
 global.settings = {
   cover: "https://files.catbox.moe/0eklgs.jpg",
   footer: "Akano Bot Whatsapp",
