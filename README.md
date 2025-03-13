@@ -226,6 +226,6 @@ Thanks to all contributors who made this possible.
 [![Love](https://img.shields.io/badge/Built_with_♥︎-ff69b4?style=for-the-badge)](https://github.com/kutashiakano)
 [![Powered](https://img.shields.io/badge/Powered_by-NodeJS_18-ff69b4?style=for-the-badge&logo=node.js)](https://nodejs.org/)
 
-&copy; 2024 Canzy. All rights reserved.
+&copy; 2025 Canzy. All rights reserved.
 
 </div>
