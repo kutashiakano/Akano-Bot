@@ -43,7 +43,6 @@ global.settings = {
   },
 };
 
-global.baileys = require("baileys");
 global.scraper = new (require("./system/scrapers"))("./system/scrapers/src");
 
 let file = require.resolve(__filename);
