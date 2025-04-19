@@ -11,7 +11,7 @@ module.exports = {
 
     if (oversize) {
       return m.reply(
-        `File size (${size}) exceeds the maximum limit. Please download it manually: ${text}`,
+        `File size (${size}) exceeds the maximum limit. Please download it manually: ${result.url[0]}`,
       );
     }
 
