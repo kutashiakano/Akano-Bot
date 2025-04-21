@@ -10,7 +10,7 @@
   "dependencies": {
     "awesome-phonenumber": "^2.73.0",
     "axios": "^1.7.9",
-    "baileys": "npm:@baileys-pro/baileys@latest",
+    "baileys": "npm:baileys-pro@latest",
     "cfonts": "3.1.1",
     "chalk": "^4.1.1",
     "cheerio": "^1.0.0-rc.10",
