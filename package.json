@@ -1,0 +1,38 @@
+{
+  "name": "Akano-Bot",
+  "version": "1.0.0",
+  "description": "A Simple WhatsApp Bot using Node.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node . && mkdir -p tmp",
+    "debug": "node run.js"
+  },
+  "dependencies": {
+    "awesome-phonenumber": "^2.73.0",
+    "axios": "^1.7.9",
+    "baileys": "npm:@baileys-pro/baileys@latest",
+    "cfonts": "3.1.1",
+    "chalk": "^4.1.1",
+    "cheerio": "^1.0.0-rc.10",
+    "chokidar": "^3.6.0",
+    "file-type": "^16.5.3",
+    "fluent-ffmpeg": "^2.1.2",
+    "gradient-string": "^2.0.1",
+    "jimp": "*",
+    "link-preview-js": "latest",
+    "lodash": "^4.17.21",
+    "lowdb": "^2.1.0",
+    "moment-timezone": "^0.5.47",
+    "node-fetch": "^2.6.7",
+    "node-webpmux": "^3.1.3",
+    "qrcode-terminal": "^0.12.0",
+    "qs": "^6.14.0",
+    "syntax-error": "^1.4.0",
+    "yargs": "^17.5.1",
+    "yt-search": "^2.12.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
