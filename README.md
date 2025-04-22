@@ -1,157 +1,231 @@
 <div align="center">
 
-AKANO-BOT
-<img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2xlZ3o5aTFmM3Y2ZGw5OGs2N2V2a3V2NmRrbjZsdWp5a3c4dGZuNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT9IgzoKnwFNmISR8I/giphy.gif" alt="Akano Bot Logo" width="200"/>
+# AKANO-BOT
 
-A powerful WhatsApp Bot with extensive features and customization options
+<img src="https://files.catbox.moe/aonira.jpg" alt="Akano Bot Logo" width="200"/>
+
+_A powerful WhatsApp Bot with extensive features and customization options_
+
 </div>
 
-System Requirements
-![Server](https://img.shields.io/badge/Server-1%20vCPU%20%7C%201GB%20RAM-ff69b4?style=flat)
-![FFMPEG](https://img.shields.io/badge/FFMPEG-Required-ff69b4?style=flat)
-![WhatsApp](https://img.shields.io/badge/WhatsApp-Required-ff69b4?style=flat&logo=whatsapp)
-Features
-Dynamic Plugin System: Hot-reload plugins tanpa restart bot!
-Auto-Download Status WhatsApp: Status otomatis tersimpan saat ada upload baru (bot harus aktif).
-Cute Theme: Desain dan pesan dengan nuansa imut dan ramah :3.
-Customizable Settings: Sesuaikan bot sesuai kebutuhanmu.
-Catatan: Fitur saat ini masih terbatas karena ini base bot mentahan dari Alis. Keunggulan utama ada pada fleksibilitas dan fitur status otomatis!
-Configuration
-<details>
-<summary><b>Lihat Opsi Konfigurasi</b></summary>
+---
 
-javascript
-global.owner = ["628xxxxxxx"]; // Nomor WhatsApp kamu
+## System Requirements
+
+[![Server](https://img.shields.io/badge/Server-1%20vCPU%20%7C%201GB%20RAM-ff69b4?style=flat)](https://cloud.google.com/)
+[![FFMPEG](https://img.shields.io/badge/FFMPEG-Required-ff69b4?style=flat)](https://ffmpeg.org/)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp-Required-ff69b4?style=flat&logo=whatsapp)](https://www.whatsapp.com/)
+
+## Configuration
+
+<details>
+<summary><b>View Configuration Options</b></summary>
+
+````javascript
+global.owner = ["628xxxxxxx"]; // Your WhatsApp number
 
 global.settings = {
-  cover: "https://file/path.jpg", // Gambar cover custom
-  footer: "Akano Bot WhatsApp", // Footer pesan
+  cover: "https://file/path.jpg", // Custom cover image
+  footer: "Akano Bot WhatsApp", // Message footer
 
-  packname: { name: "Akano", author: "Canzy" }, // Branding stiker
+  packname: { name: "Akano", author: "Canzy" }, // Sticker branding
 
-  version: require(process.cwd() + "/package.json").version, // Versi bot
+  version: require(process.cwd() + "/package.json").version, // Bot version
 
   message: {
-    wait: "```Tunggu bentar ya...```",
-    errorF: "Fitur lagi bermasalah, sabar ya!",
-    admin: "Hanya untuk admin nih",
-    owner: "Khusus owner aja",
-    premium: "Buat pengguna premium",
-    group: "Cuma di grup",
-    private: "Hanya di chat pribadi",
-    botadmin: "Bot butuh jadi admin dulu",
+    wait: "```Processing...```",
+    errorF: "Feature temporarily unavailable due to technical issues",
+    admin: "Admin-only feature",
+    owner: "Owner-only feature",
+    premium: "Premium users only",
+    group: "Group-only feature",
+    private: "Private chat only",
+    botadmin: "Bot needs admin privileges",
   },
 
-  dataname: "database.json", // Nama file database
-  sessions: "sessions", // Penyimpanan sesi
-  sessionbot: "system/jadibot", // Sesi klon bot
-  max_uploud: 50, // Batas ukuran upload (MB)
-  dot: "◦", // Penanda daftar
-  reactSW: true, // Status reaksi aktif
-  emojis: ["❤️", "💛", "💚", "💙", "💜"], // Emot untuk reaksi
+  dataname: "database.json", // Database filename
+  sessions: "sessions", // Session storage
+  sessionbot: "system/jadibot", // Bot clone sessions
+  max_uploud: 50, // Max file upload size (MB)
+  dot: "◦", // List marker
 
   sockection: {
-    code_pairing: "AKANOBOT", // Kode pairing
-    use_pairing: true, // Aktifkan pairing
-    browser: "opera", // Tanda browser
+    code_pairing: "AKANOBOT", // Pairing code
+    use_pairing: true, // Enable pairing
+    browser: "opera", // Browser signature
   },
 
   opts: {
-    autoRead: true, // Baca pesan otomatis
-    selfMode: false, // Mode sendiri
-    dmOnly: false, // Hanya DM
-    groupOnly: false, // Hanya grup
-    statusOnly: false, // Hanya status
-    queque: true, // Antrian pesan
-    multiprefix: true, // Multi prefix perintah
-    noprefix: false, // Mode tanpa prefix
+    autoRead: true, // Auto-read messages
+    selfMode: false, // Self-mode
+    dmOnly: false, // DM-only mode
+    groupOnly: false, // Group-only mode
+    statusOnly: false, // Status-only mode
+    queque: true, // Message queue
+    multiprefix: true, // Multiple command prefixes
+    noprefix: false, // No-prefix mode
   },
 };
+````
+
 </details>
 
-Plugin Development
-<details>
-<summary><b>Format Plugin Standar</b></summary>
+## Database
 
-Cara 1:
-javascript
+[![Database](https://img.shields.io/badge/Database-Lowdb-ff69b4?style=flat&logo=json)](https://github.com/typicode/lowdb)
+
+| Feature      | Description                           |
+| ------------ | ------------------------------------- |
+| Access Speed | Quick data access and retrieval       |
+| Backup       | Easy backup and restore functionality |
+| Persistence  | Reliable data persistence             |
+| Structure    | Simple and intuitive data structure   |
+
+## Plugin Development
+
+<details>
+<summary><b>Standard Plugin Format</b></summary>
+
+**Method 1:**
+
+```javascript
 let handler = async (m, { sock, usedPrefix, command, args, text, isOwner }) => {
-  m.reply("Hai, aku Akano Bot! :3");
+  // Your code here
+  sock.reply(m.chat, `Command *${command}* received!`, m);
 };
 
-handler.command = Array | String; // Pemicu perintah
-handler.help = Array | String; // Teks bantuan
-handler.example = String; // Contoh penggunaan
-handler.wait = Boolean; // Tampilkan pesan tunggu
-handler.owner = Boolean; // Khusus owner
-handler.rowner = Boolean; // Hanya owner asli
-handler.group = Boolean; // Hanya grup
-handler.private = Boolean; // Hanya chat pribadi
-handler.botAdmin = Boolean; // Butuh admin bot
-handler.premium = Boolean; // Khusus premium
-handler.admin = Boolean; // Hanya admin
-handler.error = Boolean; // Lacak error
-handler.customPrefix = String; // Prefix custom
-Cara 2:
-javascript
+handler.command = Array | String; // Command trigger
+handler.help = Array | String; // Help text
+handler.example = String; // Usage example
+handler.wait = Boolean; // Show wait message
+handler.owner = Boolean; // Owner-only
+handler.rowner = Boolean; // Real owner only
+handler.group = Boolean; // Group-only
+handler.private = Boolean; // Private chat only
+handler.botAdmin = Boolean; // Requires bot admin
+handler.premium = Boolean; // Premium users only
+handler.admin = Boolean; // Admin-only
+handler.error = Boolean; // Error tracking
+handler.customPrefix = String; // Custom prefix
+```
+
+**Method 2:**
+
+```javascript
 module.exports = {
    run: async (m, { sock }) => {
-      m.reply("Hai, aku Akano Bot! :3");
+      m.reply("Hi, I'm Akano Bot! :3")
    },
-   command: Array | String // Pemicu perintah
-   help: Array | String // Teks bantuan
-   example: String // Contoh penggunaan
-   wait: Boolean // Tampilkan pesan tunggu
-   owner: Boolean // Khusus owner
-   rowner: Boolean // Hanya owner asli
-   group: Boolean // Hanya grup
-   private: Boolean // Hanya chat pribadi
-   botAdmin: Boolean // Butuh admin bot
-   premium: Boolean // Khusus premium
-   admin: Boolean // Hanya admin
-   error: Boolean // Lacak error
-   customPrefix: String // Prefix custom
+   command: Array|String // Command trigger
+   help: Array|String // Help text
+   example: String // Usage example
+   wait: Boolean // Show wait message
+   owner: Boolean // Owner-only
+   rowner: Boolean // Real owner only
+   group: Boolean // Group-only
+   private: Boolean // Private chat only
+   botAdmin: Boolean // Requires bot admin
+   premium: Boolean // Premium users only
+   admin: Boolean // Admin-only
+   error: Boolean // Error tracking
+   customPrefix: String // Custom prefix
+}
+```
+
+**Other** :
+
+```Javascript
+async run(m, { match, usedPrefix, noPrefix, args, command, text, participants, groupMetadata, user, bot, isROwner, isOwner, isRAdmin, isAdmin, isBotAdmin, isPrems, isBans, chatUpdate })
+```
+
+### Event Handler Format
+
+**Method 1:**
+
+```javascript
+let handler = (m) => m;
+handler.before = async (m, { sock }) => {
+  sock.reply(m.chat, `Event detected!`, m);
+  return true;
 };
+module.exports = handler;
+```
+
+**Method 2:**
+
+```javascript
+module.exports = {
+  async before(m, { sock }) {
+    sock.reply(m.chat, `Event detected!`, m);
+    return true;
+  },
+};
+```
+
+**Other** :
+
+```Javascript
+async before(m, { match, participants, groupMetadata, user, bot, isROwner, isOwner, isRAdmin, isAdmin, isBotAdmin, isPrems, isBans, chatUpdate })
+```
+
 </details>
 
-Scraper Integration
-![Integration](https://img.shields.io/badge/Module%20System-Dynamic-ff69b4?style=flat) 
-Bot ini pakai scraper modul dinamis untuk kelola plugin secara real-time, jadi bisa reload fitur tanpa matiin bot :3.
-Installation
-<details>
-<summary><b>Instalasi Standar</b></summary>
+## Scraper Integration
 
-bash
+[![Integration](https://img.shields.io/badge/Module%20System-Dynamic-ff69b4?style=flat)]()
+
+> The bot utilizes a dynamic module scraper for real-time plugin management, enabling hot-reloading of features without restarting.
+
+## Installation
+
+<details>
+<summary><b>Standard Installation</b></summary>
+
+```bash
 git clone https://github.com/kutashiakano/Akano-Bot
 cd Akano-Bot
 npm install #--no-bin-links
 npm start
+```
+
 </details>
 
 <details>
-<summary><b>Instalasi dengan PM2</b></summary>
+<summary><b>PM2 Installation</b></summary>
 
-bash
+```bash
 npm install pm2 -g
 npm install
 pm2 start index.js && pm2 save && pm2 logs
+```
+
 </details>
 
-Notes
-![Status](https://img.shields.io/badge/Development%20Phase-Alpha-ff69b4?style=flat) 
-Saat ini, Akano-Bot masih dalam tahap pengembangan. Fitur yang ada masih sedikit karena ini base mentahan dari Alis, tapi akan terus diperbarui. Kalau ada error atau bug, hubungi Admin ya :3.
-Credits
-Terima kasih buat proyek berikut:
-Scraper From NekoBot
-(Sumber scraper dari NekoBot)
-Base From KaguyaBot
-(Dasar utama dari KaguyaBot)
-Scraper From myScraper
-(Scraper tambahan untuk fitur lebih baik)
-Terima kasih juga buat semua kontributor yang bikin ini jadi mungkin :3.
+## Notes
+
+[![Status](https://img.shields.io/badge/Development%20Phase-Alpha-ff69b4?style=flat)]()
+
+Saat ini, Akano-Bot masih dalam tahap pengembangan. Fitur-fitur yang tersedia masih terbatas dan akan terus dikembangkan. Jika menemukan error atau bug, silakan hubungi [Admin](https://wa.me/6285150857272) untuk bantuan lebih lanjut.
+
+---
+## Credits
+
+> Thanks to the following projects:
+
+- **[Scraper From NekoBot](https://github.com/AxellNetwork/NekoBot/tree/master/scrapers)**  
+  (Scraper source from NekoBot)
+- **[Base From KaguyaBot](https://github.com/LT-SYAII/KaguyaBot)**  
+  (Main foundation from KaguyaBot)
+- **[Scraper From myScraper](https://github.com/SxyzAnother/myScraper)**  
+  (Additional scraper to enhance features)
+
+Thanks to all contributors who made this possible.
+---
 <div align="center">
 
-![Love](https://img.shields.io/badge/Built_with_Love-ff69b4?style=for-the-badge)
-![Powered](https://img.shields.io/badge/Powered_by-NodeJS_18-ff69b4?style=for-the-badge&logo=node.js)
-© 2025 Canzy. All rights reserved.
+[![Love](https://img.shields.io/badge/Built_with_♥︎-ff69b4?style=for-the-badge)](https://github.com/kutashiakano)
+[![Powered](https://img.shields.io/badge/Powered_by-NodeJS_18-ff69b4?style=for-the-badge&logo=node.js)](https://nodejs.org/)
+
+&copy; 2025 Canzy. All rights reserved.
+
 </div>
