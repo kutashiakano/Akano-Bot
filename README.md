@@ -48,6 +48,8 @@ global.settings = {
   sessionbot: "system/jadibot", // Bot clone sessions
   max_uploud: 50, // Max file upload size (MB)
   dot: "◦", // List marker
+  reactSW: true, // React status 
+  emojis: ["❤️", "💛", "💚", "💙", "💜"], // Emoji for react status if true
 
   sockection: {
     code_pairing: "AKANOBOT", // Pairing code
@@ -91,7 +93,7 @@ global.settings = {
 ```javascript
 let handler = async (m, { sock, usedPrefix, command, args, text, isOwner }) => {
   // Your code here
-  sock.reply(m.chat, `Command *${command}* received!`, m);
+  m.reply("Hi, I'm Akano Bot! :3");
 };
 
 handler.command = Array | String; // Command trigger
@@ -114,6 +116,7 @@ handler.customPrefix = String; // Custom prefix
 ```javascript
 module.exports = {
    run: async (m, { sock }) => {
+      // Your code here
       m.reply("Hi, I'm Akano Bot! :3")
    },
    command: Array|String // Command trigger
