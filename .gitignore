@@ -1,0 +1,1 @@
+Nothing should be ignored in this case, as the changes only involve JavaScript source files being deleted and a .gitignore file being added. No build artifacts, dependencies, or temporary files are present in the change list.
