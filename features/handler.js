@@ -86,9 +86,7 @@ module.exports = {
 
 			if (typeof m.text !== "string") m.text = "";
 			
-			// === PANGGIL FILE BUTTON RESPONSE ===
 			require("../lib/button-response.js")(m);
-			// ====================================
 
 			if (m.isBaileys) return;
 			m.exp += Math.ceil(Math.random() * 1000);
