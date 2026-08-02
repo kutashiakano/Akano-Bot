@@ -1,0 +1,47 @@
+{
+  "name": "Akano-Bot",
+  "version": "1.0.0",
+  "description": "Multi-platform bot for WhatsApp, Telegram, and Discord with AI chat, media downloader, group management, and moderation tools",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js --all",
+    "wa": "node index.js --whatsapp",
+    "dc": "node index.js --discord",
+    "tg": "node index.js --telegram",
+    "help": "node index.js --help",
+    "debug": "node run.js"
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.19.2",
+    "awesome-phonenumber": "^2.73.0",
+    "axios": "^1.7.9",
+    "baileys": "npm:@itsliaaa/baileys@latest",
+    "cfonts": "3.1.1",
+    "chalk": "^4.1.1",
+    "cheerio": "^1.0.0-rc.10",
+    "chokidar": "^3.6.0",
+    "discord.js": "^14.26.5",
+    "file-type": "^16.5.3",
+    "fluent-ffmpeg": "^2.1.2",
+    "gradient-string": "^2.0.1",
+    "jimp": "latest",
+    "libsodium-wrappers": "^0.8.4",
+    "link-preview-js": "latest",
+    "lodash": "^4.17.21",
+    "lowdb": "^2.1.0",
+    "moment-timezone": "^0.5.47",
+    "node-cache": "^5.1.2",
+    "node-fetch": "^2.6.7",
+    "node-webpmux": "^3.1.3",
+    "opusscript": "^0.0.8",
+    "qrcode-terminal": "^0.12.0",
+    "syntax-error": "^1.4.0",
+    "telegraf": "latest",
+    "prism-media": "^1.0.5",
+    "yargs": "^17.5.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
