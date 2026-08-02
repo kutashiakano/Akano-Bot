@@ -1,4 +1,5 @@
-const axios = require("axios");
+const https = require("https");
+const http = require("http");
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
@@ -6,7 +7,6 @@ const path = require("path");
 const sessions = new Map();
 const SESSION_FILE = path.join(__dirname, "../../../tmp/gemini_sessions.json");
 
-// Load sessions from file
 function loadSessions() {
   try {
     if (fs.existsSync(SESSION_FILE)) {
@@ -15,24 +15,18 @@ function loadSessions() {
         sessions.set(key, value);
       }
     }
-  } catch (e) {
-    // Ignore errors, start fresh
-  }
+  } catch (e) {}
 }
 
-// Save sessions to file
 function saveSessions() {
   try {
     const dir = path.dirname(SESSION_FILE);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     const obj = Object.fromEntries(sessions);
     fs.writeFileSync(SESSION_FILE, JSON.stringify(obj, null, 2));
-  } catch (e) {
-    // Ignore write errors
-  }
+  } catch (e) {}
 }
 
-// Auto-load on startup
 loadSessions();
 
 function syncCookies(jar, setCookie) {
@@ -71,37 +65,77 @@ function cleanText(text) {
     .trim();
 }
 
+function request(url, options, data) {
+  return new Promise((resolve, reject) => {
+    const parsedUrl = new URL(url);
+    const client = parsedUrl.protocol === "https:" ? https : http;
+
+    const req = client.request(url, {
+      method: options.method || "GET",
+      headers: options.headers || {},
+      maxHeaderSize: 131072
+    }, (res) => {
+      resolve(res);
+    });
+
+    req.on("error", reject);
+    req.setTimeout(30000, () => {
+      req.destroy();
+      reject(new Error("Request timeout"));
+    });
+
+    if (data) req.write(data);
+    req.end();
+  });
+}
+
 async function startSession(retries = 3) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const cookies = {};
 
-      const pageRes = await axios.get("https://gemini.google.com/app", {
+      const pageRes = await request("https://gemini.google.com/app", {
+        method: "GET",
         headers: {
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        },
-        timeout: 15000
+        }
       });
+
+      let pageData = "";
+      await new Promise((resolve, reject) => {
+        pageRes.on("data", (chunk) => { pageData += chunk; });
+        pageRes.on("end", resolve);
+        pageRes.on("error", reject);
+      });
+
       syncCookies(cookies, pageRes.headers["set-cookie"]);
 
-      const html = pageRes.data.toString();
+      const html = pageData.toString();
       const cfb2hMatch = html.match(/"cfb2h":\s*"(.*?)"/);
       const buildLabel = cfb2hMatch
         ? cfb2hMatch[1]
         : "boq_assistant-bard-web-server_20260709.09_p0";
 
-      const response = await axios.post(
+      const response = await request(
         "https://gemini.google.com/_/BardChatUi/data/batchexecute?rpcids=maGuAc&source-path=%2F&hl=en-US&_reqid=1&rt=c",
-        'f.req=[[["maGuAc","[0]",null,"generic"]]]&',
         {
+          method: "POST",
           headers: {
             "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
             cookie: buildCookieString(cookies)
-          },
-          timeout: 15000
-        }
+          }
+        },
+        'f.req=[[["maGuAc","[0]",null,"generic"]]]&'
       );
+
+      let resData = "";
+      await new Promise((resolve, reject) => {
+        response.on("data", (chunk) => { resData += chunk; });
+        response.on("end", resolve);
+        response.on("error", reject);
+      });
+
       syncCookies(cookies, response.headers["set-cookie"]);
 
       const sessionId = Array.from({ length: 19 }, () =>
@@ -197,10 +231,10 @@ async function chat(prompt, userId = null, onChunk = null) {
     "f.req": JSON.stringify([null, JSON.stringify(requestPayload)])
   });
 
-  const streamResponse = await axios.post(
+  const streamResponse = await request(
     `https://gemini.google.com/_/BardChatUi/data/assistant.lamda.BardFrontendService/StreamGenerate?${queryParams}`,
-    requestBody.toString(),
     {
+      method: "POST",
       headers: {
         "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
         "x-goog-ext-525001261-jspb":
@@ -212,12 +246,9 @@ async function chat(prompt, userId = null, onChunk = null) {
         origin: "https://gemini.google.com",
         referer: "https://gemini.google.com/",
         cookie: buildCookieString(auth.cookies)
-      },
-      responseType: "stream",
-      maxHeaderSize: 65536,
-      insecureHTTPParser: true,
-      timeout: 60000
-    }
+      }
+    },
+    requestBody.toString()
   );
 
   syncCookies(auth.cookies, streamResponse.headers["set-cookie"]);
@@ -229,13 +260,12 @@ async function chat(prompt, userId = null, onChunk = null) {
     let updatedMetadata = metadata;
     let timeoutId;
 
-    // Timeout handler
     timeoutId = setTimeout(() => {
-      streamResponse.data.destroy();
+      streamResponse.destroy();
       reject(new Error("Response timeout"));
     }, 60000);
 
-    streamResponse.data.on("data", (chunk) => {
+    streamResponse.on("data", (chunk) => {
       try {
         buffer += chunk.toString("utf8");
 
@@ -308,7 +338,7 @@ async function chat(prompt, userId = null, onChunk = null) {
       }
     });
 
-    streamResponse.data.on("end", () => {
+    streamResponse.on("end", () => {
       clearTimeout(timeoutId);
       try {
         const finalDelta = accumulatedText.substring(lastSentText.length);
@@ -328,7 +358,7 @@ async function chat(prompt, userId = null, onChunk = null) {
       }
     });
 
-    streamResponse.data.on("error", (err) => {
+    streamResponse.on("error", (err) => {
       clearTimeout(timeoutId);
       reject(err);
     });
