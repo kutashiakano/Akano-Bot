@@ -1,8 +1,8 @@
 ![Banner](https://plain-apac-prod-public.komododecks.com/202608/02/PY3qOEeDWhqza9tWWUdO/image.jpg)
 
-# ₊⊹ Akano Bot ₊⊹
+# ˚.ᵎᵎ Akano Bot ᝰ.ᐟ
 
-─── ₊⊹ ───
+˚. ᵎᵎ ──────── ᝰ.ᐟ
 Akano Bot is a multi-platform bot project that supports WhatsApp, Telegram, and Discord in a single repository. It is built with a modular plugin system and includes features such as AI chat through Gemini, media downloading from YouTube, TikTok, Instagram, Facebook, X/Twitter, and Pinterest, group management, moderation tools, sticker creation, and various utility commands.
 
 > [!IMPORTANT]
@@ -10,11 +10,11 @@ Akano Bot is a multi-platform bot project that supports WhatsApp, Telegram, and 
 
 Supported platforms:
 
-> ₊⊹ <sub> WhatsApp using Baileys. </sub>
-> ₊⊹ <sub> Telegram using Telegraf. </sub>
-> ₊⊹ <sub> Discord using discord.js. </sub>
+> ˚. <sub> WhatsApp using Baileys. </sub>
+> ˚. <sub> Telegram using Telegraf. </sub>
+> ˚. <sub> Discord using discord.js. </sub>
 
-## ₊⊹ Table of Contents
+## ˚. Table of Contents
 
 1. [About Akano Bot](#1-about-akano-bot)
 2. [Libraries Used](#2-libraries-used)
@@ -34,26 +34,26 @@ Supported platforms:
 16. [Troubleshooting](#16-troubleshooting)
 17. [Closing](#17-closing)
 
-## ₊⊹ 1. About Akano Bot
+## ˚. 1. About Akano Bot
 
 Akano Bot is a multi-platform bot designed to run on several chat services from one codebase. The project uses a modular architecture, allowing features to be added, modified, or disabled without directly changing the core system.
 
 Main features:
 
-> ₊⊹ <sub> AI chat using Gemini. </sub>
-> ₊⊹ <sub> Media downloader for YouTube, TikTok, Instagram, Facebook, X/Twitter, and Pinterest. </sub>
-> ₊⊹ <sub> Group management. </sub>
-> ₊⊹ <sub> Moderation tools. </sub>
-> ₊⊹ <sub> Sticker maker. </sub>
-> ₊⊹ <sub> Utility commands such as ping, calculator, profile, AFK, and more. </sub>
-> ₊⊹ <sub> Plugin system with hot-reload support. </sub>
-> ₊⊹ <sub> Middleware for cooldown, permission, spam detection, and anti-link. </sub>
-> ₊⊹ <sub> CLI support for running selected platforms only. </sub>
+> ˚. <sub> AI chat using Gemini. </sub>
+> ˚. <sub> Media downloader for YouTube, TikTok, Instagram, Facebook, X/Twitter, and Pinterest. </sub>
+> ˚. <sub> Group management. </sub>
+> ˚. <sub> Moderation tools. </sub>
+> ˚. <sub> Sticker maker. </sub>
+> ˚. <sub> Utility commands such as ping, calculator, profile, AFK, and more. </sub>
+> ˚. <sub> Plugin system with hot-reload support. </sub>
+> ˚. <sub> Middleware for cooldown, permission, spam detection, and anti-link. </sub>
+> ˚. <sub> CLI support for running selected platforms only. </sub>
 
 > [!NOTE]
 > Akano Bot is currently in Beta. Project structure, APIs, plugins, and features may change at any time.
 
-## ₊⊹ 2. Libraries Used
+## ˚. 2. Libraries Used
 
 The following libraries are used by Akano Bot based on `package.json`.
 
@@ -88,7 +88,7 @@ The following libraries are used by Akano Bot based on `package.json`.
 | `opusscript` (`^0.0.8`) | Opus Codec | Opus audio codec | Audio encoding for Discord voice |
 | `libsodium-wrappers` (`^0.8.4`) | Crypto | Encryption library | Dependency for Discord voice encryption |
 
-## ₊⊹ 3. Installation
+## ˚. 3. Installation
 
 ### Clone the Repository
 
@@ -200,7 +200,7 @@ Example:
 .instagram.com	TRUE	/	TRUE	1234567890	sessionid	xxxxx
 ~~~
 
-## ₊⊹ 4. Running the Bot
+## ˚. 4. Running the Bot
 
 Akano Bot can be run using npm scripts or directly through CLI flags.
 
@@ -290,7 +290,7 @@ Details:
 - Within a 5-minute window
 - Uses exponential backoff delay
 
-## ₊⊹ 5. Folder Structure
+## ˚. 5. Folder Structure
 
 The following is the folder structure of Akano Bot.
 
@@ -443,7 +443,7 @@ Akano-Bot/
 
 </details>
 
-## ₊⊹ 6. Plugin System
+## ˚. 6. Plugin System
 
 Akano Bot uses a modular plugin system. Each platform has its own plugin loading mechanism.
 
@@ -580,7 +580,7 @@ Loading process:
 9. Error Handling: If an error occurs, it is logged to the owner and the error counter is incremented.
 10. Auto-disable: If a plugin errors 5 or more times, it is automatically disabled.
 
-## ₊⊹ 7. WhatsApp Plugins
+## ˚. 7. WhatsApp Plugins
 
 ### Plugin Structure
 
@@ -769,7 +769,7 @@ module.exports = {
 };
 ~~~
 
-## ₊⊹ 8. Telegram Plugins
+## ˚. 8. Telegram Plugins
 
 ### Command Format
 
@@ -884,7 +884,7 @@ module.exports = {
 };
 ~~~
 
-## ₊⊹ 9. Telegram Inline Mode
+## ˚. 9. Telegram Inline Mode
 
 Telegram inline mode allows users to invoke the bot from any chat by typing:
 
@@ -993,7 +993,7 @@ Photo result:
 }
 ~~~
 
-## ₊⊹ 10. Discord Plugins
+## ˚. 10. Discord Plugins
 
 ### Slash Command
 
@@ -1186,7 +1186,7 @@ module.exports = {
 };
 ~~~
 
-## ₊⊹ 11. Handlers
+## ˚. 11. Handlers
 
 ### WhatsApp Handler
 
@@ -1269,7 +1269,7 @@ Handler behavior:
 - Button handling: delegates to `handleButton()` on the play command
 - Error handling: logs error and auto-disables after 5 errors
 
-## ₊⊹ 12. How to Add a Plugin
+## ˚. 12. How to Add a Plugin
 
 ### WhatsApp
 
@@ -1340,7 +1340,7 @@ module.exports = {
 };
 ~~~
 
-## ₊⊹ 13. Cookies
+## ˚. 13. Cookies
 
 ### Required Cookies
 
@@ -1398,7 +1398,7 @@ const cookiePath = path.join(__dirname, "../../../../cookies.txt");
 - Cookies usually expire after around 30 days.
 - Update cookies if downloads fail with errors such as "login required".
 
-## ₊⊹ 14. Downloader
+## ˚. 14. Downloader
 
 ### gallery-dl
 
@@ -1460,7 +1460,7 @@ Usage:
 
 The downloader wrapper in `ytdpl.js` can auto-install the binary if it is not found.
 
-## ₊⊹ 15. FAQ
+## ˚. 15. FAQ
 
 ### Q: The bot does not respond?
 
@@ -1522,7 +1522,7 @@ gallery-dl --version
 
 A: Plugins are automatically disabled after 5 errors. Restart the bot to re-enable them, or fix the error in the plugin.
 
-## ₊⊹ 16. Troubleshooting
+## ˚. 16. Troubleshooting
 
 | Error | Cause | Solution |
 |---|---|---|
@@ -1543,6 +1543,6 @@ A: Plugins are automatically disabled after 5 errors. Restart the bot to re-enab
 | rate-overlimit | API rate limit | Does not need to be shown; bot will auto-retry |
 | Header overflow | Corrupt Gemini session | Session is cleared automatically in plugin |
 
-## ₊⊹ 17. Closing
+## ˚. 17. Closing
 
 > Akano Bot is still in Beta. This documentation was created based on the source code of the current version and may change at any time as the project continues to develop.
