@@ -1,6 +1,4 @@
-ᝰ.ᐟ ꤼꥍꤸꥋꤱ ꤳꥈꥁꥏ ꤼꥍꤾꤾꥈ ꤸꥍꥂꥍꥐꤰꤳꥇ ꥆꥇꤳꥉ, ꤰꥋ ꤶꥇꤿꥋ ꤼꥒꤶꥉꤼꥇꥆꤾꥒ ᵎᵎ
-
-# ꒷꒦ Akano Bot ꒷꒦
+ # ᝰ.ᐟ ꤼꥍꤸꥋꤱ ꤳꥈꥁꥏ ꤼꥍꤾꤾꥈ ꤸꥍꥂꥍꥐꤰꤳꥇ ꒷꒦ Akano Bot ꒷꒦ ꥆꥇꤳꥉ, ꤰꥋ ꤶꥇꤿꥋ ꤼꥒꤶꥉꤼꥇꥆꤾꥒ ᵎᵎ
 
 ![Version](https://img.shields.io/badge/Version-1.0.0-808080?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-808080?style=flat)
