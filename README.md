@@ -1,12 +1,12 @@
-# ˚.ᵎᵎ Akano Bot ᝰ.ᐟ
+# Akano Bot
 
-![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=flat)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat)
-![WhatsApp](https://img.shields.io/badge/WhatsApp-Yes-25D366?style=flat)
-![Telegram](https://img.shields.io/badge/Telegram-Yes-26A5E4?style=flat)
-![Discord](https://img.shields.io/badge/Discord-Yes-5865F2?style=flat)
+![Version](https://img.shields.io/badge/Version-1.0.0-808080?style=flat)
+![License](https://img.shields.io/badge/License-MIT-808080?style=flat)
+![WhatsApp](https://img.shields.io/badge/WhatsApp-Yes-808080?style=flat)
+![Telegram](https://img.shields.io/badge/Telegram-Yes-808080?style=flat)
+![Discord](https://img.shields.io/badge/Discord-Yes-808080?style=flat)
 
-˚. ᵎᵎ ──────── ᝰ.ᐟ
+_Multi-platform bot for WhatsApp, Telegram, and Discord_
 Akano Bot is a multi-platform bot project that supports WhatsApp, Telegram, and Discord in a single repository. It is built with a modular plugin system and includes features such as AI chat through Gemini, media downloading from YouTube, TikTok, Instagram, Facebook, X/Twitter, and Pinterest, group management, moderation tools, sticker creation, and various utility commands.
 
 > [!IMPORTANT]
@@ -14,33 +14,33 @@ Akano Bot is a multi-platform bot project that supports WhatsApp, Telegram, and 
 
 Supported platforms:
 
-> ˚. <sub> WhatsApp using Baileys. </sub>
-> ˚. <sub> Telegram using Telegraf. </sub>
-> ˚. <sub> Discord using discord.js. </sub>
+> <sub> WhatsApp using Baileys. </sub>
+> <sub> Telegram using Telegraf. </sub>
+> <sub> Discord using discord.js. </sub>
 
-## ˚. Table of Contents
+## Table of Contents
 
-1. [About Akano Bot](#-1-about-akano-bot)
-2. [Libraries Used](#-2-libraries-used)
-3. [Installation](#-3-installation)
-4. [Running the Bot](#-4-running-the-bot)
-5. [Folder Structure](#-5-folder-structure)
-6. [Plugin System](#-6-plugin-system)
-7. [WhatsApp Plugins](#-7-whatsapp-plugins)
-8. [Telegram Plugins](#-8-telegram-plugins)
-9. [Telegram Inline Mode](#-9-telegram-inline-mode)
-10. [Discord Plugins](#-10-discord-plugins)
-11. [Handlers](#-11-handlers)
-12. [How to Add a Plugin](#-12-how-to-add-a-plugin)
-13. [Cookies](#-13-cookies)
-14. [Downloader](#-14-downloader)
-15. [FAQ](#-15-faq)
-16. [Troubleshooting](#-16-troubleshooting)
-17. [Closing](#-17-closing)
+1. [About Akano Bot](#1-about-akano-bot)
+2. [Libraries Used](#2-libraries-used)
+3. [Installation](#3-installation)
+4. [Running the Bot](#4-running-the-bot)
+5. [Folder Structure](#5-folder-structure)
+6. [Plugin System](#6-plugin-system)
+7. [WhatsApp Plugins](#7-whatsapp-plugins)
+8. [Telegram Plugins](#8-telegram-plugins)
+9. [Telegram Inline Mode](#9-telegram-inline-mode)
+10. [Discord Plugins](#10-discord-plugins)
+11. [Handlers](#11-handlers)
+12. [How to Add a Plugin](#12-how-to-add-a-plugin)
+13. [Cookies](#13-cookies)
+14. [Downloader](#14-downloader)
+15. [FAQ](#15-faq)
+16. [Troubleshooting](#16-troubleshooting)
+17. [Closing](#17-closing)
 
 ---
 
-## ˚. 1. About Akano Bot
+## 1. About Akano Bot
 
 Akano Bot is a multi-platform bot designed to run on several chat services from one codebase. The project uses a modular architecture, allowing features to be added, modified, or disabled without directly changing the core system.
 
@@ -63,7 +63,7 @@ Main features:
 
 ---
 
-## ˚. 2. Libraries Used
+## 2. Libraries Used
 
 <details>
 <summary><b>Show content</b></summary>
@@ -106,7 +106,7 @@ The following libraries are used by Akano Bot based on `package.json`.
 
 ---
 
-## ˚. 3. Installation
+## 3. Installation
 
 ### Clone the Repository
 
@@ -220,7 +220,7 @@ Example:
 
 ---
 
-## ˚. 4. Running the Bot
+## 4. Running the Bot
 
 Akano Bot can be run using npm scripts or directly through CLI flags.
 
@@ -312,7 +312,7 @@ Details:
 
 ---
 
-## ˚. 5. Folder Structure
+## 5. Folder Structure
 
 The following is the folder structure of Akano Bot.
 
@@ -467,7 +467,7 @@ Akano-Bot/
 
 ---
 
-## ˚. 6. Plugin System
+## 6. Plugin System
 
 Akano Bot uses a modular plugin system. Each platform has its own plugin loading mechanism.
 
@@ -606,7 +606,7 @@ Loading process:
 
 ---
 
-## ˚. 7. WhatsApp Plugins
+## 7. WhatsApp Plugins
 
 <details>
 <summary><b>Show content</b></summary>
@@ -803,7 +803,7 @@ module.exports = {
 
 ---
 
-## ˚. 8. Telegram Plugins
+## 8. Telegram Plugins
 
 <details>
 <summary><b>Show content</b></summary>
@@ -926,7 +926,7 @@ module.exports = {
 
 ---
 
-## ˚. 9. Telegram Inline Mode
+## 9. Telegram Inline Mode
 
 <details>
 <summary><b>Show content</b></summary>
@@ -1043,7 +1043,7 @@ Photo result:
 
 ---
 
-## ˚. 10. Discord Plugins
+## 10. Discord Plugins
 
 <details>
 <summary><b>Show content</b></summary>
@@ -1244,7 +1244,7 @@ module.exports = {
 
 ---
 
-## ˚. 11. Handlers
+## 11. Handlers
 
 ### WhatsApp Handler
 
@@ -1329,7 +1329,7 @@ Handler behavior:
 
 ---
 
-## ˚. 12. How to Add a Plugin
+## 12. How to Add a Plugin
 
 ### WhatsApp
 
@@ -1402,7 +1402,7 @@ module.exports = {
 
 ---
 
-## ˚. 13. Cookies
+## 13. Cookies
 
 ### Required Cookies
 
@@ -1462,7 +1462,7 @@ const cookiePath = path.join(__dirname, "../../../../cookies.txt");
 
 ---
 
-## ˚. 14. Downloader
+## 14. Downloader
 
 ### gallery-dl
 
@@ -1526,7 +1526,7 @@ The downloader wrapper in `ytdpl.js` can auto-install the binary if it is not fo
 
 ---
 
-## ˚. 15. FAQ
+## 15. FAQ
 
 ### Q: The bot does not respond?
 
@@ -1590,7 +1590,7 @@ A: Plugins are automatically disabled after 5 errors. Restart the bot to re-enab
 
 ---
 
-## ˚. 16. Troubleshooting
+## 16. Troubleshooting
 
 | Error | Cause | Solution |
 |---|---|---|
@@ -1613,6 +1613,6 @@ A: Plugins are automatically disabled after 5 errors. Restart the bot to re-enab
 
 ---
 
-## ˚. 17. Closing
+## 17. Closing
 
 > Akano Bot is still in Beta. This documentation was created based on the source code of the current version and may change at any time as the project continues to develop.
