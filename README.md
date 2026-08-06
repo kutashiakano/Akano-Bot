@@ -1,5 +1,3 @@
-![Banner](https://plain-apac-prod-public.komododecks.com/202608/02/PY3qOEeDWhqza9tWWUdO/image.jpg)
-
 # ˚.ᵎᵎ Akano Bot ᝰ.ᐟ
 
 ˚. ᵎᵎ ──────── ᝰ.ᐟ
