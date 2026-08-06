@@ -1,4 +1,4 @@
-꒷꒦︶꒷꒦ ๋ ࣭ ⭑꒷꒦
+ᝰ.ᐟ ꤼꥍꤸꥋꤱ ꤳꥈꥁꥏ ꤼꥍꤾꤾꥈ ꤸꥍꥂꥍꥐꤰꤳꥇ ꥆꥇꤳꥉ, ꤰꥋ ꤶꥇꤿꥋ ꤼꥒꤶꥉꤼꥇꥆꤾꥒ ᵎᵎ
 
 # ꒷꒦ Akano Bot ꒷꒦
 
@@ -8,17 +8,19 @@
 ![Telegram](https://img.shields.io/badge/Telegram-Yes-808080?style=flat)
 ![Discord](https://img.shields.io/badge/Discord-Yes-808080?style=flat)
 
-⭑ _Multi-platform bot for WhatsApp, Telegram, and Discord_ ⭑
+𐔌՞. .՞𐦯 _Multi-platform bot for WhatsApp, Telegram, and Discord_
 Akano Bot is a multi-platform bot project that supports WhatsApp, Telegram, and Discord in a single repository. It is built with a modular plugin system and includes features such as AI chat through Gemini, media downloading from YouTube, TikTok, Instagram, Facebook, X/Twitter, and Pinterest, group management, moderation tools, sticker creation, and various utility commands.
 
 > [!IMPORTANT]
 > Akano Bot is currently in Beta. Project structure, APIs, plugins, and features may change at any time. If you encounter any bugs, please let me know.
 
-Supported platforms:
+ᓚ₍ ^. .^₎ Supported Platforms
 
-> ⭑ <sub> WhatsApp using Baileys. </sub>
-> ⭑ <sub> Telegram using Telegraf. </sub>
-> ⭑ <sub> Discord using discord.js. </sub>
+> • <sub> WhatsApp using Baileys. </sub>
+> • <sub> Telegram using Telegraf. </sub>
+> • <sub> Discord using discord.js. </sub>
+
+꒷꒦︶꒷꒦︶ ๋ ࣭ ⭑꒷꒦꒷꒦︶꒷꒦︶ ๋ ࣭ ⭑꒷꒦꒷꒦︶꒷꒦︶ ๋ ࣭ ⭑꒷꒦
 
 ## Table of Contents
 
