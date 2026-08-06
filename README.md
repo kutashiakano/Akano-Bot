@@ -1,5 +1,11 @@
 # ˚.ᵎᵎ Akano Bot ᝰ.ᐟ
 
+![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=flat)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat)
+![WhatsApp](https://img.shields.io/badge/WhatsApp-Yes-25D366?style=flat)
+![Telegram](https://img.shields.io/badge/Telegram-Yes-26A5E4?style=flat)
+![Discord](https://img.shields.io/badge/Discord-Yes-5865F2?style=flat)
+
 ˚. ᵎᵎ ──────── ᝰ.ᐟ
 Akano Bot is a multi-platform bot project that supports WhatsApp, Telegram, and Discord in a single repository. It is built with a modular plugin system and includes features such as AI chat through Gemini, media downloading from YouTube, TikTok, Instagram, Facebook, X/Twitter, and Pinterest, group management, moderation tools, sticker creation, and various utility commands.
 
@@ -32,26 +38,36 @@ Supported platforms:
 16. [Troubleshooting](#-16-troubleshooting)
 17. [Closing](#-17-closing)
 
+---
+
 ## ˚. 1. About Akano Bot
 
 Akano Bot is a multi-platform bot designed to run on several chat services from one codebase. The project uses a modular architecture, allowing features to be added, modified, or disabled without directly changing the core system.
 
 Main features:
 
-> ˚. <sub> AI chat using Gemini. </sub>
-> ˚. <sub> Media downloader for YouTube, TikTok, Instagram, Facebook, X/Twitter, and Pinterest. </sub>
-> ˚. <sub> Group management. </sub>
-> ˚. <sub> Moderation tools. </sub>
-> ˚. <sub> Sticker maker. </sub>
-> ˚. <sub> Utility commands such as ping, calculator, profile, AFK, and more. </sub>
-> ˚. <sub> Plugin system with hot-reload support. </sub>
-> ˚. <sub> Middleware for cooldown, permission, spam detection, and anti-link. </sub>
-> ˚. <sub> CLI support for running selected platforms only. </sub>
+| Feature | Description |
+|---|---|
+| AI Chat | Gemini-powered conversations |
+| Media Downloader | YouTube, TikTok, Instagram, Facebook, X/Twitter, Pinterest |
+| Group Management | Welcome, anti-link, mute, and more |
+| Moderation Tools | Kick, ban, warn, and mute |
+| Sticker Maker | Create stickers from media |
+| Utility Commands | Ping, calculator, profile, AFK, and more |
+| Plugin System | Hot-reload support |
+| Middleware | Cooldown, permission, spam detection, anti-link |
+| CLI Support | Run selected platforms only |
 
 > [!NOTE]
 > Akano Bot is currently in Beta. Project structure, APIs, plugins, and features may change at any time.
 
+---
+
 ## ˚. 2. Libraries Used
+
+<details>
+<summary><b>Show content</b></summary>
+
 
 The following libraries are used by Akano Bot based on `package.json`.
 
@@ -85,6 +101,10 @@ The following libraries are used by Akano Bot based on `package.json`.
 | `prism-media` (`^1.0.5`) | Media Processing | Media transcoding | Audio processing for voice |
 | `opusscript` (`^0.0.8`) | Opus Codec | Opus audio codec | Audio encoding for Discord voice |
 | `libsodium-wrappers` (`^0.8.4`) | Crypto | Encryption library | Dependency for Discord voice encryption |
+
+</details>
+
+---
 
 ## ˚. 3. Installation
 
@@ -198,6 +218,8 @@ Example:
 .instagram.com	TRUE	/	TRUE	1234567890	sessionid	xxxxx
 ~~~
 
+---
+
 ## ˚. 4. Running the Bot
 
 Akano Bot can be run using npm scripts or directly through CLI flags.
@@ -287,6 +309,8 @@ Details:
 - Maximum of 5 attempts
 - Within a 5-minute window
 - Uses exponential backoff delay
+
+---
 
 ## ˚. 5. Folder Structure
 
@@ -441,6 +465,8 @@ Akano-Bot/
 
 </details>
 
+---
+
 ## ˚. 6. Plugin System
 
 Akano Bot uses a modular plugin system. Each platform has its own plugin loading mechanism.
@@ -578,7 +604,13 @@ Loading process:
 9. Error Handling: If an error occurs, it is logged to the owner and the error counter is incremented.
 10. Auto-disable: If a plugin errors 5 or more times, it is automatically disabled.
 
+---
+
 ## ˚. 7. WhatsApp Plugins
+
+<details>
+<summary><b>Show content</b></summary>
+
 
 ### Plugin Structure
 
@@ -767,7 +799,15 @@ module.exports = {
 };
 ~~~
 
+</details>
+
+---
+
 ## ˚. 8. Telegram Plugins
+
+<details>
+<summary><b>Show content</b></summary>
+
 
 ### Command Format
 
@@ -882,7 +922,15 @@ module.exports = {
 };
 ~~~
 
+</details>
+
+---
+
 ## ˚. 9. Telegram Inline Mode
+
+<details>
+<summary><b>Show content</b></summary>
+
 
 Telegram inline mode allows users to invoke the bot from any chat by typing:
 
@@ -991,7 +1039,15 @@ Photo result:
 }
 ~~~
 
+</details>
+
+---
+
 ## ˚. 10. Discord Plugins
+
+<details>
+<summary><b>Show content</b></summary>
+
 
 ### Slash Command
 
@@ -1184,6 +1240,10 @@ module.exports = {
 };
 ~~~
 
+</details>
+
+---
+
 ## ˚. 11. Handlers
 
 ### WhatsApp Handler
@@ -1267,6 +1327,8 @@ Handler behavior:
 - Button handling: delegates to `handleButton()` on the play command
 - Error handling: logs error and auto-disables after 5 errors
 
+---
+
 ## ˚. 12. How to Add a Plugin
 
 ### WhatsApp
@@ -1338,6 +1400,8 @@ module.exports = {
 };
 ~~~
 
+---
+
 ## ˚. 13. Cookies
 
 ### Required Cookies
@@ -1395,6 +1459,8 @@ const cookiePath = path.join(__dirname, "../../../../cookies.txt");
 
 - Cookies usually expire after around 30 days.
 - Update cookies if downloads fail with errors such as "login required".
+
+---
 
 ## ˚. 14. Downloader
 
@@ -1458,6 +1524,8 @@ Usage:
 
 The downloader wrapper in `ytdpl.js` can auto-install the binary if it is not found.
 
+---
+
 ## ˚. 15. FAQ
 
 ### Q: The bot does not respond?
@@ -1520,6 +1588,8 @@ gallery-dl --version
 
 A: Plugins are automatically disabled after 5 errors. Restart the bot to re-enable them, or fix the error in the plugin.
 
+---
+
 ## ˚. 16. Troubleshooting
 
 | Error | Cause | Solution |
@@ -1540,6 +1610,8 @@ A: Plugins are automatically disabled after 5 errors. Restart the bot to re-enab
 | 403 Forbidden | Invalid cookie | Re-export from browser |
 | rate-overlimit | API rate limit | Does not need to be shown; bot will auto-retry |
 | Header overflow | Corrupt Gemini session | Session is cleared automatically in plugin |
+
+---
 
 ## ˚. 17. Closing
 
