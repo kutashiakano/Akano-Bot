@@ -1,0 +1,12 @@
+node_modules/
+system/bot/whatsapp/sessions/
+system/database/database.json
+system/database/backups/
+system/database/backup/
+system/jadibot/
+system/logerror.txt
+tmp/
+backups/
+cookies.txt
+.telelogs/
+.env
