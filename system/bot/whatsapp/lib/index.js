@@ -23,6 +23,27 @@ const auth = require("./auth");
 const socket = require("./socket");
 const events = require("./events");
 
+async function scanDir(dir) {
+  let entries = await fs.promises.readdir(dir, { withFileTypes: true });
+  let files = await Promise.all(
+    entries.map(async (entry) => {
+      let safeName = path.basename(entry.name);
+      let res = `${dir}${path.sep}${safeName}`;
+      return entry.isDirectory() ? scanDir(res) : res;
+    })
+  );
+  return files.reduce((a, f) => a.concat(f), []);
+}
+
+function isSafeUrl(url) {
+  try {
+    const { hostname } = new URL(url);
+    return !/^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.0\.0\.0|::1)/i.test(hostname);
+  } catch {
+    return false;
+  }
+}
+
 function makeWASocket(existingSock, store, options = {}) {
   let sock = existingSock || options.sock;
   if (!sock) throw new Error("makeWASocket: an existing Baileys socket must be provided");
@@ -49,6 +70,7 @@ function makeWASocket(existingSock, store, options = {}) {
   sock.sizeLimit = async (str, max) => {
     let upperStr = str.toUpperCase();
     if (upperStr.startsWith("HTTP")) {
+      if (!isSafeUrl(str)) return { oversize: true, error: "Blocked URL" };
       try {
         const response = await fetch(str, { method: "HEAD" });
         const fileSize = response.headers.get("content-length");
@@ -77,7 +99,7 @@ function makeWASocket(existingSock, store, options = {}) {
       : /^data:.*?\/.*?;base64,/i.test(PATH)
       ? Buffer.from(PATH.split`,`[1], "base64")
       : /^https?:\/\//.test(PATH)
-      ? await (res = await fetch(PATH)).buffer()
+      ? (isSafeUrl(PATH) ? await (res = await fetch(PATH)).buffer() : (() => { throw new Error("Blocked URL"); })())
       : fs.existsSync(PATH)
       ? fs.readFileSync(PATH)
       : typeof PATH === "string"
@@ -114,6 +136,7 @@ function makeWASocket(existingSock, store, options = {}) {
       if (Buffer.isBuffer(input)) {
         data = input;
       } else if (/^https?:\/\//.test(input)) {
+        if (!isSafeUrl(input)) return null;
         const res = await fetch(input);
         data = await res.buffer();
       } else if (fs.existsSync(input)) {
@@ -374,19 +397,9 @@ class Client extends EventEmitter {
     console.log("Loading plugins...");
     global.plugin = {};
 
-    const scanDir = async (dir) => {
-      let subdirs = await fs.promises.readdir(dir);
-      let files = await Promise.all(
-        subdirs.map(async (subdir) => {
-          let res = path.resolve(dir, subdir);
-          return (await fs.promises.stat(res)).isDirectory() ? scanDir(res) : res;
-        })
-      );
-      return files.reduce((a, f) => a.concat(f), []);
-    };
-
     try {
-      const plugsPath = path.resolve(this.opts.plugsdir || path.join(__dirname, "..", "plugins"));
+      const defaultPlugs = path.join(__dirname, "..", "plugins");
+      const plugsPath = this.opts.plugsdir ? path.resolve(this.opts.plugsdir) : defaultPlugs;
       let files = await scanDir(plugsPath);
       let plugin = {};
 
