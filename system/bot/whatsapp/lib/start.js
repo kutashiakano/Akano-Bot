@@ -1,0 +1,70 @@
+const path = require("path");
+const fs = require("fs");
+const chalk = require("chalk");
+
+module.exports = function startWhatsApp() {
+  const gradient = require("gradient-string");
+  const infoGradient = gradient(["#00F5A0", "#00D9F5"]);
+
+  console.log(infoGradient("[WA] Starting WhatsApp Bot..."));
+
+  try {
+    const baileys = require("baileys");
+    const { Client } = require(".");
+    const sock = global.settings.connection;
+
+    const waSocket = new Client(
+      {
+        plugsdir: path.join(__dirname, "..", "plugins"),
+        online: sock.online,
+        bypass_disappearing: sock.bypass_disappearing,
+        bot: sock.bot,
+        custom_id: global.botname.toLowerCase().replace(/\s+/g, ""),
+        presence: sock.presence,
+        pairing: {
+          state: sock.use_pairing,
+          number: sock.pairing_number,
+          code: sock.code_pairing,
+        },
+        create_session: {
+          type: "local",
+          session: global.settings.sessions,
+        },
+        engines: [baileys],
+        debug: false,
+      },
+      {
+        version: sock.version,
+        browser: sock.browser,
+        shouldIgnoreJid: sock.shouldIgnoreJid,
+      },
+    );
+
+    waSocket.on("connect", () => {
+      console.log(infoGradient("[WA] Connected"));
+    });
+
+    waSocket.on("ready", () => {
+      console.log(infoGradient("[WA] Ready & Listening"));
+    });
+
+    waSocket.on("error", (e) => {
+      const msg = e?.message || String(e);
+      if (
+        msg.includes("Connection Terminated") ||
+        msg.includes("Connection Failure") ||
+        msg.includes("Stream Errored") ||
+        msg.includes("Connection Closed") ||
+        msg.includes("Bad MAC") ||
+        msg.includes("Failed to decrypt")
+      ) {
+        return;
+      }
+      global.logError("WA", e);
+    });
+
+    waSocket.on("presence.update", () => {});
+  } catch (e) {
+    global.logError("WA_INIT", e);
+  }
+};

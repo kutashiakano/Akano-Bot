@@ -1,0 +1,14 @@
+services:
+  akano:
+    image: ghcr.io/kutashiakano/akano-bot:latest
+    container_name: akano-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - MEM_LIMIT_MB=768
+      - DC_DAILY_LIMIT=200
+    volumes:
+      - ./system/database:/app/system/database
+      - ./system/bot/whatsapp/sessions:/app/system/bot/whatsapp/sessions
+    command: ["node", "index.js", "--all"]
