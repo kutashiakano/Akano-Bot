@@ -632,6 +632,13 @@ module.exports = define({
     return queues;
   },
   async handleButton(interaction) {
+    const id = String(interaction.customId || "");
+    if (id === "music_dashboard" || id.startsWith("music_dash_")) {
+      const queue = queues.get(interaction.guildId);
+      const fakeQ = queue || { textChannel: interaction.channel, client: interaction.client, songs: [], currentSong: null, volume: 1, loop: "off", autoplay: false };
+      await onMusicBtn(fakeQ, interaction.guildId, interaction, interaction.message);
+      return;
+    }
     const queue = queues.get(interaction.guildId);
     if (!queue) {
       if (!interaction.replied && !interaction.deferred) {
