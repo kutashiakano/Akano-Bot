@@ -646,10 +646,6 @@ module.exports = define({
       }
       return;
     }
-    const collector = queue.collector;
-    if (collector && collector.message && interaction.message && collector.message.id === interaction.message.id) {
-      return;
-    }
     await onMusicBtn(queue, interaction.guildId, interaction, interaction.message);
   },
   playPanel,

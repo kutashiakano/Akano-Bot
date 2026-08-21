@@ -218,6 +218,7 @@ async function np(queue, guildId) {
   }
 
   queue.collector = message.createMessageComponentCollector({
+    filter: (i) => !String(i.customId || "").startsWith("music_"),
     componentType: 2,
     time: Math.max((song.duration + 120) * 1000, 300000),
   });
