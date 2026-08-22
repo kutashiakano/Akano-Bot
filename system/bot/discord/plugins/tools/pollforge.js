@@ -15,11 +15,11 @@ module.exports = define({
   description: "Poll Forge — scheduled poll with auto close",
   options: [
     { name: "question", type: 3, description: "Poll question", required: true },
-    { name: "duration", type: 3, description: "10m/1h/1d/7d", required: false },
     { name: "option1", type: 3, description: "Option 1", required: true },
     { name: "option2", type: 3, description: "Option 2", required: true },
     { name: "option3", type: 3, description: "Option 3", required: false },
     { name: "option4", type: 3, description: "Option 4", required: false },
+    { name: "duration", type: 3, description: "10m/1h/1d/7d", required: false },
   ],
   run: async (ctx) => {
     const i = ctx.interaction;
