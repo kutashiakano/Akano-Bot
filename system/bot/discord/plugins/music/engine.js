@@ -584,12 +584,18 @@ async function onMusicBtn(q, guildId, btn, message) {
             : "No track playing — use /p or /music to start."
         )
         .setThumbnail(now?.thumbnail || null);
+      const vid = q.currentSong?.id || String(q.currentSong?.url || "").match(/[?&]v=([\w-]{6,})/)?.[1] || "";
+      const isLiked = vid ? !!q.liked?.has(vid) : false;
       const row = new B(q).abuilder().addComponents(
         new B(q).bbuilder().setCustomId("music_dash_search").setLabel("Search").setStyle(B(q).ButtonStyle.Primary),
         new B(q).bbuilder().setCustomId("music_dash_queue").setLabel("Queue").setStyle(B(q).ButtonStyle.Secondary),
+        new B(q).bbuilder().setCustomId("music_dash_like").setLabel(isLiked ? "Unlike" : "Like").setStyle(isLiked ? B(q).ButtonStyle.Success : B(q).ButtonStyle.Secondary)
+      );
+      const row2 = new B(q).abuilder().addComponents(
+        new B(q).bbuilder().setCustomId("music_dash_addpl").setLabel("Add to Playlist").setStyle(B(q).ButtonStyle.Secondary),
         new B(q).bbuilder().setCustomId("music_dash_account").setLabel("Account").setStyle(B(q).ButtonStyle.Secondary)
       );
-      await btn.followUp({ embeds: [embed], components: [row], flags: 64 });
+      await btn.followUp({ embeds: [embed], components: [row, row2], flags: 64 });
     } catch {}
   } else if (btn.customId === "music_like") {
     const song = q.currentSong;
@@ -677,6 +683,42 @@ async function onMusicBtn(q, guildId, btn, message) {
       const acc = require("../tools/account.js");
       await acc.execute(btn).catch(() => {});
     } catch {}
+  } else if (btn.customId === "music_dash_like") {
+    const cur = q.currentSong;
+    if (!cur) return btn.reply({ content: "No song playing.", flags: 64 }).catch(() => {});
+    const vid = cur.id || String(cur.url || "").match(/[?&]v=([\w-]{6,})/)?.[1];
+    if (!vid) return btn.reply({ content: "No video id.", flags: 64 }).catch(() => {});
+    const uid = cur.requesterId || btn.user.id;
+    let session = null;
+    try { if (ys.has(uid)) session = await ys.getSession(uid); } catch {}
+    if (!session) return btn.reply({ content: "Sign in via /account to like.", flags: 64 }).catch(() => {});
+    const likedNow = !q.liked?.has(vid);
+    try {
+      await ytmusic.like(session, vid, likedNow, ys.clientOf(uid));
+      if (!q.liked) q.liked = new Set();
+      if (likedNow) q.liked.add(vid); else q.liked.delete(vid);
+      await btn.reply({ content: likedNow ? "Liked ✓" : "Unliked.", flags: 64 }).catch(() => {});
+    } catch (e) {
+      await btn.reply({ content: "Like failed: " + (e.message || e), flags: 64 }).catch(() => {});
+    }
+  } else if (btn.customId === "music_dash_addpl") {
+    const cur = q.currentSong;
+    if (!cur) return btn.reply({ content: "No song playing.", flags: 64 }).catch(() => {});
+    const vid = cur.id || String(cur.url || "").match(/[?&]v=([\w-]{6,})/)?.[1];
+    if (!vid) return btn.reply({ content: "No video id.", flags: 64 }).catch(() => {});
+    const plists = await ys.plists(btn.user.id, 25).catch(() => []);
+    if (!plists.length) return btn.reply({ content: "No playlists — create one via /music → My Playlists → Create.", flags: 64 }).catch(() => {});
+    const row = new (btn.client.abuilder)().addComponents(
+      new (btn.client.mbuilder)().setCustomId("music_dash_addpl_pick:" + vid).setPlaceholder("Pick playlist to add").addOptions(plists.slice(0, 25).map((p) => ({ label: p.title.slice(0, 80), value: p.id })))
+    );
+    const embed = new (btn.client.ebuilder)().setColor("#5865F2").setTitle("Add to Playlist").setDescription(`**${cur.title}**\nPick a playlist:`);
+    await btn.reply({ embeds: [embed], components: [row], flags: 64 }).catch(() => {});
+  } else if (String(btn.customId || "").startsWith("music_dash_addpl_pick:")) {
+    const vid = btn.customId.split(":")[1];
+    const pid = btn.values?.[0];
+    if (!pid) return;
+    const ok = await ys.addPl(btn.user.id, pid, vid).catch(() => false);
+    await btn.update({ content: ok ? "Added to playlist!" : "Failed to add.", embeds: [], components: [] }).catch(() => {});
   }
 }
 

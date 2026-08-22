@@ -137,35 +137,55 @@ async function handlePlaylists(interaction) {
     return;
   }
   const plists = await ys.plists(uid, 25).catch(() => []);
-  if (!plists.length) {
-    await interaction.reply({ content: "No playlists found.", flags: 64 }).catch(() => {});
-    return;
-  }
   const row = new (interaction.client.abuilder)().addComponents(
     new (interaction.client.mbuilder)()
       .setCustomId("music_pl_pick")
       .setPlaceholder("Choose a playlist")
-      .addOptions(plists.slice(0, 25).map((p) => ({ label: p.title.slice(0, 80), value: p.id })))
+      .addOptions((plists.length ? plists : [{ title: "No playlists", id: "none" }]).slice(0, 25).map((p) => ({ label: p.title.slice(0, 80), value: p.id })))
+  );
+  const btnRow = new (interaction.client.abuilder)().addComponents(
+    new (interaction.client.bbuilder)().setCustomId("music_pl_create").setLabel("Create Playlist").setStyle(interaction.client.ButtonStyle.Success)
   );
   const embed = new (interaction.client.ebuilder)()
     .setColor("#5865F2")
     .setTitle("Your Playlists")
-    .setDescription(plists.map((p, i) => `\`${i + 1}.\` ${p.title}`).join("\n").slice(0, 3800));
-  const msg = await interaction.reply({ embeds: [embed], components: [row], flags: 64 }).catch(() => null);
+    .setDescription(
+      plists.length
+        ? plists.map((p, i) => `\`${i + 1}.\` ${p.title}`).join("\n").slice(0, 3800)
+        : "No playlists yet — create one!"
+    );
+  const comps = plists.length ? [row, btnRow] : [btnRow];
+  const msg = await interaction.reply({ embeds: [embed], components: comps, flags: 64 }).catch(() => null);
   if (!msg) return;
   const fetched = await interaction.fetchReply().catch(() => msg);
   const col = fetched.createMessageComponentCollector({
-    filter: (i) => i.customId === "music_pl_pick" && i.user.id === uid,
+    filter: (i) => (i.customId === "music_pl_pick" || i.customId === "music_pl_create") && i.user.id === uid,
     time: 60000,
-    max: 1,
   });
   col.on("collect", async (sel) => {
+    if (sel.customId === "music_pl_create") {
+      const modal = new (sel.client.modal)().setCustomId("music_pl_create_modal").setTitle("Create Playlist");
+      const input = new (sel.client.textInput)().setCustomId("music_pl_name").setLabel("Playlist name").setStyle(sel.client.TextInputStyle.Short).setPlaceholder("My favorites").setRequired(true).setMaxLength(60);
+      modal.addComponents(new (sel.client.abuilder)().addComponents(input));
+      await sel.showModal(modal).catch(() => {});
+      try {
+        const sub = await sel.awaitModalSubmit({ filter: (m) => m.customId === "music_pl_create_modal" && m.user.id === uid, time: 60000 });
+        const name = sub.fields.getTextInputValue("music_pl_name").trim();
+        if (!name) return sub.reply({ content: "Empty name.", flags: 64 }).catch(() => {});
+        await sub.deferReply({ flags: 64 }).catch(() => {});
+        const res = await ys.newPl(uid, name).catch(() => ({ ok: false }));
+        if (res.ok) await sub.editReply({ content: `Playlist **${name}** created!` }).catch(() => {});
+        else await sub.editReply({ content: `⚠️ ${res.message || "Cannot create playlist with TV login — use YouTube app, then /music to see it."}` }).catch(() => {});
+      } catch {}
+      return;
+    }
     const pid = sel.values?.[0];
+    if (!pid || pid === "none") return;
     const tracks = await ys.plist(uid, pid, 25).catch(() => []);
     const tRow = new (sel.client.abuilder)().addComponents(
-      new (sel.client.bbuilder)().setCustomId("music_pl_play:" + pid).setLabel("Play Playlist").setStyle(sel.client.ButtonStyle.Success),
-      new (sel.client.bbuilder)().setCustomId("music_pl_queue:" + pid).setLabel("Add to Queue").setStyle(sel.client.ButtonStyle.Secondary),
-      new (sel.client.bbuilder)().setCustomId("music_pl_view:" + pid).setLabel("View Tracks").setStyle(sel.client.ButtonStyle.Secondary)
+      new (sel.client.bbuilder)().setCustomId("music_pl_play:" + pid).setLabel("Play").setStyle(sel.client.ButtonStyle.Success),
+      new (sel.client.bbuilder)().setCustomId("music_pl_queue:" + pid).setLabel("Queue").setStyle(sel.client.ButtonStyle.Secondary),
+      new (sel.client.bbuilder)().setCustomId("music_pl_addcur:" + pid).setLabel("Add Current").setStyle(sel.client.ButtonStyle.Primary)
     );
     const tEmbed = new (sel.client.ebuilder)()
       .setColor("#5865F2")
@@ -275,7 +295,7 @@ async function execute(interaction) {
   });
 
   const btnCol = fetched.createMessageComponentCollector({
-    filter: (i) => /^music_(pl_|liked_|recs_|search_)/.test(i.customId) && i.user.id === interaction.user.id,
+    filter: (i) => /^music_(pl_|liked_|recs_|search_|dash_)/.test(i.customId) && i.user.id === interaction.user.id,
     time: 120000,
   });
   btnCol.on("collect", async (btn) => {
@@ -287,6 +307,15 @@ async function execute(interaction) {
       const res = await play.playPanel(btn, { playlistId: pid });
       if (res.error) await btn.followUp({ embeds: [res.error], flags: 64 }).catch(() => {});
       else if (res.embed) await btn.followUp({ embeds: [res.embed] }).catch(() => {});
+    } else if (id.startsWith("music_pl_addcur:")) {
+      const pid = id.split(":")[1];
+      const q = queues.get(btn.guildId);
+      const cur = q?.currentSong;
+      if (!cur || !cur.id) return btn.reply({ content: "No song playing to add.", flags: 64 }).catch(() => {});
+      const vid = cur.id || String(cur.url || "").match(/[?&]v=([\w-]{6,})/)?.[1];
+      if (!vid) return btn.reply({ content: "Current track has no video id.", flags: 64 }).catch(() => {});
+      const ok = await ys.addPl(btn.user.id, pid, vid).catch(() => false);
+      await btn.reply({ content: ok ? `Added **${cur.title}** to playlist.` : "Failed to add — try again or check YouTube Music.", flags: 64 }).catch(() => {});
     } else if (id.startsWith("music_pl_queue:")) {
       const pid = id.split(":")[1];
       const tracks = await ys.plist(btn.user.id, pid, 25).catch(() => []);
