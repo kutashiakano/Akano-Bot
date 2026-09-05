@@ -1,0 +1,306 @@
+{
+  "_comment": "Akano-Bot Settings - use ${VAR} for env variables, will be replaced automatically by settings.js",
+  "botname": "Akano",
+  "prefix": [
+    ".",
+    "#",
+    "!",
+    "/"
+  ],
+  "cover": "https://files.catbox.moe/0eklgs.jpg",
+  "footer": "Bot Whatsapp",
+  "dataname": "system/database/database.json",
+  "sessions": "system/bot/whatsapp/sessions",
+  "max_uploud": 50,
+  "dot": "◦",
+  "reactSW": true,
+  "emojis": [
+    "❤️",
+    "💛",
+    "💚",
+    "💙",
+    "💜"
+  ],
+  "message": {
+    "wait": "```Processing. . .```",
+    "errorF": "This feature is currently disabled due to a bug/error!",
+    "error": "Sorry, an error occurred while running this feature. Please try again later!",
+    "admin": "This feature is only for group admins!",
+    "owner": "This feature is only for the bot owner!",
+    "premium": "This feature is only for premium users!",
+    "group": "This feature can only be used in groups!",
+    "private": "This feature can only be used in private chat!",
+    "botadmin": "Please make the bot an admin before using this feature!",
+    "banned": "You have been banned for violating bot rules!",
+    "cooldown": "Please wait a moment before using this command again!",
+    "spam": "Slow down! You are sending commands too fast!",
+    "antilink": "Links are not allowed in this group!",
+    "antivirtex": "Long text / virtex is not allowed in this group!",
+    "replyRequired": "Please reply to a message.",
+    "replyToPurge": "Please reply to the message where you want to start the purge.",
+    "userNotFound": "Please reply to a message or specify @username/user_id.",
+    "cannotTargetAdmin": "You cannot perform moderation actions on administrators.",
+    "slowmodeUsage": "Usage: /slowmode [seconds | off]",
+    "slowmodeDisabled": "Slowmode has been disabled.",
+    "slowmodeEnabled": "Slowmode has been set to {seconds} seconds.",
+    "slowmodeFailed": "Failed to set slowmode",
+    "muteFailed": "Failed to mute",
+    "unmuteFailed": "Failed to unmute",
+    "banFailed": "Failed to ban",
+    "unbanFailed": "Failed to unban",
+    "kickFailed": "Failed to kick",
+    "pinFailed": "Failed to pin message",
+    "unpinFailed": "Failed to unpin",
+    "lockFailed": "Failed to lock",
+    "unlockFailed": "Failed to unlock",
+    "promoteFailed": "Failed to promote",
+    "demoteFailed": "Failed to demote",
+    "reportFailed": "Failed to report message.",
+    "adminsFailed": "Failed to fetch administrators list.",
+    "notInGroup": "This command can only be used in groups.",
+    "adminOnly": "This command is only for group administrators.",
+    "welcomeSet": "Success: Custom welcome message set successfully.",
+    "goodbyeSet": "Success: Custom goodbye message set successfully.",
+    "verifySet": "Success: Custom verification message set successfully.",
+    "welcomeNeedText": "Please provide a welcome message. Example: /setwelcome Welcome %member% to %subject%!",
+    "goodbyeNeedText": "Please provide a goodbye message. Example: /setgoodbye Goodbye %member%!",
+    "verifyNeedText": "Please provide a verification message. Example: /setverify Welcome %member%! Please press the Verify button to start chatting.",
+    "invalidMode": "Usage: /{command} [on | off]",
+    "muteSuccess": "[Muted] {name} has been muted.",
+    "unmuteSuccess": "[Unmuted] {name} has been unmuted.",
+    "banSuccess": "[Banned] {name} has been banned.",
+    "unbanSuccess": "[Unbanned] {name} has been unbanned.",
+    "kickSuccess": "[Kicked] {name} has been kicked.",
+    "warnMax": "[Banned] User {name} reached 3 warnings and was banned from the group.",
+    "warnAdd": "[Warning] User {name} has been warned. Total warnings: {count}/3.",
+    "unwarnSuccess": "[Warning] Removed 1 warning from {name}. Total: {count}/3.",
+    "noWarnings": "User {name} has no active warnings.",
+    "warningsCount": "User {name} has {count}/3 warnings.",
+    "imageNeed": "Send/forward an image or provide an image URL",
+    "imageTooLarge": "Image too large for Telegram (even after compress). Try a smaller image or URL.",
+    "ruleNeedText": "Please provide rules text.",
+    "lockMessages": "Chat has been locked. Only admins can send messages.",
+    "lockMedia": "Media sending has been locked.",
+    "unlockMessages": "Chat has been unlocked. Everyone can send messages.",
+    "unlockMedia": "Media sending has been unlocked.",
+    "promoteNeedUser": "Please reply to a message or mention the user to promote.",
+    "demoteNeedUser": "Please reply to a message or mention the user to demote.",
+    "promoteSuccess": "[Promoted] {name} has been promoted to Administrator.",
+    "demoteSuccess": "{name} has been demoted.",
+    "reportNeedReply": "Please reply to the message you want to report.",
+    "pinNeedReply": "Please reply to the message you want to pin.",
+    "unpinSuccess": "Pinned message has been unpinned.",
+    "pinSuccess": "Message pinned successfully.",
+    "downloaderError": "Error: {error}",
+    "noStats": "No statistics available for this group yet.",
+    "unknownCommand": "Unknown command.",
+    "unknownImageCommand": "Unknown image command.",
+    "needQuestion": "Please provide a question.\nExample: /gemini what is quantum computing?",
+    "geminiUnavailable": "Gemini is currently unavailable. Please try again later.",
+    "needUrl": "Please provide a valid URL",
+    "needLyrics": "Usage: /lyrics <song title>\nExample: /lyrics never gonna give you up",
+    "noLyrics": "No lyrics found for *{query}*.",
+    "lyricsFailed": "Could not fetch lyrics. Please try again.",
+    "newSession": "New session started.",
+    "delSession": "Session deleted.",
+    "cooldownWait": "Please wait {seconds}s before using this command again.",
+    "downloaderInlineError": "Error: {error}",
+    "welcomePrivate": "Use in groups only.",
+    "welcomeAdminOnly": "Admin only."
+  },
+  "whatsapp": {
+    "group": {
+      "antilink": false,
+      "antivirtex": false,
+      "antidelete": false,
+      "welcome": true,
+      "left": true,
+      "promote": true,
+      "demote": true,
+      "welcomeThumbnail": "https://files.catbox.moe/0eklgs.jpg",
+      "goodbyeThumbnail": "https://files.catbox.moe/0eklgs.jpg",
+      "welcomeMessage": "Welcome @user to @group!\nDon't forget to read the rules!",
+      "goodbyeMessage": "Goodbye @user!\nWe'll miss you!",
+      "promoteMessage": "@user is now an admin!",
+      "demoteMessage": "@user is no longer an admin."
+    },
+    "automation": {
+      "autoRead": true,
+      "autoTyping": true,
+      "autoOnline": true,
+      "autoBackup": true,
+      "autoClearSession": true,
+      "sessionClearInterval": 3600000
+    },
+    "verification": {
+      "enabled": true,
+      "captchaLength": 6,
+      "expiresIn": 300000,
+      "maxAttempts": 3
+    },
+    "afk": {
+      "enabled": true,
+      "message": "I'm currently AFK",
+      "reasonMessage": "Reason",
+      "activeMessage": "Active after AFK for {duration}"
+    },
+    "connection": {
+      "code_pairing": "AKANOBOT",
+      "use_pairing": true,
+      "pairing_number": "${PAIRING_NUMBER:-YOUR_PHONE_NUMBER}",
+      "online": true,
+      "presence": true,
+      "bypass_disappearing": true,
+      "browser": [
+        "Ubuntu",
+        "Firefox",
+        "20.0.00"
+      ]
+    },
+    "subbot": {
+      "sessionbot": "system/jadibot",
+      "AutoConnect": true
+    },
+    "opts": {
+      "autoRead": false,
+      "selfMode": false,
+      "dmOnly": false,
+      "groupOnly": false,
+      "statusOnly": false,
+      "queque": false,
+      "pending": false,
+      "multiprefix": true,
+      "noprefix": false
+    }
+  },
+  "system": {
+    "cooldown": 5000,
+    "spam": {
+      "resetTimer": 5000,
+      "holdThreshold": 5,
+      "permanentThreshold": 10,
+      "bannedThreshold": 15,
+      "notifyThreshold": 3
+    },
+    "backup": {
+      "enabled": true,
+      "intervalMs": 3600000,
+      "maxBackups": 7
+    }
+  },
+  "security": {
+    "self": false,
+    "groupmode": false,
+    "ownerOnly": false,
+    "premiumOnly": false,
+    "bannedMessage": true,
+    "cooldownMessage": true,
+    "spamMessage": true
+  },
+  "notification": {
+    "ownerAlert": true,
+    "errorAlert": true,
+    "spamAlert": true,
+    "joinAlert": true,
+    "leaveAlert": true,
+    "deleteAlert": true,
+    "mentionAlert": false
+  },
+  "limit": {
+    "enabled": true,
+    "freeUser": 15,
+    "premiumUser": 100,
+    "ownerUser": -1,
+    "resetTime": 86400000,
+    "warningMessage": "Your limit has been reached. Please wait until reset."
+  },
+  "game": {
+    "enabled": true,
+    "rpg": true,
+    "tournament": false,
+    "leaderboard": true,
+    "dailyReward": true,
+    "dailyAmount": 500
+  },
+  "media": {
+    "sticker": {
+      "packname": "Akano",
+      "author": "Canzy"
+    },
+    "thumbnail": "https://files.catbox.moe/0eklgs.jpg",
+    "watermark": false,
+    "watermarkText": "Akano Bot"
+  },
+  "database": {
+    "type": "json",
+    "autoSave": true,
+    "saveInterval": 300000,
+    "path": "system/database/database.json",
+    "backupPath": "system/database/backups"
+  },
+  "log": {
+    "level": "info",
+    "error": true,
+    "warn": true,
+    "info": true,
+    "debug": false,
+    "chatLog": true,
+    "commandLog": true
+  },
+  "telegram": {
+    "token": "${TELEGRAM_TOKEN}",
+    "owner": "${TELEGRAM_OWNER_ID}",
+    "enabled": true,
+    "prefix": "/",
+    "webHook": false,
+    "webHookUrl": "https://your-domain.com/webhook",
+    "inlineMode": true,
+    "greeting": "Hello! I am your Telegram Bot\nUse /help to see available commands.",
+    "autoTyping": true,
+    "groupManager": {
+      "welcomeMessage": true,
+      "goodbyeMessage": true,
+      "autoGreeting": true,
+      "verification": true,
+      "moderation": true,
+      "useCanvas": true,
+      "welcomeText": "hello @user welcome to @subject\nplease read @desc",
+      "goodbyeText": "@user left @subject",
+      "welcomeTitle": "WELCOME",
+      "welcomeCaption": "New member in @subject",
+      "verifyText": "Welcome @user, click Verify to chat!",
+      "verifyNotification": true
+    }
+  },
+  "discord": {
+    "token": "${DISCORD_TOKEN}",
+    "owner": "${DISCORD_OWNER_ID}",
+    "dailyLimit": "${DC_DAILY_LIMIT:-200}",
+    "presence": {
+      "name": "customstatus",
+      "type": "Custom",
+      "state": "Bot Active",
+      "status": "online"
+    }
+  },
+  "website": {
+    "enabled": true,
+    "mode": "online",
+    "host": "0.0.0.0",
+    "port": 3001,
+    "domain": "https://your-domain.sslip.io",
+    "title": "Akano Dashboard",
+    "caption": "Akano Multi-Platform Bot",
+    "description": "Unified Real-Time Control Center & Chat Hub",
+    "thumb": "https://files.catbox.moe/0eklgs.jpg",
+    "theme": "dark",
+    "public": true,
+    "tunnel": {
+      "enabled": true,
+      "provider": "cloudflared",
+      "token": "${CLOUDFLARE_TUNNEL_TOKEN:-}",
+      "domain": ""
+    }
+  },
+  "fla": "https://www.flamingtext.com/net-fu/proxy_form.cgi?&imageoutput=true&script=sketch-name&doScale=true&scaleWidth=800&scaleHeight=500&fontsize=100&fillTextType=1&fillTextPattern=Warning!&fillColor1Color=%23b5b5b5&fillColor2Color=%23b5b5b5&fillColor3Color=%23b5b5b5&fillColor4Color=%23b5b5b5&fillColor5Color=%23b5b5b5&fillColor6Color=%23b5b5b5&fillColor7Color=%23b5b5b5&fillColor8Color=%23b5b5b5&fillColor9Color=%23b5b5b5&fillColor10Color=%23b5b5b5&fillOutlineColor=%23888888&fillOutline2Color=%23888888&backgroundColor=%23101820&text="
+}
