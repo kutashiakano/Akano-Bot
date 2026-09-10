@@ -775,6 +775,12 @@ async function pageChat() {
   state.mediaRecorder = null;
   state.recordingTimer = null;
   bindChatEvents();
+  if (window.innerWidth <= 768 && !state.activeChat) {
+    const listPane = document.getElementById("chatListPane");
+    const winPane = document.getElementById("chatWinPane");
+    if (winPane) winPane.classList.add("hidden-mobile");
+    if (listPane) listPane.classList.remove("hidden-mobile");
+  }
   await loadChatList();
 }
 
@@ -918,6 +924,9 @@ function bindChatEvents() {
       if (listPane) listPane.classList.remove("hidden-mobile");
       if (winPane) winPane.classList.add("hidden-mobile");
       backBtn.style.display = "none";
+      state.activeChat = null;
+      state.activeChatPlatform = null;
+      renderChatListItems();
     };
   }
   const sInput = document.getElementById("chatSearchInput");
@@ -1354,17 +1363,17 @@ async function pageSystem() {
     g.clearRect(0, 0, 120, 120);
     g.beginPath();
     g.arc(60, 60, 50, 0, Math.PI * 2);
-    g.strokeStyle = "#1a1a22";
-    g.lineWidth = 10;
+    g.strokeStyle = "rgba(255, 255, 255, 0.08)";
+    g.lineWidth = 9;
     g.stroke();
     g.beginPath();
     g.arc(60, 60, 50, -Math.PI / 2, -Math.PI / 2 + pct / 100 * Math.PI * 2);
-    g.strokeStyle = pct > 85 ? "#EF4444" : pct > 65 ? "#F97316" : "#22C55E";
-    g.lineWidth = 10;
+    g.strokeStyle = pct > 85 ? "#f43f5e" : pct > 65 ? "#f59e0b" : "#10b981";
+    g.lineWidth = 9;
     g.lineCap = "round";
     g.stroke();
-    g.fillStyle = "#F2F2F3";
-    g.font = "bold 22px 'Plus Jakarta Sans'";
+    g.fillStyle = "#f8fafc";
+    g.font = "bold 20px 'Plus Jakarta Sans', sans-serif";
     g.textAlign = "center";
     g.textBaseline = "middle";
     g.fillText(pct + "%", 60, 60);
