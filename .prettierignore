@@ -1,0 +1,7 @@
+node_modules
+.git
+system/bot/whatsapp/sessions
+tmp
+system/database
+*.db
+package-lock.json
