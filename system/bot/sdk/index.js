@@ -39,13 +39,20 @@ function define(m = {}) {
     limit: m.limit ?? false,
     cooldown: m.cooldown ?? 0
   };
-  const options = (m.options || []).map(o => ({
-    name: o.name,
-    type: o.type || 3,
-    description: o.desc || o.description || o.name,
-    required: !!o.required,
-    choices: o.choices || undefined
-  }));
+  const mapOpt = o => {
+    const r = {
+      name: o.name,
+      type: o.type || 3,
+      description: o.desc || o.description || o.name,
+      required: !!o.required
+    };
+    if (o.choices) r.choices = o.choices;
+    if (o.min_value !== undefined) r.min_value = o.min_value;
+    if (o.max_value !== undefined) r.max_value = o.max_value;
+    if (Array.isArray(o.options)) r.options = o.options.map(mapOpt);
+    return r;
+  };
+  const options = (m.options || []).map(mapOpt);
   const usage = () => names[0] + " " + options.map(o => o.required ? `<${o.name}>` : `[${o.name}]`).join(" ");
   const mapNamed = argsArray => {
     const named = {};

@@ -295,6 +295,7 @@
   "discord": {
     "token": "${DISCORD_TOKEN}",
     "owner": "${DISCORD_OWNER_ID}",
+    "clientSecret": "${DISCORD_CLIENT_SECRET}",
     "dailyLimit": "${DC_DAILY_LIMIT:-200}",
     "presence": {
       "name": "customstatus",

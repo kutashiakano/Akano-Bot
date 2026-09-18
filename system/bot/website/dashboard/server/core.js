@@ -98,6 +98,21 @@ async function handler(req, res) {
   const ip = auth.clientIp(req);
   try {
     if (!auth.rateLimited(ip)) {}
+    if (p.indexOf("/api/auth/discord") === 0) {
+      try {
+        const handled = await require("./discord_oauth").route(req, res, url, sendJson);
+        if (handled) return;
+      } catch (e) {
+        return sendJson(res, 500, {
+          ok: false,
+          message: "auth error"
+        });
+      }
+      return sendJson(res, 404, {
+        ok: false,
+        message: "unknown endpoint"
+      });
+    }
     if (p === "/api/login" && req.method === "POST") {
       let body = {};
       try {

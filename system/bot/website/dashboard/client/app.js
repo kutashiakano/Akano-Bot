@@ -233,6 +233,42 @@ if (toggleLoginKey) {
   });
 }
 
+const discordLoginBtn = $("#discordLoginBtn");
+const discordLoginWrap = $("#discordLoginWrap");
+
+if (discordLoginBtn) {
+  discordLoginBtn.addEventListener("click", () => {
+    window.location.href = "/api/auth/discord";
+  });
+}
+
+async function refreshDiscordLogin() {
+  if (!discordLoginWrap || !discordLoginBtn) return;
+  try {
+    const r = await fetch("/api/auth/discord/status", { credentials: "same-origin" });
+    const j = await r.json().catch(() => ({}));
+    discordLoginWrap.classList.toggle("hidden", !(j && j.configured));
+  } catch {
+    discordLoginWrap.classList.add("hidden");
+  }
+  try {
+    const q = new URLSearchParams(window.location.search);
+    const err = q.get("oauth");
+    if (err && err !== "ok") {
+      const errEl = $("#loginError");
+      const msgs = { denied: "Discord login was cancelled.", invalid: "Invalid login session, try again.", unconfigured: "Discord login is not configured.", exchange: "Could not verify with Discord, try again.", profile: "Could not read Discord profile, try again.", error: "Login error, try again." };
+      if (errEl) {
+        errEl.textContent = msgs[err] || "Discord login failed.";
+        errEl.classList.remove("hidden");
+      }
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+    if (err === "ok") window.history.replaceState({}, "", window.location.pathname);
+  } catch {}
+}
+
+refreshDiscordLogin();
+
 $("#loginForm").addEventListener("submit", async e => {
   e.preventDefault();
   const errEl = $("#loginError");
