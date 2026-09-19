@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const { AttachmentBuilder: AttachmentBuilder } = require("discord.js");
 const database = require("../../../../database");
 
 const SHIELD_PNG = path.join(__dirname, "..", "..", "..", "website", "dashboard", "client", "icons", "shield.png");

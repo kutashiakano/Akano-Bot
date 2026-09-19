@@ -227,6 +227,7 @@ function define(m = {}) {
       return run(pctx);
     }
   };
+  if (m.defaultMemberPermissions !== undefined) phase["default_member_permissions"] = m.defaultMemberPermissions;
   return phase;
 }
 

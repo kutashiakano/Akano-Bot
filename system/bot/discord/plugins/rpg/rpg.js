@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const { AttachmentBuilder: AttachmentBuilder } = require("discord.js");
 const database = require("../../../../database");
 const { define: define } = require("../../../sdk");
 const regPlugin = require("../tools/register");
@@ -31,13 +30,16 @@ function art(name, embed) {
   }
   return [];
 }
-const cd = new Map;
-function remain(id, cmd, ms) {
-  const k = id + ":" + cmd;
-  const left = (cd.get(k) || 0) + ms - Date.now();
+function cdLeft(u, key, ms) {
+  if (!u.rpg.cd || typeof u.rpg.cd !== "object") u.rpg.cd = {};
+  const left = (u.rpg.cd[key] || 0) + ms - Date.now();
   if (left > 0) return left;
-  cd.set(k, Date.now());
+  u.rpg.cd[key] = Date.now();
   return 0;
+}
+function duelStake(a, b) {
+  const poor = Math.min(a.money || 0, b.money || 0);
+  return Math.max(10, Math.min(100, Math.floor(poor * 0.2)));
 }
 function fmtTime(ms) {
   const s = Math.ceil(ms / 1000);
@@ -83,6 +85,10 @@ function getU(db, id, name) {
   if (typeof r.bosses !== "number") r.bosses = 0;
   if (typeof r.cratesOpened !== "number") r.cratesOpened = 0;
   if (typeof r.robs !== "number") r.robs = 0;
+  if (!r.cd || typeof r.cd !== "object") r.cd = {};
+  if (typeof r.robShieldUntil !== "number") r.robShieldUntil = 0;
+  if (!Array.isArray(r.robFails)) r.robFails = [];
+  if (!r.giftSent || typeof r.giftSent !== "object") r.giftSent = { day: "", total: 0 };
   if (!r.pet || typeof r.pet !== "object") r.pet = null;
   if (typeof r.hp !== "number" || isNaN(r.hp)) r.hp = maxHpOf(levelOf(r.xp)) + ((r.pet && r.pet.hp) || 0);
   r.hp = Math.max(0, Math.min(maxHpOf(levelOf(r.xp)) + ((r.pet && r.pet.hp) || 0), r.hp));
@@ -254,7 +260,8 @@ const ACT = {
     await database.write(db).catch(() => {});
     return { embed: e, art: "profile" };
   },
-  async daily(EB, id, name) {
+  async daily(EB, id, name, createdTs) {
+    if (createdTs && Date.now() - createdTs < 86400000) return { text: "Your Discord account must be at least 24 hours old to claim daily rewards." };
     const db = database.get();
     const me = getU(db, id, name);
     if (Date.now() - (me.rpg.lastDaily || 0) < 86400000) return { text: "Daily reward already claimed. Come back in " + fmtTime(me.rpg.lastDaily + 86400000 - Date.now()) + "." };
@@ -278,9 +285,9 @@ const ACT = {
     return { embed: new EB().setColor("#57F287").setTitle("Weekly Reward").setDescription("Received 2000 money, 200 XP, and 2 potions." + levelLine(g) + " HP fully restored. Balance: " + me.money + "."), art: "daily" };
   },
   async work(EB, id, name) {
-    if (remain(id, "work", 300000) > 0) return { text: "You are tired. Rest before the next shift." };
     const db = database.get();
     const me = getU(db, id, name);
+    if (cdLeft(me, "work", 300000) > 0) return { text: "You are tired. Rest before the next shift." };
     const job = JOBS[Math.floor(Math.random() * JOBS.length)];
     const pay = 80 + Math.floor(Math.random() * 71);
     me.money += pay;
@@ -289,11 +296,14 @@ const ACT = {
     return { embed: new EB().setColor("#57F287").setTitle("Work Complete").setDescription("You " + job + " and earned " + pay + " money and 10 XP." + levelLine(g)), art: "work" };
   },
   async beg(EB, id, name) {
-    if (remain(id, "beg", 60000) > 0) return { text: "Nobody left to beg from. Try again soon." };
-    const line = BEGS[Math.floor(Math.random() * BEGS.length)];
-    if (Math.random() < 0.15) return { text: line + " Nobody gave you anything this time." };
     const db = database.get();
     const me = getU(db, id, name);
+    if (cdLeft(me, "beg", 60000) > 0) return { text: "Nobody left to beg from. Try again soon." };
+    const line = BEGS[Math.floor(Math.random() * BEGS.length)];
+    if (Math.random() < 0.15) {
+      await database.write(db).catch(() => {});
+      return { text: line + " Nobody gave you anything this time." };
+    }
     const coins = 5 + Math.floor(Math.random() * 46);
     me.money += coins;
     gainXp(me, 5);
@@ -304,7 +314,7 @@ const ACT = {
     const db = database.get();
     const me = getU(db, id, name);
     if (fainted(me)) return { faint: true, embed: new EB().setColor("#ED4245").setTitle("Fainted").setDescription("You have fainted. Drink a potion to recover."), art: "heal" };
-    if (remain(id, "hunt", 60000) > 0) return { text: "The wilds are quiet. Hunt again soon." };
+    if (cdLeft(me, "hunt", 60000) > 0) return { text: "The wilds are quiet. Hunt again soon." };
     const mob = MOBS[Math.floor(Math.random() * MOBS.length)];
     if (powerOf(me) >= mob[1] * 8 + Math.random() * 15) {
       const gold = 50 + Math.floor(Math.random() * 151) + mob[1] * 20;
@@ -327,7 +337,7 @@ const ACT = {
     const db = database.get();
     const me = getU(db, id, name);
     if (fainted(me)) return { text: "You have fainted. Recover first." };
-    if (remain(id, "fish", 90000) > 0) return { text: "The fish are not biting. Cast again soon." };
+    if (cdLeft(me, "fish", 90000) > 0) return { text: "The fish are not biting. Cast again soon." };
     const roll = Math.random() * 100;
     let pick = CATCHES[0];
     if (roll > 95) pick = CATCHES[4]; else if (roll > 80) pick = CATCHES[3]; else if (roll > 55) pick = CATCHES[2]; else if (roll > 25) pick = CATCHES[1];
@@ -341,7 +351,7 @@ const ACT = {
     const db = database.get();
     const me = getU(db, id, name);
     if (fainted(me)) return { text: "You have fainted. Recover first." };
-    if (remain(id, "mine", 300000) > 0) return { text: "The cave echoes empty. Dig again soon." };
+    if (cdLeft(me, "mine", 300000) > 0) return { text: "The cave echoes empty. Dig again soon." };
     const roll = Math.random() * 100;
     let pick = ORES[0];
     if (roll > 92) pick = ORES[4]; else if (roll > 75) pick = ORES[3]; else if (roll > 50) pick = ORES[2]; else if (roll > 25) pick = ORES[1];
@@ -356,7 +366,7 @@ const ACT = {
     const me = getU(db, id, name);
     if (fainted(me)) return { faint: true, embed: new EB().setColor("#ED4245").setTitle("Fainted").setDescription("You have fainted. Drink a potion to recover."), art: "heal" };
     if (me.rpg.hp < 30) return { text: "You need at least 30 HP to enter the dungeon. Current HP: " + me.rpg.hp + "." };
-    if (remain(id, "quest", 600000) > 0) return { text: "The dungeon gate is sealed. Return soon." };
+    if (cdLeft(me, "quest", 600000) > 0) return { text: "The dungeon gate is sealed. Return soon." };
     const lvl = levelOf(me.rpg.xp);
     const boss = 40 + lvl * 8 + Math.random() * 25;
     if (powerOf(me) >= boss) {
@@ -422,6 +432,7 @@ module.exports = define({
   description: "Fantasy RPG with button menu: hunt, fish, mine, duel, shop, pets",
   options: [
     { name: "menu", type: 1, description: "Open the button menu, play without typing" },
+    { name: "help", type: 1, description: "How to play (only you see this)" },
     { name: "profile", type: 1, description: "Show character sheet", options: [{ name: "user", type: 6, description: "Character to view", required: false }] },
     { name: "daily", type: 1, description: "Claim daily reward and fully recover" },
     { name: "weekly", type: 1, description: "Claim the grand weekly reward" },
@@ -431,7 +442,7 @@ module.exports = define({
     { name: "fish", type: 1, description: "Fish the misty lake, maybe hook a Golden Fish" },
     { name: "mine", type: 1, description: "Dig the caves for ores and rubies" },
     { name: "quest", type: 1, description: "Face the dungeon boss for grand loot" },
-    { name: "duel", type: 1, description: "Challenge a player to a duel (100 stake, they accept via button)", options: [{ name: "user", type: 6, description: "Opponent", required: true }] },
+    { name: "duel", type: 1, description: "Challenge a player to a duel (dynamic stake, they accept via button)", options: [{ name: "user", type: 6, description: "Opponent", required: true }] },
     { name: "rob", type: 1, description: "Rob another player, high risk", options: [{ name: "user", type: 6, description: "Target", required: true }] },
     { name: "gift", type: 1, description: "Give money to another player", options: [{ name: "user", type: 6, description: "Recipient", required: true }, { name: "amount", type: 4, description: "Amount (min 10)", required: true, min_value: 10 }] },
     { name: "gamble", type: 1, description: "Flip a coin for double or nothing", options: [{ name: "bet", type: 4, description: "Money to bet (10-1000)", required: true, min_value: 10, max_value: 1000 }] },
@@ -449,6 +460,21 @@ module.exports = define({
     const interaction = ctx.interaction;
     const client = interaction.client;
     const EB = client.ebuilder;
+    let pre = null;
+    try { pre = interaction.options.getSubcommand(); } catch (e) {}
+    if (pre === "help") {
+      const e = new EB().setColor("#5865F2").setTitle("How To Play").setDescription("Link your account with /register first. Then open /rpg menu and tap buttons, no typing needed. Earn money and XP, buy gear, beat the boss.").addFields(
+        { name: "Start", value: "/rpg menu — button hub\n/rpg profile — character sheet\n/rpg daily + weekly — free rewards", inline: false },
+        { name: "Earn", value: "/rpg work — steady pay\n/rpg beg — quick coins\n/rpg fish — lake loot, Golden Fish jackpot\n/rpg mine — ores up to Ruby", inline: false },
+        { name: "Battle", value: "/rpg hunt — wild monsters\n/rpg quest — dungeon boss (needs 30 HP)\n/rpg duel — challenge a player, dynamic stake\n/rpg rob — steal, high risk", inline: false },
+        { name: "Fun", value: "/rpg gamble — coin flip double or nothing\n/rpg slots — triple pays 5x\n/rpg oracle — yes or no answers\n/rpg fate — picks between two options", inline: false },
+        { name: "Items", value: "/rpg shop — tap buttons to buy\n/rpg buy — bulk amounts\n/rpg open — loot crates\n/rpg heal — drink potion\n/rpg gift — give money to a friend", inline: false },
+        { name: "Ranks", value: "/rpg inventory — gear and pet\n/rpg leaderboard — top 10 hunters", inline: false }
+      );
+      const files = art("profile", e);
+      try { await interaction.reply({ embeds: [e], files: files, flags: 64 }); } catch (e2) {}
+      return;
+    }
     try { await interaction.deferReply(); } catch (e) { return; }
     let sub = "menu";
     try { sub = interaction.options.getSubcommand() || "menu"; } catch (e) {}
@@ -613,7 +639,7 @@ module.exports = define({
       return;
     }
     if (sub === "daily") {
-      await sendRes(await ACT.daily(EB, uid, uname));
+      await sendRes(await ACT.daily(EB, uid, uname, interaction.user.createdTimestamp));
       return;
     }
     if (sub === "weekly") {
@@ -719,12 +745,13 @@ module.exports = define({
         await interaction.editReply({ content: "You have fainted. Drink a potion (/rpg heal) or claim /rpg daily to recover." }).catch(() => {});
         return;
       }
-      if (remain(uid, "duel", 30000) > 0) {
+      if (cdLeft(me, "duel", 30000) > 0) {
         await interaction.editReply({ content: "Catch your breath before the next duel." }).catch(() => {});
         return;
       }
-      if ((me.money || 0) < 100) {
-        await interaction.editReply({ content: "You need 100 money for the stake. Work or claim /rpg daily first." }).catch(() => {});
+      await database.write(db).catch(() => {});
+      if ((me.money || 0) < 50) {
+        await interaction.editReply({ content: "Both duelists need at least 50 money for the stake." }).catch(() => {});
         return;
       }
       const en0 = getU(db, String(foe.id), foe.username);
@@ -732,11 +759,16 @@ module.exports = define({
         await interaction.editReply({ content: foe.username + " has fainted and cannot duel right now." }).catch(() => {});
         return;
       }
-      if ((en0.money || 0) < 100) {
-        await interaction.editReply({ content: foe.username + " does not have 100 money for the stake." }).catch(() => {});
+      if ((en0.money || 0) < 50) {
+        await interaction.editReply({ content: "Both duelists need at least 50 money for the stake." }).catch(() => {});
         return;
       }
-      const e = new EB().setColor("#FEE75C").setTitle("Duel Challenge").setDescription(uname + " challenges " + foe.username + " to a duel. Stake: 100 money. " + foe.username + ", accept within 60 seconds.");
+      if (Math.abs(levelOf(me.rpg.xp) - levelOf(en0.rpg.xp)) > 5) {
+        await interaction.editReply({ content: "Level gap too big for a fair fight." }).catch(() => {});
+        return;
+      }
+      const stake0 = duelStake(me, en0);
+      const e = new EB().setColor("#FEE75C").setTitle("Duel Challenge").setDescription(uname + " challenges " + foe.username + " to a duel. Stake: " + stake0 + " money. " + foe.username + ", accept within 60 seconds.");
       await send(e, "duel", [row(client, [btn(client, "rpg_duel_yes", "Accept", client.ButtonStyle.Success), btn(client, "rpg_duel_no", "Decline", client.ButtonStyle.Danger)])]);
       const msg = await freshMsg();
       if (!msg) return;
@@ -758,8 +790,8 @@ module.exports = define({
           try { col.stop(); } catch (e3) {}
           return;
         }
-        if (fainted(p1) || fainted(p2) || (p1.money || 0) < 100 || (p2.money || 0) < 100) {
-          const e2 = new EB().setColor("#ED4245").setTitle("Duel Cancelled").setDescription("One side can no longer fight (fainted or broke).");
+        if (fainted(p1) || fainted(p2) || (p1.money || 0) < 50 || (p2.money || 0) < 50 || Math.abs(levelOf(p1.rpg.xp) - levelOf(p2.rpg.xp)) > 5) {
+          const e2 = new EB().setColor("#ED4245").setTitle("Duel Cancelled").setDescription("One side can no longer fight (fainted, broke, or level gap too big).");
           try { await i.update({ embeds: [e2], components: [] }); } catch (e3) {}
           try { col.stop(); } catch (e3) {}
           return;
@@ -769,15 +801,16 @@ module.exports = define({
         const iWin = myPow >= foPow;
         const win = iWin ? p1 : p2;
         const lose = iWin ? p2 : p1;
-        win.money += 100;
-        lose.money = Math.max(0, lose.money - 100);
+        const stake = duelStake(p1, p2);
+        win.money += stake;
+        lose.money = Math.max(0, lose.money - stake);
         gainXp(win, 30);
         gainXp(lose, 10);
         win.rpg.wins = (win.rpg.wins || 0) + 1;
         lose.rpg.losses = (lose.rpg.losses || 0) + 1;
         const dmg = hurt(lose, 15 + Math.random() * 11);
         await database.write(d2).catch(() => {});
-        const e2 = new EB().setColor("#FEE75C").setTitle("Duel — " + uname + " vs " + foe.username).setDescription("Winner: " + (iWin ? uname : foe.username) + " takes the 100 stake. Power " + myPow.toFixed(0) + " vs " + foPow.toFixed(0) + ". Loser took " + dmg + " damage." + (fainted(lose) ? " " + (iWin ? foe.username : uname) + " fainted." : ""));
+        const e2 = new EB().setColor("#FEE75C").setTitle("Duel — " + uname + " vs " + foe.username).setDescription("Winner: " + (iWin ? uname : foe.username) + " takes the " + stake + " stake. Power " + myPow.toFixed(0) + " vs " + foPow.toFixed(0) + ". Loser took " + dmg + " damage." + (fainted(lose) ? " " + (iWin ? foe.username : uname) + " fainted." : ""));
         const files = art("duel", e2);
         try { await i.update({ embeds: [e2], files: files, components: [] }); } catch (e3) {}
         try { col.stop(); } catch (e3) {}
@@ -804,13 +837,17 @@ module.exports = define({
         await interaction.editReply({ content: "You have fainted. Recover first." }).catch(() => {});
         return;
       }
-      if (remain(uid, "rob", 300000) > 0) {
+      if (cdLeft(me, "rob", 300000) > 0) {
         await interaction.editReply({ content: "Lay low before your next heist." }).catch(() => {});
         return;
       }
       const victim = getU(db, String(target.id), target.username);
-      if ((victim.money || 0) < 20) {
-        await interaction.editReply({ content: target.username + " has nothing worth stealing." }).catch(() => {});
+      if ((victim.money || 0) < 500) {
+        await interaction.editReply({ content: target.username + " does not carry enough money to rob (needs at least 500)." }).catch(() => {});
+        return;
+      }
+      if ((victim.rpg.robShieldUntil || 0) > Date.now()) {
+        await interaction.editReply({ content: target.username + " is shielded from robbery. Try again in " + fmtTime(victim.rpg.robShieldUntil - Date.now()) + "." }).catch(() => {});
         return;
       }
       if (Math.random() < 0.55) {
@@ -820,13 +857,17 @@ module.exports = define({
         victim.money -= loot;
         me.money += loot;
         me.rpg.robs += 1;
+        victim.rpg.robShieldUntil = Date.now() + 3600000;
         const g = gainXp(me, 20);
         await database.write(db).catch(() => {});
         await send(new EB().setColor("#57F287").setTitle("Heist Successful").setDescription("You stole " + loot + " money from " + target.username + " and gained 20 XP." + levelLine(g)), "rob");
         return;
       }
-      const fine = Math.min(me.money || 0, 50);
+      if (!Array.isArray(me.rpg.robFails)) me.rpg.robFails = [];
+      me.rpg.robFails = me.rpg.robFails.filter(t => Date.now() - t < 86400000);
+      const fine = Math.min(me.money || 0, Math.min(500, 50 + 50 * me.rpg.robFails.length));
       me.money = Math.max(0, (me.money || 0) - fine);
+      me.rpg.robFails.push(Date.now());
       gainXp(me, 5);
       await database.write(db).catch(() => {});
       await send(new EB().setColor("#ED4245").setTitle("Heist Failed").setDescription(target.username + " caught you. You paid a " + fine + " fine and gained 5 XP."), "rob");
@@ -857,11 +898,24 @@ module.exports = define({
         await interaction.editReply({ content: "Not enough money. Balance: " + (me.money || 0) + "." }).catch(() => {});
         return;
       }
+      const day = new Date().toISOString().slice(0, 10);
+      if (!me.rpg.giftSent || me.rpg.giftSent.day !== day) me.rpg.giftSent = { day: day, total: 0 };
+      if (me.rpg.giftSent.total + amount > 3000) {
+        await interaction.editReply({ content: "Daily gift limit reached (3000 money per day)." }).catch(() => {});
+        return;
+      }
+      const createdTs = interaction.user.createdTimestamp || 0;
+      if (createdTs && Date.now() - createdTs < 604800000) {
+        await interaction.editReply({ content: "Your Discord account must be at least 7 days old to send gifts." }).catch(() => {});
+        return;
+      }
+      const net = Math.floor(amount * 0.9);
       const pal = getU(db, String(target.id), target.username);
       me.money -= amount;
-      pal.money += amount;
+      pal.money += net;
+      me.rpg.giftSent.total += amount;
       await database.write(db).catch(() => {});
-      await send(new EB().setColor("#57F287").setTitle("Gift Sent").setDescription(uname + " gave " + amount + " money to " + target.username + ". Balance: " + me.money + "."), "gift");
+      await send(new EB().setColor("#57F287").setTitle("Gift Sent").setDescription(uname + " gave " + amount + " money to " + target.username + " (" + net + " received after 10 percent tax). Balance: " + me.money + "."), "gift");
       return;
     }
     if (sub === "gamble") {
@@ -920,7 +974,7 @@ module.exports = define({
         await interaction.editReply({ content: "Not enough money. Balance: " + (me.money || 0) + "." }).catch(() => {});
         return;
       }
-      if (remain(uid, "slots", 10000) > 0) {
+      if (cdLeft(me, "slots", 10000) > 0) {
         await interaction.editReply({ content: "The machine is cooling down. Spin again soon." }).catch(() => {});
         return;
       }

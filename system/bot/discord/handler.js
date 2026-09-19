@@ -1,16 +1,100 @@
 const { ActionRowBuilder: ActionRowBuilder, ButtonBuilder: ButtonBuilder, ButtonStyle: ButtonStyle, EmbedBuilder: EmbedBuilder, ActivityType: ActivityType } = require("discord.js");
 const database = require("../../database");
 
+const MODULES = {
+  rpg: "rpg",
+  pokemon: "rpg",
+  confess: "confess"
+};
+
+function moduleOf(cmd) {
+  if (!cmd) return "tools";
+  if (MODULES[cmd.name]) return MODULES[cmd.name];
+  const cat = String(cmd.category || (cmd.tags && cmd.tags[0]) || "tools").toLowerCase();
+  if (cat === "music" || cat === "images" || cat === "rpg") return cat;
+  return "tools";
+}
+
+function serverSettings(db, gid, gname) {
+  if (!db.discord || typeof db.discord !== "object") db.discord = {
+    servers: {},
+    users: {}
+  };
+  if (!db.discord.servers) db.discord.servers = {};
+  if (!db.discord.servers[gid]) db.discord.servers[gid] = {
+    id: gid,
+    name: gname || "",
+    createdAt: (new Date).toISOString()
+  };
+  const srv = db.discord.servers[gid];
+  if (!srv.settings || typeof srv.settings !== "object") srv.settings = {};
+  if (!srv.settings.modules || typeof srv.settings.modules !== "object") srv.settings.modules = {};
+  const defs = {
+    rpg: true,
+    confess: true,
+    music: true,
+    images: true,
+    tools: true
+  };
+  for (const k of Object.keys(defs)) if (srv.settings.modules[k] === undefined) srv.settings.modules[k] = defs[k];
+  if (!Array.isArray(srv.settings.disabled)) srv.settings.disabled = [];
+  if (!srv.settings.channels || typeof srv.settings.channels !== "object") srv.settings.channels = {};
+  return srv.settings;
+}
+
+function gateCheck(db, gid, channelId, userId, cmd) {
+  if (!gid) return null;
+  const st = serverSettings(db, gid);
+  const mod = moduleOf(cmd);
+  try {
+    const owners = [].concat(global.settings?.discord?.owner || global.dcOwner || []);
+    if (owners.includes(String(userId))) return null;
+  } catch (e) {}
+  if (st.modules && st.modules[mod] === false) return {
+    message: "The " + mod + " module is turned OFF in this server. Staff can enable it with /config."
+  };
+  const nm = cmd.name;
+  if (Array.isArray(st.disabled) && st.disabled.includes(nm)) return {
+    message: "The /" + nm + " command is disabled in this server."
+  };
+  const allow = st.channels && st.channels[mod];
+  if (Array.isArray(allow) && allow.length && channelId && !allow.includes(String(channelId))) return {
+    message: "Use " + allow.map(x => "<#" + x + ">").join(" ") + " for " + mod + " commands."
+  };
+  return null;
+}
+
+function gateByModule(db, gid, channelId, userId, modName) {
+  if (!gid) return null;
+  const st = serverSettings(db, gid);
+  try {
+    const owners = [].concat(global.settings?.discord?.owner || global.dcOwner || []);
+    if (owners.includes(String(userId))) return null;
+  } catch (e) {}
+  if (st.modules && st.modules[modName] === false) return {
+    message: "The " + modName + " module is turned OFF in this server. Staff can enable it with /config."
+  };
+  const allow = st.channels && st.channels[modName];
+  if (Array.isArray(allow) && allow.length && channelId && !allow.includes(String(channelId))) return {
+    message: "Use " + allow.map(x => "<#" + x + ">").join(" ") + " for " + modName + " commands."
+  };
+  return null;
+}
+
 module.exports = {
   setup(client) {
     client.once("clientReady", async () => {
       try {
         global.discord = client;
-        const commandsData = Object.values(global.discordCommands).filter(cmd => cmd && cmd.name && cmd.execute && Array.isArray(cmd.options)).map(cmd => ({
-          name: cmd.name,
-          description: cmd.description,
-          options: cmd.options || []
-        }));
+        const commandsData = Object.values(global.discordCommands).filter(cmd => cmd && cmd.name && cmd.execute && Array.isArray(cmd.options)).map(cmd => {
+          const d = {
+            name: cmd.name,
+            description: cmd.description,
+            options: cmd.options || []
+          };
+          if (cmd["default_member_permissions"] !== undefined) d["default_member_permissions"] = cmd["default_member_permissions"];
+          return d;
+        });
         if (commandsData.length > 0) {
           await client.application.commands.set(commandsData);
         }
@@ -181,6 +265,14 @@ module.exports = {
             return;
           }
         } catch (e) {}
+        const g = gateCheck(database.get(), interaction.guildId, interaction.channelId, interaction.user && interaction.user.id, command);
+        if (g) {
+          await interaction.reply({
+            content: g.message,
+            flags: 64
+          }).catch(() => {});
+          return;
+        }
         const dcUserId = interaction.user?.id || "";
         const isDC = global.settings?.discord?.owner || global.dcOwner || [];
         const isDCOwner = isDC.includes(dcUserId);
@@ -318,6 +410,25 @@ module.exports = {
       }
       if (interaction.isButton()) {
         const customId = String(interaction.customId || "");
+        if (customId.startsWith("cf_")) {
+          const gb = gateByModule(database.get(), interaction.guildId, interaction.channelId, interaction.user && interaction.user.id, "confess");
+          if (gb) {
+            await interaction.reply({
+              content: gb.message,
+              flags: 64
+            }).catch(() => {});
+            return;
+          }
+          const cfCmd = global.discordCommands["confess"];
+          if (cfCmd && typeof cfCmd.handleComponent === "function") {
+            try {
+              await cfCmd.handleComponent(interaction);
+            } catch (error) {
+              global.logError("discord.confess.button", error);
+            }
+          }
+          return;
+        }
         if (customId.startsWith("lb|")) {
           const libCmd = global.discordCommands["lib"];
           if (libCmd && typeof libCmd.handleComponent === "function") {
@@ -330,7 +441,26 @@ module.exports = {
           return;
         }
         const MUSIC_PREFIXES = [ "music_", "seek_", "volume_", "filter_", "genre_" ];
+        if (customId.startsWith("rpg_")) {
+          const gbR = gateByModule(database.get(), interaction.guildId, interaction.channelId, interaction.user && interaction.user.id, "rpg");
+          if (gbR) {
+            await interaction.reply({
+              content: gbR.message,
+              flags: 64
+            }).catch(() => {});
+            return;
+          }
+          return;
+        }
         if (!MUSIC_PREFIXES.some(p => customId.startsWith(p))) {
+          return;
+        }
+        const gbM = gateByModule(database.get(), interaction.guildId, interaction.channelId, interaction.user && interaction.user.id, "music");
+        if (gbM) {
+          await interaction.reply({
+            content: gbM.message,
+            flags: 64
+          }).catch(() => {});
           return;
         }
         const playCmd = global.discordCommands["p"];
@@ -342,6 +472,28 @@ module.exports = {
           }
         }
         return;
+      }
+      if (interaction.isModalSubmit && interaction.isModalSubmit()) {
+        const customId = String(interaction.customId || "");
+        if (customId.startsWith("cf_")) {
+          const gb = gateByModule(database.get(), interaction.guildId, interaction.channelId, interaction.user && interaction.user.id, "confess");
+          if (gb) {
+            await interaction.reply({
+              content: gb.message,
+              flags: 64
+            }).catch(() => {});
+            return;
+          }
+          const cfCmd = global.discordCommands["confess"];
+          if (cfCmd && typeof cfCmd.handleModal === "function") {
+            try {
+              await cfCmd.handleModal(interaction);
+            } catch (error) {
+              global.logError("discord.confess.modal", error);
+            }
+          }
+          return;
+        }
       }
       if (interaction.isStringSelectMenu()) {
         const sid = String(interaction.customId || "");

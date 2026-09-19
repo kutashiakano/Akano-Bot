@@ -164,16 +164,15 @@ class TelegramBot {
       });
       handler.setup(this.bot);
       this.bot.catch(err => {
-        const ctx = err.ctx;
-        const msg = String(err.error?.message || err.message || err.error || err || "");
-        if (/409|Conflict|terminated by other getUpdates|Conflict: terminated by other/.test(msg)) {
-          logger.error("Telegram 409 Conflict: polling terminated by other getUpdates instance. Fix: run Telegram ONLY on one instance (set TELEGRAM_ENABLED=false on others or use webhook). Stopping duplicate poller.", err.error || err);
+        const d = tgsdk.describeError(err);
+        if (tgsdk.isConflictError(err)) {
+          logger.error("Telegram 409 Conflict: polling terminated by other getUpdates instance. Fix: run Telegram ONLY on one instance (set TELEGRAM_ENABLED=false on others or use webhook). Stopping duplicate poller.", d.error);
           try { this.bot.stop(); } catch {}
           this.isRunning = false;
           releaseTelegramLock();
           return;
         }
-        logger.error(`Bot error (${ctx?.update?.message ? "message" : ctx?.updateType || "unknown"})`, err.error || err);
+        logger.error(`Bot error (${d.kind}:${d.updateType})`, d.error);
       });
       this.loadPlugins();
       const IMPORTANT_COMMANDS = [ "start", "menu", "dl", "gemini", "lyrics", "ping", "register" ];
