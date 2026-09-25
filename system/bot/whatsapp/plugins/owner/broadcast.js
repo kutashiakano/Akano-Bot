@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   if (!args.length) return m.reply(`Usage: ${usedPrefix}broadcast [message]`);
   const text = args.join(" ");
@@ -20,7 +20,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   m.reply(`Broadcast complete!\nSuccess: ${success}\nFailed: ${failed}`);
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "broadcast" ],
   category: "owner",
   help: [ "broadcast" ][0] || "",

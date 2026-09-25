@@ -1,7 +1,6 @@
-import sdkFacade from "../../../sdk/index.js";
 import { telegram as tgsdk } from "@kutashiakanocanzy/sdk";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 function parseArgs(text) {
   const parts = String(text || "").split("|").map(s => s.trim()).filter(Boolean);

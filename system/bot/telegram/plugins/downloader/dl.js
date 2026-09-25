@@ -2,10 +2,9 @@ import crypto from "crypto";
 import fs from "fs/promises";
 import path from "path";
 import { getFileInfo, detectSource } from "../_lib/downloader.js";
-import sdkFacade from "../../../sdk/index.js";
 import { core as fmt, telegram as tgsdk } from "@kutashiakanocanzy/sdk";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 function toInputFilePath(filePath) {
   return tgsdk.mediaFile(filePath);

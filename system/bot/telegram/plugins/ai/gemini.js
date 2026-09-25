@@ -1,7 +1,6 @@
-import sdkFacade from "../../../sdk/index.js";
 import { text as sdkText, telegram as tgsdk } from "@kutashiakanocanzy/sdk";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 const sanitizeMd = sdkText.sanitize;
 const splitSmart = sdkText.splitSmart;
 const stripMd = sdkText.stripMd;

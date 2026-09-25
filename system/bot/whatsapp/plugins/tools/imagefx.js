@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import { downloadStatus } from "../../lib/utils.js";
 import { applyEffect } from "../../../discord/plugins/images/process.js";
 const FX_ALIASES = {
@@ -115,7 +115,7 @@ const __orig = {
   example: "%cmd (reply to image)\n%cmd <image-url>\n%cmd blur 10\n%cmd meme when you fix the bot|but it still skips"
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "invert", "grayscale", "sepia", "blur", "pixelate", "flip", "rotate", "contrast", "meme" ],
   category: "tools",
   help: [ "invert", "grayscale", "sepia", "blur", "pixelate", "flip", "rotate", "contrast", "meme" ][0] || "",

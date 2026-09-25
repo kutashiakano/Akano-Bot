@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   const mode = args[0]?.toLowerCase();
   if (!mode || ![ "on", "off", "true", "false" ].includes(mode)) {
@@ -8,7 +8,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   m.reply(`Group mode has been *${global.settings.security.groupmode ? "enabled" : "disabled"}*`);
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "groupmode" ],
   category: "owner",
   help: [ "groupmode" ][0] || "",

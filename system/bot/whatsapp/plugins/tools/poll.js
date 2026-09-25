@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, text: text, usedPrefix: usedPrefix }) => {
   const parts = String(text || "").split("|").map(s => s.trim()).filter(Boolean);
   if (parts.length < 3) {
@@ -26,7 +26,7 @@ let handler = async (m, { sock: sock, text: text, usedPrefix: usedPrefix }) => {
   }
 };
 
-export default sdkFacade.define({
+export default define({
   name: /^(poll)$/i,
   category: "tools",
   help: "poll question | option1 | option2",

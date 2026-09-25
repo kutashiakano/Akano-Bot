@@ -1,7 +1,6 @@
-import sdkFacade from "../../../sdk/index.js";
 import { discord as dcSdk } from "@kutashiakanocanzy/sdk";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "poll" ],

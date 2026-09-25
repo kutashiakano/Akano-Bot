@@ -5,7 +5,7 @@ import path from "path";
 import pino from "pino";
 import pkg from "@whiskeysockets/baileys";
 import * as libPkg from "../../lib/index.js";
-import { define } from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 const { useMultiFileAuthState: useMultiFileAuthState, DisconnectReason: DisconnectReason, fetchLatestBaileysVersion: fetchLatestBaileysVersion, makeCacheableSignalKeyStore: makeCacheableSignalKeyStore, Browsers: Browsers, makeWASocket: makeRawSocket } = pkg;
 const { makeWASocket: enhanceSocket } = libPkg;

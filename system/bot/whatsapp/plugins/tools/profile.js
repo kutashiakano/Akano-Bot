@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import { core as fmt } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, command: command }) => {
   const target = command === "me" ? m.sender : m.quoted?.sender || m.mentionedJid?.[0] || m.sender;
@@ -37,7 +37,7 @@ let handler = async (m, { sock: sock, command: command }) => {
   });
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "profile", "me" ],
   category: "tools",
   help: [ "profile" ][0] || "",

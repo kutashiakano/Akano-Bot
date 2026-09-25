@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import { promises as fs } from "fs";
 import path from "path";
 const __orig = {
@@ -37,7 +37,7 @@ const __orig = {
   example: "%cmd path/to/file.js"
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "savefile", "sf", "delfile", "df" ],
   category: "owner",
   help: [ "savefile", "sf", "delfile", "df" ][0] || "",

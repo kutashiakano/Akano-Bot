@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 const __orig = {
   reg: true,
   help: [ "calculator", "calc" ],
@@ -26,7 +26,7 @@ const __orig = {
   example: "%cmd 1+8"
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "calc", "calculator" ],
   category: "tools",
   help: [ "calculator", "calc" ][0] || "",

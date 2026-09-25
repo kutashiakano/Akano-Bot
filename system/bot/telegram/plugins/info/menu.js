@@ -1,9 +1,8 @@
 import moment from "moment-timezone";
 import { readFileSync } from "fs";
-import sdkFacade from "../../../sdk/index.js";
 import { menu as sdkMenu } from "@kutashiakanocanzy/sdk";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 let version = "1.0.0";
 try {

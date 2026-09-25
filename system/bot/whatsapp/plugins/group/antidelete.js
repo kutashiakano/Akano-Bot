@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   if (!m.isGroup) return m.reply(global.settings.message.group);
   const metadata = await sock.groupMetadata(m.chat);
@@ -57,7 +57,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   });
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "antidelete" ],
   category: "group",
   help: [ "antidelete" ][0] || "",

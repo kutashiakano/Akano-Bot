@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   let target = m.quoted?.sender || m.mentionedJid?.[0] || (args[0] ? args[0].replace(/[^0-9]/g, "") + "@s.whatsapp.net" : null);
   if (!target) {
@@ -11,7 +11,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   m.reply(`@${target.split("@")[0]} limit has been reset to *${user.limit}*`);
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "resetlimit" ],
   category: "owner",
   help: [ "resetlimit" ][0] || "",

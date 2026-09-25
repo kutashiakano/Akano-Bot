@@ -1,8 +1,7 @@
-import sdkFacade from "../../../sdk/index.js";
 import { card, discord as dcSdk } from "@kutashiakanocanzy/sdk";
 import { formatDuration, bar } from "./utils.js";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "np" ],

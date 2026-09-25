@@ -1,8 +1,7 @@
 import database from "../../../../database/index.js";
-import sdkFacade from "../../../sdk/index.js";
 import { telegram as tgsdk } from "@kutashiakanocanzy/sdk";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 function ageKeyboard() {
   const ages = Array.from({

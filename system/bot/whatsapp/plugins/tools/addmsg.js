@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, command: command, usedPrefix: usedPrefix, text: text }) => {
   if (/add(msg|vn|video|audio|img|sticker|gif)/i.test(command)) {
     if (!m.quoted) return m.reply("Reply to a message");
@@ -31,7 +31,7 @@ let handler = async (m, { sock: sock, command: command, usedPrefix: usedPrefix, 
   }
 };
 
-export default sdkFacade.define({
+export default define({
   name: /^(get|add|del|list)(vn|msg|video|audio|img|stic?ker|gif)$/,
   category: "tools",
   help: [ "addmsg", "delmsg", "getmsg", "listmsg" ].map(v => v + " <teks>")[0] || "",

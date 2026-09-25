@@ -3,7 +3,6 @@ import { formatDuration } from "./utils.js";
 import emojis from "./emojis.js";
 import ys from "../../../../scrapers/src/ytsession.js";
 import { svState } from "./state.js";
-import sdkFacade from "../../../sdk/index.js";
 
 async function sesh(uid) {
   try {
@@ -441,7 +440,7 @@ async function execute(interaction) {
   });
 }
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "music" ],

@@ -1,8 +1,8 @@
-import sdkFacade from "../../../sdk/index.js";
+import { discord as dcNs } from "@kutashiakanocanzy/sdk";
 import { card, button, actionRow } from "@kutashiakanocanzy/sdk";
 import { formatDuration, createVolumeBar, bar, AUDIO_FILTERS } from "./utils.js";
 
-const { ButtonStyle } = sdkFacade.engine();
+const { ButtonStyle } = dcNs.engine();
 
 function currentVid(q) {
   const s = q?.currentSong;

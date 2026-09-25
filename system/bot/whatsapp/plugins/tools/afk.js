@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args }) => {
   const user = global.db.users.get(m.sender);
   if (!user) return;
@@ -18,7 +18,7 @@ let handler = async (m, { sock: sock, args: args }) => {
   });
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "afk" ],
   category: "tools",
   help: [ "afk" ][0] || "",

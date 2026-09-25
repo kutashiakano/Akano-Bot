@@ -1,9 +1,9 @@
-import sdkFacade from "../../../sdk/index.js";
+import { discord as dcNs } from "@kutashiakanocanzy/sdk";
 import { card } from "@kutashiakanocanzy/sdk";
 import { applyEffect, dcImgBuf } from "./process.js";
 
-const { define } = sdkFacade;
-const { AttachmentBuilder } = sdkFacade.engine();
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
+const { AttachmentBuilder } = dcNs.engine();
 
 function mkImgCmd(config) {
   const options = [ {

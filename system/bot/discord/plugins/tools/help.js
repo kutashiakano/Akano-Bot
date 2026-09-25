@@ -1,5 +1,7 @@
-import sdkFacade from "../../../sdk/index.js";
-const { define, ui } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
+import { ui as makeUi } from "@kutashiakanocanzy/sdk";
+import path from "node:path";
+const ui = makeUi({ iconsDir: path.join(import.meta.dirname, "../../../website/dashboard/client/icons") });
 
 const CATS = {
   ai: {

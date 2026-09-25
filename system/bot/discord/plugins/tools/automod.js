@@ -1,6 +1,5 @@
 import database from "../../../../database/index.js";
-import sdkFacade from "../../../sdk/index.js";
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 function cfgOf(db, gid, gname) {
   if (!db.discord) db.discord = { servers: {}, users: {} };

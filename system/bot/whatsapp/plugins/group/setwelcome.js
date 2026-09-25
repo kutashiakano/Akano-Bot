@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix, command: command }) => {
   if (!m.isGroup) return m.reply(global.settings.message.group);
   if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {};
@@ -19,7 +19,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix, comman
   }
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "setwelcome", "setbye" ],
   category: "group",
   help: [ "setwelcome", "setbye" ][0] || "",

@@ -1,8 +1,7 @@
-import sdkFacade from "../../../sdk/index.js";
 import { card } from "@kutashiakanocanzy/sdk";
 import database from "../../../../database/index.js";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 async function view(interaction) {
   await interaction.deferReply().catch(() => {});

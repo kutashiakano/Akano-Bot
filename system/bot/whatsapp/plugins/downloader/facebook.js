@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import fs from "fs/promises";
 import path from "path";
 import { downloadStatus } from "../../lib/utils.js";
@@ -45,7 +45,7 @@ const __orig = {
   example: "%cmd https://www.facebook.com/watch/?v=1234567890\n%cmd https://www.facebook.com/watch/?v=1234567890 --audio"
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "facebook", "fbdl" ],
   category: "downloader",
   help: [ "facebook", "fbdl" ][0] || "",

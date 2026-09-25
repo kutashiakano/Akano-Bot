@@ -1,5 +1,5 @@
 import moment from "moment-timezone";
-import { define } from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 let handler = async (m, { sock: sock, usedPrefix: usedPrefix }) => {
   let list = "*List of Connected Bots*\n\n";

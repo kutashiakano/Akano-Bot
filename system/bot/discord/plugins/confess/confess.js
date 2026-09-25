@@ -1,6 +1,8 @@
 import database from "../../../../database/index.js";
-import sdkFacade from "../../../sdk/index.js";
-const { define, ui } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
+import { ui as makeUi } from "@kutashiakanocanzy/sdk";
+import path from "node:path";
+const ui = makeUi({ iconsDir: path.join(import.meta.dirname, "../../../website/dashboard/client/icons") });
 function cfgOf(db, gid, gname) {
   if (!db.discord) db.discord = { servers: {}, users: {} };
   if (!db.discord.servers) db.discord.servers = {};

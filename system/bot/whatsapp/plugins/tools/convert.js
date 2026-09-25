@@ -1,5 +1,5 @@
-import sdkFacade from "../../../sdk/index.js";
-import { ffmpeg, toPTT, toAudio } from "../../../sdk/common/converter.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
+import { ffmpeg, toPTT, toAudio } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, command: command, usedPrefix: usedPrefix }) => {
   if (command === "toimg") {
     if (!m.quoted) return m.reply(global.settings.message.stickerReply.replace("{prefix}", usedPrefix).replace("{command}", command));
@@ -50,7 +50,7 @@ let handler = async (m, { sock: sock, command: command, usedPrefix: usedPrefix }
   }
 };
 
-export default sdkFacade.define({
+export default define({
   name: /^(toimg|tovideo|to(vn|ptt|voicenote)|to(mp3|a(udio)?))$/,
   category: "tools",
   help: [ "toimg", "tovideo", "tovn", "tovoicenote", "tomp3" ][0] || "",

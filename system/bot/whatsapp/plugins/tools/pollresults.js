@@ -1,5 +1,5 @@
 import { whatsapp } from "@kutashiakanocanzy/sdk";
-import { define } from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 const { tallyPoll } = whatsapp;
 

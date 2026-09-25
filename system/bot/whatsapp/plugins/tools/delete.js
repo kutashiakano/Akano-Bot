@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock }) => {
   if (!m.isGroup) return m.reply(global.settings.message.group);
   let key = {};
@@ -20,7 +20,7 @@ let handler = async (m, { sock: sock }) => {
   });
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "delete", "del" ],
   category: "tools",
   help: [ "delete" ][0] || "",

@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import fs from "fs/promises";
 import path from "path";
 import { downloadStatus } from "../../lib/utils.js";
@@ -96,7 +96,7 @@ const __orig = {
   example: "%cmd https://www.instagram.com/p/example\n%cmd https://www.instagram.com/p/example --audio"
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "instagram", "igdl" ],
   category: "downloader",
   help: [ "instagram", "igdl" ][0] || "",

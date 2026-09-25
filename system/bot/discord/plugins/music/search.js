@@ -1,10 +1,10 @@
-import sdkFacade from "../../../sdk/index.js";
+import { discord as dcNs } from "@kutashiakanocanzy/sdk";
 import { card, button, actionRow, watch, discord as dcSdk } from "@kutashiakanocanzy/sdk";
 import { formatDuration } from "./utils.js";
 import { queues, mkQueue, playNext } from "./engine.js";
 
-const { define } = sdkFacade;
-const { ButtonStyle } = sdkFacade.engine();
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
+const { ButtonStyle } = dcNs.engine();
 
 const searchResults = new Map;
 

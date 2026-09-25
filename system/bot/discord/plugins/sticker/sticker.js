@@ -1,9 +1,9 @@
-import sdkFacade from "../../../sdk/index.js";
+import { discord as dcNs } from "@kutashiakanocanzy/sdk";
 import { card, discord as dcSdk } from "@kutashiakanocanzy/sdk";
 import sharp from "sharp";
 
-const { define } = sdkFacade;
-const { PermissionFlagsBits } = sdkFacade.engine();
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
+const { PermissionFlagsBits } = dcNs.engine();
 
 async function fBuf(url) {
   const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });

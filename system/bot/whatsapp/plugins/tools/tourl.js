@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import axios from "axios";
 import fileTypePkg from "file-type";
 const { fileTypeFromBuffer: fileTypeFromBuffer } = fileTypePkg;
@@ -34,7 +34,7 @@ function formatSize(size) {
   return size + " B";
 }
 
-export default sdkFacade.define({
+export default define({
   name: [ "tourl", "upload" ],
   category: "tools",
   help: [ "tourl", "upload" ][0] || "",

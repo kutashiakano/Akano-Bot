@@ -1,8 +1,7 @@
 import os from "os";
 import { readFileSync } from "fs";
-import sdkFacade from "../../../sdk/index.js";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 let version = "1.0.0";
 try {

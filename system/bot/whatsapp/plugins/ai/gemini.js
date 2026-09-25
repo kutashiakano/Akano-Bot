@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 function parseBlocks(text) {
   const blocks = [];
   const pushText = t => {
@@ -143,7 +143,7 @@ const __orig = {
   example: "%cmd what is the meaning of life?"
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "gemini", "gmodel" ],
   category: "ai",
   help: [ "gemini", "gmodel" ][0] || "",

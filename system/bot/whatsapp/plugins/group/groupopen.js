@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix, command: command }) => {
   let mode = {
     open: "not_announcement",
@@ -11,7 +11,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix, comman
   m.reply(`Group has been *${args[0].toLowerCase()}d*`);
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "group" ],
   category: "group",
   help: [ "group" ][0] || "",

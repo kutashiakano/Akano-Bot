@@ -21,14 +21,14 @@ import("awesome-phonenumber").then(m => {
 }).catch(() => {});
 
 let _sdkMod = null;
-import("../../../../bot/sdk/index.js").then(m => {
+import("@kutashiakanocanzy/sdk").then(m => {
   _sdkMod = m;
 }).catch(() => {});
 
 function _sdkEngine() {
   try {
-    const eng = _sdkMod?.engine ?? _sdkMod?.default?.engine;
-    if (typeof eng === "function") return eng();
+    const dc = _sdkMod?.discord ?? _sdkMod?.default?.discord;
+    if (dc && typeof dc.engine === "function") return dc.engine();
   } catch {}
   return null;
 }

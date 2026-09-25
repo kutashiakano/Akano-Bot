@@ -1,8 +1,7 @@
-import sdkFacade from "../../../sdk/index.js";
 import { card } from "@kutashiakanocanzy/sdk";
 import { mkImgCmd } from "./command.js";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 const EFFECTS = {
   blur: {

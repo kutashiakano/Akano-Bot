@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 const __orig = {
   reg: true,
   help: "telegram",
@@ -64,7 +64,7 @@ const __orig = {
   example: "%cmd start\n%cmd settoken YOUR_TOKEN\n%cmd status"
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "telegram" ],
   category: "owner",
   help: "telegram",

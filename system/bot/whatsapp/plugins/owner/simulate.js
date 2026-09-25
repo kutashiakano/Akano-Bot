@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix, command: command, isOwner: _isOwner }) => {
   const isOwner = _isOwner || global.owner.includes(m.sender.split("@")[0]) || m.fromMe;
   if (!isOwner) return m.reply(global.settings.message.owner);
@@ -43,7 +43,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix, comman
   });
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "simulate" ],
   category: "owner",
   help: [ "simulate" ][0] || "",

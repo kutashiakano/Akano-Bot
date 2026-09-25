@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 const __orig = {
   reg: true,
   help: [ "listsw", "getsw" ],
@@ -60,7 +60,7 @@ const __orig = {
   }
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "listsw", "getsw", "getstory" ],
   category: "owner",
   help: [ "listsw", "getsw" ][0] || "",

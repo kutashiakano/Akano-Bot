@@ -1,7 +1,6 @@
 import database from "../../../../database/index.js";
-import sdkFacade from "../../../sdk/index.js";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "profile", "me" ],

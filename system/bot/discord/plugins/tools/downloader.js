@@ -5,7 +5,6 @@ import fs from "node:fs";
 const fsPromises = fs.promises;
 
 import path from "node:path";
-import sdkFacade from "../../../sdk/index.js";
 
 function compressAudio(file, maxSize) {
   return new Promise(resolve => {
@@ -203,7 +202,7 @@ function buildEmbed(info, source, interaction) {
   return embed;
 }
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "dl" ],

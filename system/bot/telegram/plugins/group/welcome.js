@@ -1,9 +1,8 @@
 import database from "../../../../database/index.js";
-import sdkFacade from "../../../sdk/index.js";
 import { core as fmt, telegram as tgsdk } from "@kutashiakanocanzy/sdk";
 import { renderTelegramWelcome } from "../../welcome-canvas.js";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 async function isAdmin(ctx, userId) {
   if (!userId) return false;

@@ -1,7 +1,6 @@
 import ys from "../../../../scrapers/src/ytsession.js";
 import { queues, mkQueue, playNext } from "./engine.js";
 import { svState } from "./state.js";
-import sdkFacade from "../../../sdk/index.js";
 
 const KINDS = {
   y: "Search",
@@ -277,7 +276,7 @@ const __orig = {
   }
 };
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   ...__orig,

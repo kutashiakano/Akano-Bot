@@ -1,5 +1,4 @@
 import database from "../../../../database/index.js";
-import sdkFacade from "../../../sdk/index.js";
 
 const warnDB = new Map;
 
@@ -84,7 +83,7 @@ function dmEmbed(client, type, guildName, reason) {
   });
 }
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "mod" ],

@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import axios from "axios";
 let handler = async (m, { sock: sock, text: text, command: command, usedPrefix: usedPrefix }) => {
   if (!text) return m.reply(`- Input url.\n${usedPrefix + command} <url> [phone/tablet]`);
@@ -44,7 +44,7 @@ async function ssweb(url, type = "desktop") {
   return res.data;
 }
 
-export default sdkFacade.define({
+export default define({
   name: [ "ssweb", "screenshot" ],
   category: "tools",
   help: [ "ssweb" ][0] || "",

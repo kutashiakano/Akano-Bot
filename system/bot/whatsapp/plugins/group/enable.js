@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix, command: command, isOwner: _isOwner, isAdmin: _isAdmin }) => {
   if (!m.isGroup) return m.reply(global.settings.message.group);
   const isOwner = _isOwner || global.owner.includes(m.sender.split("@")[0]) || m.fromMe;
@@ -161,7 +161,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix, comman
   }
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "enable" ],
   category: "group",
   help: [ "enable" ][0] || "",

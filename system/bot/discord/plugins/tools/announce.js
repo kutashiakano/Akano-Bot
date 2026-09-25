@@ -1,8 +1,8 @@
-import sdkFacade from "../../../sdk/index.js";
+import { discord as dcNs } from "@kutashiakanocanzy/sdk";
 import { card } from "@kutashiakanocanzy/sdk";
 
-const { define } = sdkFacade;
-const { PermissionFlagsBits } = sdkFacade.engine();
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
+const { PermissionFlagsBits } = dcNs.engine();
 
 export default define({
   name: [ "announce" ],

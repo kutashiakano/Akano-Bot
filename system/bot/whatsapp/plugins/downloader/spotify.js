@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import fs from "fs/promises";
 import path from "path";
 import { downloadStatus } from "../../lib/utils.js";
@@ -66,7 +66,7 @@ const __orig = {
   example: "%cmd never gonna give you up\n%cmd https://open.spotify.com/track/example"
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "spotify", "spdl", "spotifydl" ],
   category: "downloader",
   help: [ "spotify", "spdl", "spotifydl" ][0] || "",

@@ -1,5 +1,4 @@
 import database from "../../../../database/index.js";
-import sdkFacade from "../../../sdk/index.js";
 
 async function apply(interaction, db, { nick: nick, avatar: avatar, banner: banner, bio: bio }, guildId) {
   const isAdmin = Boolean(interaction.member?.permissions?.has("ManageGuild") || interaction.member?.permissions?.has("Administrator"));
@@ -90,7 +89,7 @@ async function toDataUri(attachment) {
   }
 }
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "settings" ],

@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import { send as wasdkSend, media as wasdkMedia } from "@kutashiakanocanzy/sdk";
 const __orig = {
   reg: true,
@@ -44,7 +44,7 @@ const __orig = {
   example: "%cmd never gonna give you up"
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "lyrics", "lirik" ],
   category: "tools",
   help: [ "lyrics", "lirik" ][0] || "",

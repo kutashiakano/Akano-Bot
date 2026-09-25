@@ -1,9 +1,9 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async m => {
   m.reply("Pong!");
 };
 
-export default sdkFacade.define({
+export default define({
   name: /^(ping)$/i,
   category: "general",
   help: [ "ping" ][0] || "",

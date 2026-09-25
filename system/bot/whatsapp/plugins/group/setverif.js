@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { args: args, usedPrefix: usedPrefix, isOwner: _isOwner, isAdmin: _isAdmin }) => {
   if (!m.isGroup) return m.reply(global.settings.message.group);
   const isOwner = _isOwner || global.owner.includes(m.sender.split("@")[0]) || m.fromMe;
@@ -35,7 +35,7 @@ let handler = async (m, { args: args, usedPrefix: usedPrefix, isOwner: _isOwner,
   return m.reply(`Verification question saved.\n\nQuestion: ${question}\nAnswer: ${answer}`);
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "setverif", "verifquestion" ],
   category: "group",
   help: [ "setverif" ][0] || "",

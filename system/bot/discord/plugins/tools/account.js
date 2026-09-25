@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import ys from "../../../../scrapers/src/ytsession.js";
 import playCmd from "../music/play.js";
-import sdkFacade from "../../../sdk/index.js";
 
 const TTL = 5 * 60 * 1e3;
 
@@ -512,7 +511,7 @@ async function execute(interaction) {
   });
 }
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "account" ],

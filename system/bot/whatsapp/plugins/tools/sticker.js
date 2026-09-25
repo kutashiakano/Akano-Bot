@@ -1,5 +1,5 @@
-import sdkFacade from "../../../sdk/index.js";
-import { sticker } from "../../../sdk/common/converter.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
+import { sticker } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   const isQuoted = m.quoted && /image|video|webp/.test(m.quoted.mimetype);
   const isDirect = /image|video|webp/.test(m.mtype);
@@ -27,7 +27,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   }
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "sticker", "s" ],
   category: "tools",
   help: [ "sticker", "s" ][0] || "",

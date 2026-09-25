@@ -1,5 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import database from "../../../../database/index.js";
 import canvas from "../../../../scrapers/src/canvas.js";
 

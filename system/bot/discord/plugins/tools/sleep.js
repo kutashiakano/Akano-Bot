@@ -2,8 +2,7 @@ import { queues, clearQ } from "../music/engine.js";
 
 const timers = new Map;
 
-import sdkFacade from "../../../sdk/index.js";
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "sleep" ],

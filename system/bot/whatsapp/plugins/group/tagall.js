@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args }) => {
   if (!m.isGroup) return m.reply(global.settings.message.group);
   const metadata = await sock.groupMetadata(m.chat);
@@ -19,7 +19,7 @@ let handler = async (m, { sock: sock, args: args }) => {
   });
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "tagall" ],
   category: "group",
   help: [ "tagall" ][0] || "",

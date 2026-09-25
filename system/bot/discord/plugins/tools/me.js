@@ -1,8 +1,7 @@
-import sdkFacade from "../../../sdk/index.js";
 import { card, discord as dcSdk } from "@kutashiakanocanzy/sdk";
 import database from "../../../../database/index.js";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "me", "profile" ],

@@ -1,9 +1,8 @@
-import sdkFacade from "../../../sdk/index.js";
 import { card, discord as dcSdk } from "@kutashiakanocanzy/sdk";
 import { createVolumeBar } from "./utils.js";
 import { svState } from "./state.js";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "volume" ],

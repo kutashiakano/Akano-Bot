@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import fs from "fs/promises";
 import path from "path";
 import { downloadStatus } from "../../lib/utils.js";
@@ -125,7 +125,7 @@ const __orig = {
   example: "%cmd https://www.youtube.com/watch?v=example\n%cmd https://open.spotify.com/track/example\n%cmd play <query>\n%cmd <url> --audio\n%cmd <query> --mp3\n%cmd <url> --audio-format mp3 --embed-thumbnail --write-subs --sub-langs en\n%cmd <url> --format \"bv*+ba/b\" --download-sections \"*0:30-1:00\" --extractor-args \"youtube:player_client=android\""
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "youtube", "ytdl", "yt", "play", "ytsearch", "ytmusic" ],
   category: "downloader",
   help: [ "youtube", "ytdl", "yt", "play", "ytsearch", "ytmusic" ][0] || "",

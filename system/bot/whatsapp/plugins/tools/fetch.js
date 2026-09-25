@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import { format } from "util";
 import axios from "axios";
 let handler = async (m, { sock: sock, text: text, command: command, usedPrefix: usedPrefix }) => {
@@ -32,7 +32,7 @@ let handler = async (m, { sock: sock, text: text, command: command, usedPrefix: 
   }
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "fetch", "get" ],
   category: "tools",
   help: [ "fetch" ][0] || "",

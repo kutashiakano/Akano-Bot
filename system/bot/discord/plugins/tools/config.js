@@ -1,6 +1,5 @@
 import database from "../../../../database/index.js";
-import sdkFacade from "../../../sdk/index.js";
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 const MODS = ["rpg", "confess", "music", "images", "tools"];
 const MOD_LABEL = {
   rpg: "RPG",

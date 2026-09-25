@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import { Jimp } from "jimp";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix, command: command }) => {
   let toWidth = parseInt(args[0]);
@@ -22,7 +22,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix, comman
   await sock.sendFile(m.chat, out, "out.png", `*Resize Image*\n- *Width :* ${before.width} > ${toWidth}\n- *Height:* ${before.height} > ${toHeight}`, m);
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "resize" ],
   category: "tools",
   help: [ "resize" ][0] || "",

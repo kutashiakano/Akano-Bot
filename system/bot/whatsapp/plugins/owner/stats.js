@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock }) => {
   const totalUsers = global.db.users.length;
   const totalGroups = global.db.groups.length;
@@ -36,7 +36,7 @@ let handler = async (m, { sock: sock }) => {
   });
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "stats" ],
   category: "owner",
   help: [ "stats" ][0] || "",

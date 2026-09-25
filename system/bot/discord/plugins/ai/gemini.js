@@ -2,8 +2,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import database from "../../../../database/index.js";
-import sdkFacade from "../../../sdk/index.js";
-const { define, ui } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
+import { md } from "@kutashiakanocanzy/sdk";
 
 async function downloadImage(url) {
   const ctl = new AbortController();
@@ -141,7 +141,7 @@ export default define({
     }
     try {
       const fullResponse = await askGemini(prompt, uid, imagePath);
-      const chunks = splitMessage(fullResponse, 4000).map(c => ui.rich(c));
+      const chunks = splitMessage(fullResponse, 4000).map(c => md(c));
       const firstEmbed = (new EB()).setColor("#4285F4").setAuthor({
         name: "Gemini AI",
         iconURL: "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg"

@@ -1,8 +1,7 @@
-import sdkFacade from "../../../sdk/index.js";
 import { card, discord as dcSdk } from "@kutashiakanocanzy/sdk";
 import { formatDuration } from "./utils.js";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 function buildVolumeBar(percent) {
   const barLen = 15;

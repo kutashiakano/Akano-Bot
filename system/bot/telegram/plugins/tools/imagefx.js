@@ -1,9 +1,8 @@
 import fs from "fs";
 import { Jimp } from "jimp";
-import sdkFacade from "../../../sdk/index.js";
 import { telegram as tgsdk, core as sdkCore } from "@kutashiakanocanzy/sdk";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 const { TG_PHOTO_MAX, TG_UPLOAD_MAX } = sdkCore;
 
 function toInputFile(buf, filename) {

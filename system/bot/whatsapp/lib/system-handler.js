@@ -46,7 +46,11 @@ async function systemHandler(sock, message, global) {
     const command = usedPrefix ? body.slice(usedPrefix.length).trim().split(/\s+/)[0].toLowerCase() : "";
     const args = usedPrefix ? body.slice(usedPrefix.length + command.length).trim().split(/\s+/) : [];
     const text = args.join(" ");
-    const perm = getPermission(sender, global);
+    const perm = getPermission(sender, {
+      ownerJid: global.settings?.connection?.owner || "",
+      owners: global.settings?.owners || [],
+      db: global.db
+    });
     const owner = perm === "owner";
     const premium = perm === "owner" || perm === "premium";
     if (isGroup && groupSet) {

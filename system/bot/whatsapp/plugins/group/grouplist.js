@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock }) => {
   let txt = "";
   let chats = global.store?.chats || {};
@@ -12,7 +12,7 @@ let handler = async (m, { sock: sock }) => {
   m.reply(`*List Groups:*\n\n${txt}`.trim());
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "grouplist", "groups" ],
   category: "group",
   help: [ "grouplist" ][0] || "",

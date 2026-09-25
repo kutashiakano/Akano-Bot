@@ -2,12 +2,12 @@ import os from "node:os";
 import path from "node:path";
 import fs from "node:fs";
 import crypto from "node:crypto";
-import sdkFacade from "../sdk/index.js";
+import { discord as dcNs, md, texted, status } from "@kutashiakanocanzy/sdk";
 import database from "../../database/index.js";
 
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ActivityType } = sdkFacade.engine();
-const ui = sdkFacade.ui;
-const fmt = sdkFacade.fmt;
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ActivityType } = dcNs.engine();
+const ui = { rich: (src) => md(src) };
+const fmt = { texted: (a, b) => texted(a, b), status: (k) => status(k) };
 
 const floodMap = new Map;
 
@@ -708,7 +708,7 @@ export default {
             const last = global.promptCache.get(key) || 0;
             if (Date.now() - last < 6 * 3600 * 1e3) return;
             global.promptCache.set(key, Date.now());
-            const { ActionRowBuilder: ActionRowBuilder, StringSelectMenuBuilder: StringSelectMenuBuilder } = sdkFacade.engine();
+            const { ActionRowBuilder: ActionRowBuilder, StringSelectMenuBuilder: StringSelectMenuBuilder } = dcNs.engine();
             const ageSelect = (new StringSelectMenuBuilder).setCustomId("regAgeSel").setPlaceholder("Select Your Age").addOptions([ {
               label: "Random Years",
               value: "random"

@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   if (!args[0] || ![ "enable", "disable", "list" ].includes(args[0].toLowerCase())) {
     return m.reply(`Usage:\n${usedPrefix}plugin disable [plugin name] - Disable plugin\n${usedPrefix}plugin enable [plugin name] - Enable plugin\n${usedPrefix}plugin list - List disabled plugins`);
@@ -33,7 +33,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   }
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "plugin" ],
   category: "owner",
   help: [ "plugin" ][0] || "",

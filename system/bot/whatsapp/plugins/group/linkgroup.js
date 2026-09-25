@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   let group = m.chat;
   if (/^[0-9]{5,16}-?[0-9]+@g\.us$/.test(args[0] || "")) group = args[0];
@@ -12,7 +12,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   m.reply("https://chat.whatsapp.com/" + code);
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "linkgroup", "linkgc" ],
   category: "group",
   help: [ "linkgroup" ][0] || "",

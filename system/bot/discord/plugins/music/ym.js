@@ -2,7 +2,6 @@ import ys from "../../../../scrapers/src/ytsession.js";
 import playCmd from "./play.js";
 import { queues, mkQueue, playNext } from "./engine.js";
 import { svState } from "./state.js";
-import sdkFacade from "../../../sdk/index.js";
 
 const TTL = 2 * 60 * 1e3;
 const pending = new Map;
@@ -206,7 +205,7 @@ async function radioView(interaction, query) {
   });
 }
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
   name: [ "ym" ],

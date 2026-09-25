@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import fs from "fs";
 import path from "path";
 const LOG_PATH = global.logErrorPath || path.join(process.cwd(), "system", "database", "logerror.json");
@@ -161,7 +161,7 @@ let handler = async (m, { sock: sock, args: args }) => {
   return m.reply(lines.join("\n"));
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "logerror" ],
   category: "owner",
   help: [ "logerror" ][0] || "",

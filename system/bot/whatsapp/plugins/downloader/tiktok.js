@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 import fs from "fs/promises";
 import path from "path";
 import { downloadStatus } from "../../lib/utils.js";
@@ -92,7 +92,7 @@ const __orig = {
   example: "%cmd https://www.tiktok.com/@user/video/1234567890\n%cmd https://www.tiktok.com/@user/video/1234567890 --audio"
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "tiktok", "ttdl" ],
   category: "downloader",
   help: [ "tiktok", "ttdl" ][0] || "",

@@ -1,10 +1,10 @@
 import path from "node:path";
 import fs from "node:fs";
 import { pathToFileURL } from "node:url";
-import sdkFacade from "../sdk/index.js";
+import { discord as dcNs } from "@kutashiakanocanzy/sdk";
 import handler from "./handler.js";
 
-const { Client, GatewayIntentBits } = sdkFacade.engine();
+const { Client, GatewayIntentBits } = dcNs.engine();
 
 global.discordBot = null;
 
@@ -36,7 +36,16 @@ class DiscordBot {
         messageSweepInterval: 43200,
         messageEditHistoryMaxSize: 0
       });
-      try { Object.assign(this.client, sdkFacade.djs() || {}); } catch {}
+      const d = dcNs.engine();
+      const builders = d ? {
+        mbuilder: d.StringSelectMenuBuilder,
+        bbuilder: d.ButtonBuilder,
+        abuilder: d.ActionRowBuilder,
+        ebuilder: d.EmbedBuilder,
+        modal: d.ModalBuilder,
+        textInput: d.TextInputBuilder
+      } : {};
+      try { Object.assign(this.client, builders); } catch {}
       await this.loadCommands();
       handler.setup(this.client);
       await this.client.login(token);

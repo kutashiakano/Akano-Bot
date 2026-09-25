@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, participants: participants, groupMetadata: groupMetadata }) => {
   const pp = await sock.profilePictureUrl(m.chat, "image").catch(() => null) || "https://files.catbox.moe/ifx2y7.png";
   const chat = global.db.data.chats[m.chat] || {};
@@ -24,7 +24,7 @@ let handler = async (m, { sock: sock, participants: participants, groupMetadata:
   });
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "infogroup", "infogc", "groupinfo" ],
   category: "group",
   help: [ "infogroup" ][0] || "",

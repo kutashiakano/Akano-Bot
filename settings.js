@@ -55,13 +55,6 @@ global.syncSettings = function (db) {
 
 global.scraper = new Scraper("./system/scrapers/src");
 
-global.djs = {};
-import("./system/bot/sdk/index.js").then(m => {
-  try {
-    global.djs = (m.default?.djs ?? m.djs)?.() || {};
-  } catch {}
-}).catch(() => {});
-
 global.ConfigLoader = ConfigLoader;
 global.reloadConfig = () => ConfigLoader.load();
 

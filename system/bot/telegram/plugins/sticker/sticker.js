@@ -5,9 +5,8 @@ import crypto from "crypto";
 import { spawn } from "child_process";
 import { Jimp } from "jimp";
 import { telegram as tgsdk } from "@kutashiakanocanzy/sdk";
-import sdkFacade from "../../../sdk/index.js";
 
-const { define } = sdkFacade;
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 async function dlBuf(url) {
   const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });

@@ -1,4 +1,4 @@
-import sdkFacade from "../../../sdk/index.js";
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   const currentMode = global.settings.security.self ? "SELF" : "PUBLIC";
   if (args[0]) {
@@ -40,7 +40,7 @@ let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
   });
 };
 
-export default sdkFacade.define({
+export default define({
   name: [ "self" ],
   category: "owner",
   help: [ "self" ][0] || "",
