@@ -1,0 +1,31 @@
+{
+  "name": "Akano-Bot",
+  "version": "1.0.0",
+  "description": "Multi-platform bot for WhatsApp, Telegram, and Discord with AI chat, media downloader, group management, and moderation tools",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js --all",
+    "wa": "node index.js --whatsapp",
+    "dc": "node index.js --discord",
+    "tg": "node index.js --telegram",
+    "help": "node index.js --help"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cfonts": "3.1.1",
+    "chalk": "^4.1.1",
+    "cheerio": "^1.0.0-rc.10",
+    "gradient-string": "^2.0.1",
+    "@kutashiakanocanzy/sdk": "0.2.2-beta.9",
+    "jimp": "^1.6.1",
+    "lodash": "^4.17.21",
+    "node-cache": "^5.1.2",
+    "node-fetch": "^2.6.7",
+    "yargs": "^17.5.1",
+    "youtubei.js": "^18.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "SEE LICENSE IN LICENSE"
+}

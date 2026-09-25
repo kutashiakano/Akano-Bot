@@ -1,0 +1,23 @@
+import sdkFacade from "../../../sdk/index.js";
+let handler = async (m, { sock: sock, args: args, usedPrefix: usedPrefix }) => {
+  let target = m.quoted?.sender || m.mentionedJid?.[0] || (args[0] ? args[0].replace(/[^0-9]/g, "") + "@s.whatsapp.net" : null);
+  if (!target) {
+    return m.reply(`Usage: ${usedPrefix}resetlimit @user`);
+  }
+  const user = global.db.users.get(target);
+  if (!user) return m.reply(global.settings.message.userNotFoundDb);
+  user.limit = user.premium ? "PERMANENT" : global.settings.limit?.freeUser || 15;
+  global.db.users.update(target, user);
+  m.reply(`@${target.split("@")[0]} limit has been reset to *${user.limit}*`);
+};
+
+export default sdkFacade.define({
+  name: [ "resetlimit" ],
+  category: "owner",
+  help: [ "resetlimit" ][0] || "",
+  owner: true,
+  reg: true,
+  run: function(c) {
+    return handler.apply(c.that, [ c.m, c.props ]);
+  }
+});
