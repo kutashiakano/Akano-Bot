@@ -425,7 +425,7 @@ Fitur: pencarian (`search()`, `searchTracks()` → `ytsearch` / `scsearch1:`), m
 
 ```js
 // system/bot/whatsapp/lib/index.js — Client
-const { Client } = require("./system/bot/whatsapp/lib");
+import { Client } from "./system/bot/whatsapp/lib/index.js";
 
 const bot = new Client({
   plugsdir: "./system/bot/whatsapp/plugins",
@@ -524,7 +524,7 @@ Re-binding setelah reconnect otomatis — `global.reloadHandler` memanggil ulang
 
 ## Metadata Pesan — Objek `m`
 
-Setiap pesan WhatsApp masuk diserialisasi via `smsg()` / `serializeM()` (`system/bot/whatsapp/lib/serializer.js`):
+Setiap pesan WhatsApp masuk diserialisasi via `smsg()` / `serializeM()` dari `@kutashiakanocanzy/sdk`:
 
 ```js
 bot.register("message", ({ m }) => {
@@ -637,7 +637,7 @@ Penggunaan benar untuk SDK yang sudah diperbaiki. Semua contoh **aman Baileys** 
 
 ```js
 // Di plugin run({ sock, m })
-const fs = require("fs");
+import fs from "node:fs";
 
 // Gambar dari Buffer / URL / path — otomatis membuat imageMessage
 await sock.sendIAMessage(m.chat, [
@@ -675,8 +675,9 @@ await sock.sendIAMessage(m.chat, buttons, m, {
 Internal:
 
 ```js
-const { prepareWAMessageMedia } = require("baileys");
-const FileType = require("file-type");
+import pkg from "@whiskeysockets/baileys";
+import FileType from "file-type";
+const { prepareWAMessageMedia } = pkg;
 const type = await FileType.fromBuffer(buf);
 if (type.mime.startsWith("video/")) mediaPayload = { video: buf };
 else if (type.mime.startsWith("image/")) mediaPayload = { image: buf };
@@ -804,17 +805,18 @@ await sock.sendVideoAsSticker(m.chat, fs.readFileSync("./video.mp4"), m, {
   packname: "Pack", author: "Author", categories: ["🔥"]
 });
 
-// Exif manual (level rendah) — load sebelum exif!
-const { Image } = require("node-webpmux");
-const { makeExif } = require("./system/bot/whatsapp/lib/exif");
+// Exif manual (level rendah) — via SDK, tanpa file lokal
+import { makeExif, sticker } from "@kutashiakanocanzy/sdk";
+import webpmux from "node-webpmux";
+const { Image } = webpmux;
 const webp = await imageToWebp(buffer);
 const img = new Image();
 await img.load(webp);                 // urutan benar
 img.exif = makeExif("Pack", "Author", ["😀"]); // lalu set exif
 await img.save("./sticker.webp");
 
-// Helper converter (benar)
-const { sticker } = require("./system/bot/whatsapp/lib/converter");
+// Helper converter (benar) — langsung dari SDK
+import { sticker } from "@kutashiakanocanzy/sdk";
 const webpBuff = await sticker(buffer, { packname: "P", author: "A" }); // mengembalikan Buffer dengan exif
 await sock.sendMessage(m.chat, { sticker: webpBuff }); // Buffer, bukan {url: webpBuff}
 ```
@@ -831,7 +833,7 @@ Metadata pack disimpan via EXIF `node-webpmux` dengan id konstan `https://github
 ### Penggunaan NPM — SDK
 
 ```bash
-npm install @kutashiakanocanzy/sdk@0.2.2-beta.9
+npm install @kutashiakanocanzy/sdk@0.2.2-beta.11
 ```
 
 ```js
@@ -854,9 +856,9 @@ Bot ini ESM (`"type": "module"`, Node `>=20`) — gunakan `import` di kode bot, 
 Satu file `define()` bekerja di mana saja. Taruh di `system/bot/*/plugins/<kategori>/` mana pun.
 
 ```js
-const { define } = require("../../../plugin"); // atau ../../../sdk
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
-module.exports = define({
+export default define({
   name: ["hello", "hi"],        // perintah + alias
   category: "tools",            // grup menu
   help: "Menyapa",              // deskripsi
@@ -883,12 +885,12 @@ module.exports = define({
 Key alias: `usage` (= `name`), `use` (= `example`), `hidden`, `async` (= `run`), `desc` (= `help`).  
 Helper `Utils` / `fmt`: `status()`, `emoji()`, `sec()`, `panel()`, `list()`, `toTime()`, `matcher()`.
 
-**Import terpadu SDK:**
+**Import terpadu SDK (flat root — tanpa deep path):**
 
 ```js
-const { define, Utils, mbuilder, abuilder, Database, wa, tg, dc, libs } = require("../../../sdk");
+import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
-module.exports = define({
+export default define({
   usage: ["ping"],
   category: "tools",
   async: async ({ reply, sock }) => {
@@ -897,7 +899,7 @@ module.exports = define({
 });
 ```
 
-Ekspor SDK: `define`, `Utils` (=`fmt`), `fmt`, `settings()`, `config()`, `owners()`, `Database`/`getDB()`, instance live `wa()`/`tg()`/`dc()`, `libs()` (`{ baileys, grammy, discord }`), builder `mbuilder`/`bbuilder`/`abuilder`/`ebuilder`/`modal`/`textInput`.
+Ekspor root SDK: `defineBot` (builder plugin bergate), `Cooldown`, `Queue`, `resize`, `texted`, `reply`, `media`, `smsg`, `AIRichBuilder`, `card`, `button`, `md`, `status`, namespace `telegram` / `discord` / `whatsapp` / `core` / `common` (daftar lengkap di README `@kutashiakanocanzy/sdk`).
 
 ### Per-Platform (Klasik)
 
