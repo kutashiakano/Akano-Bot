@@ -1,0 +1,16 @@
+node_modules
+.git
+*.log
+backup
+system/database/database.db
+system/database/database.json
+system/database/logerror.json
+system/bot/whatsapp/sessions
+cookies.txt
+.env
+deploy/Dockerfile
+deploy/docker-compose.yml
+deploy/.dockerignore
+Dockerfile
+docker-compose.yml
+install.sh

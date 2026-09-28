@@ -1,0 +1,296 @@
+{
+  "fields": {
+    "botname": {
+      "type": "string",
+      "max": 32,
+      "label": "Bot name"
+    },
+    "prefix": {
+      "type": "string",
+      "max": 40,
+      "label": "Prefixes"
+    },
+    "settings.maintenance": {
+      "type": "boolean",
+      "label": "Maintenance mode"
+    },
+    "settings.limit.enabled": {
+      "type": "boolean",
+      "label": "Daily limit on"
+    },
+    "settings.limit.free": {
+      "type": "number",
+      "min": 0,
+      "max": 100000,
+      "label": "Free limit"
+    },
+    "settings.limit.premium": {
+      "type": "number",
+      "min": 0,
+      "max": 1000000,
+      "label": "Premium limit"
+    },
+    "settings.limit.reset": {
+      "type": "number",
+      "min": 1,
+      "max": 72,
+      "label": "Reset hours"
+    },
+    "settings.discord.dailyLimit": {
+      "type": "number",
+      "min": 1,
+      "max": 10000,
+      "label": "Discord daily cap"
+    },
+    "settings.opts.autoRead": {
+      "type": "boolean",
+      "label": "WA auto read"
+    },
+    "settings.opts.selfMode": {
+      "type": "boolean",
+      "label": "Self mode"
+    },
+    "settings.opts.dmOnly": {
+      "type": "boolean",
+      "label": "DM only"
+    },
+    "settings.opts.groupOnly": {
+      "type": "boolean",
+      "label": "Group only"
+    },
+    "settings.automation.autoTyping": {
+      "type": "boolean",
+      "label": "WA auto typing"
+    },
+    "settings.telegram.autoTyping": {
+      "type": "boolean",
+      "label": "TG auto typing"
+    },
+    "settings.telegram.inlineMode": {
+      "type": "boolean",
+      "label": "TG inline mode"
+    },
+    "settings.discord.presence.name": {
+      "type": "string",
+      "max": 40,
+      "label": "DC presence name"
+    },
+    "settings.discord.presence.type": {
+      "type": "enum",
+      "options": [
+        "Custom",
+        "Playing",
+        "Streaming",
+        "Listening",
+        "Watching",
+        "Competing"
+      ],
+      "label": "DC presence type"
+    },
+    "settings.discord.presence.state": {
+      "type": "string",
+      "max": 60,
+      "label": "DC presence state"
+    },
+    "settings.discord.presence.status": {
+      "type": "enum",
+      "options": [
+        "online",
+        "idle",
+        "dnd",
+        "invisible"
+      ],
+      "label": "DC status"
+    },
+    "settings.group.welcome": {
+      "type": "boolean",
+      "label": "Group welcome"
+    },
+    "settings.group.antilink": {
+      "type": "boolean",
+      "label": "Anti link"
+    },
+    "settings.log.error": {
+      "type": "boolean",
+      "label": "Persist error log"
+    },
+    "settings.website.enabled": {
+      "type": "boolean",
+      "label": "Dashboard enabled"
+    },
+    "settings.website.mode": {
+      "type": "enum",
+      "options": [
+        "local",
+        "online"
+      ],
+      "label": "Dashboard mode"
+    },
+    "settings.website.port": {
+      "type": "number",
+      "min": 1024,
+      "max": 65535,
+      "label": "Dashboard port"
+    },
+    "settings.website.title": {
+      "type": "string",
+      "max": 60,
+      "label": "Website Title"
+    },
+    "settings.website.caption": {
+      "type": "string",
+      "max": 80,
+      "label": "Website Caption"
+    },
+    "settings.website.description": {
+      "type": "string",
+      "max": 200,
+      "label": "Website Description"
+    },
+    "settings.website.thumb": {
+      "type": "string",
+      "max": 300,
+      "label": "Website Thumbnail URL"
+    },
+    "settings.website.theme": {
+      "type": "enum",
+      "options": ["dark", "system"],
+      "label": "Website Theme"
+    },
+    "settings.website.domain": {
+      "type": "string",
+      "max": 200,
+      "label": "Website Static Domain / URL"
+    },
+    "settings.website.tunnel.enabled": {
+      "type": "boolean",
+      "label": "Public Cloudflare Tunnel"
+    },
+    "settings.website.tunnel.token": {
+      "type": "string",
+      "max": 300,
+      "label": "Cloudflare Tunnel Token (Permanent Static Domain)"
+    },
+    "settings.website.tunnel.domain": {
+      "type": "string",
+      "max": 200,
+      "label": "Tunnel Custom Hostname"
+    },
+    "settings.telegram.webHook": {
+      "type": "boolean",
+      "label": "TG webhook mode"
+    },
+    "settings.telegram.greeting": {
+      "type": "string",
+      "max": 200,
+      "label": "TG greeting text"
+    },
+    "settings.telegram.groupManager.welcomeMessage": {
+      "type": "boolean",
+      "label": "TG group welcome"
+    },
+    "settings.telegram.groupManager.goodbyeMessage": {
+      "type": "boolean",
+      "label": "TG group goodbye"
+    },
+    "settings.telegram.groupManager.autoGreeting": {
+      "type": "boolean",
+      "label": "TG auto greeting"
+    },
+    "settings.telegram.groupManager.verification": {
+      "type": "boolean",
+      "label": "TG verification"
+    },
+    "settings.telegram.groupManager.moderation": {
+      "type": "boolean",
+      "label": "TG moderation"
+    },
+    "settings.connection.pairing_number": {
+      "type": "string",
+      "max": 20,
+      "label": "WA default pairing number"
+    },
+    "settings.media.sticker.packname": {
+      "type": "string",
+      "max": 40,
+      "label": "Sticker pack name"
+    },
+    "settings.media.sticker.author": {
+      "type": "string",
+      "max": 40,
+      "label": "Sticker author"
+    },
+    "settings.media.watermark": {
+      "type": "boolean",
+      "label": "Image watermark"
+    },
+    "settings.media.watermarkText": {
+      "type": "string",
+      "max": 40,
+      "label": "Watermark text"
+    },
+    "settings.afk.enabled": {
+      "type": "boolean",
+      "label": "AFK system"
+    },
+    "settings.afk.message": {
+      "type": "string",
+      "max": 120,
+      "label": "AFK default message"
+    },
+    "settings.game.enabled": {
+      "type": "boolean",
+      "label": "Game system"
+    },
+    "settings.game.rpg": {
+      "type": "boolean",
+      "label": "RPG games"
+    },
+    "settings.game.dailyReward": {
+      "type": "boolean",
+      "label": "Daily reward"
+    },
+    "settings.game.dailyAmount": {
+      "type": "number",
+      "min": 0,
+      "max": 10000,
+      "label": "Daily reward amount"
+    },
+    "settings.automation.autoRead": {
+      "type": "boolean",
+      "label": "Auto read (automation)"
+    },
+    "settings.automation.autoOnline": {
+      "type": "boolean",
+      "label": "Auto online"
+    },
+    "settings.automation.autoBackup": {
+      "type": "boolean",
+      "label": "Auto backup"
+    },
+    "settings.group.antivirtex": {
+      "type": "boolean",
+      "label": "Anti virtex"
+    },
+    "settings.group.antidelete": {
+      "type": "boolean",
+      "label": "Anti delete"
+    },
+    "settings.verification.enabled": {
+      "type": "boolean",
+      "label": "Verification gate"
+    },
+    "settings.log.level": {
+      "type": "enum",
+      "options": ["silent", "error", "warn", "info", "debug"],
+      "label": "Log level"
+    },
+    "settings.system.cooldown": {
+      "type": "number",
+      "min": 0,
+      "max": 60000,
+      "label": "Command cooldown (ms)"
+    }
+  },
+  "notes": "Dotted keys are written into overlay.settings via setPath. botname/prefix are top-level overlay keys."
+}
