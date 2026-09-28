@@ -199,14 +199,14 @@ const printDiscord = async ({ interaction: interaction, message: message }) => {
       if (!interaction.commandName) {
         if (!shouldLog(false)) return;
         const cleanSender = senderLabel.replace(/\x1b\[[0-9;]*m/g, "");
-        const guildName = interaction.guild?.name?.slice(0, 20) || "DM";
+        const guildName = (interaction.guild?.name?.slice(0, 20) || "DM") + (interaction.channel?.name ? " | #" + interaction.channel.name.slice(0, 20) : "");
         oneLine("discord", cleanSender.slice(0, 30), guildName, shortText(interaction.customId || "").replace(/\x1b\[[0-9;]*m/g, "").slice(0, 50));
         return;
       }
       const args = (interaction.options?.data || []).map(o => o.value !== undefined && o.value !== null ? `${o.name}: ${o.value}` : o.name).join(", ");
       if (!shouldLog(true)) return;
       const cleanSender2 = senderLabel.replace(/\x1b\[[0-9;]*m/g, "");
-      const guildName2 = interaction.guild?.name?.slice(0, 20) || "DM";
+      const guildName2 = (interaction.guild?.name?.slice(0, 20) || "DM") + (interaction.channel?.name ? " | #" + interaction.channel.name.slice(0, 20) : "");
       oneLine("discord", cleanSender2.slice(0, 30), guildName2, ("/" + interaction.commandName + (args ? " " + args : "")).slice(0, 60));
       if (typeof global.__botEvent === "function") {
         try {
@@ -248,7 +248,7 @@ const printDiscord = async ({ interaction: interaction, message: message }) => {
       const isCmd = String(message.content || "").trim().startsWith("/");
       if (!shouldLog(isCmd)) return;
       const cleanSender3 = senderLabel.replace(/\x1b\[[0-9;]*m/g, "");
-      const guildName3 = message.guild?.name?.slice(0, 20) || "DM";
+      const guildName3 = (message.guild?.name?.slice(0, 20) || "DM") + (message.channel?.name ? " | #" + message.channel.name.slice(0, 20) : "");
       oneLine("discord", cleanSender3.slice(0, 30), guildName3, shortText(message.content).replace(/\x1b\[[0-9;]*m/g, "").slice(0, 60));
       if (typeof global.__botEvent === "function") {
         try {
