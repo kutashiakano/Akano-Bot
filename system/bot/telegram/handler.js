@@ -1,7 +1,7 @@
 import database from "../../database/index.js";
 import logger from "./logger.js";
 import { telegram as tgsdk, core as fmt } from "@kutashiakanocanzy/sdk";
-import groupManager from "./group-manager.js";
+import groupManager from "./lib/group-manager.js";
 import moment from "moment-timezone";
 import telegramBot from "./index.js";
 

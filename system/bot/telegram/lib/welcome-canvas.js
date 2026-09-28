@@ -1,4 +1,4 @@
-import canvas from "../../scrapers/src/canvas.js";
+import canvas from "../../../scrapers/src/canvas.js";
 import fs from "fs";
 
 export async function getAvatarBuffer(api, userId) {

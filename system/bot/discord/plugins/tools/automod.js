@@ -34,7 +34,7 @@ async function maybeSync(interaction) {
     const db = database.get();
     const nat = db.discord?.servers?.[String(interaction.guildId)]?.settings?.automod?.native;
     if (!nat || !nat.on) return;
-    const sync = await import("../../automod-sync.js");
+    const sync = await import("../../lib/automod-sync.js");
     sync.syncGuild(interaction.guild).catch(e => {
       try { if (global.logError) global.logError("automod.autosync", e); } catch (e2) {}
     });
@@ -185,7 +185,7 @@ export default define({
       return;
     }
     if (sub === "native") {
-      const sync = await import("../../automod-sync.js");
+      const sync = await import("../../lib/automod-sync.js");
       const action = interaction.options.getString("action");
       if (action === "status") {
         const nat = db.discord.servers[String(interaction.guildId)].settings.automod.native || {};

@@ -306,9 +306,9 @@ try {
 
 if (startWA) (await import("./system/bot/whatsapp/lib/start.js")).default();
 
-if (startDC) (await import("./system/bot/discord/start.js")).default();
+if (startDC) (await import("./system/bot/discord/lib/start.js")).default();
 
-if (startTG) (await import("./system/bot/telegram/start.js")).default();
+if (startTG) (await import("./system/bot/telegram/lib/start.js")).default();
 
 let _mainShuttingDown = false;
 

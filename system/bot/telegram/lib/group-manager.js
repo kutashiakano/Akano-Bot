@@ -1,4 +1,4 @@
-import database from "../../database/index.js";
+import database from "../../../database/index.js";
 import logger from "./logger.js";
 
 const HTML = {

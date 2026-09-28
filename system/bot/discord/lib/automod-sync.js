@@ -1,4 +1,4 @@
-import database from "../../database/index.js";
+import database from "../../../database/index.js";
 
 const INVITE_PATTERNS = ["*discord.gg/*", "*discord.com/invite/*", "*discordapp.com/invite/*"];
 

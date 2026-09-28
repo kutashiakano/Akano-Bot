@@ -1,4 +1,4 @@
-import telegram from "./index.js";
+import telegram from "../index.js";
 
 export default function startTelegram() {
   try {

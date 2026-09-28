@@ -1,4 +1,4 @@
-import discord from "./index.js";
+import discord from "../index.js";
 
 export default function startDiscord() {
   try {

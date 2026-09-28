@@ -1,6 +1,6 @@
 import database from "../../../../database/index.js";
 import { core as fmt, telegram as tgsdk } from "@kutashiakanocanzy/sdk";
-import { renderTelegramWelcome } from "../../welcome-canvas.js";
+import { renderTelegramWelcome } from "../../lib/welcome-canvas.js";
 
 import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
