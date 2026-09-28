@@ -104,7 +104,8 @@ class DiscordBot {
         if (cmd && cmd.name && cmd.execute && !disabled.includes(cmd.name)) {
           const rel = path.relative(commandsDir, file);
           cmd.category = (rel.split(path.sep)[0] || "tools").toLowerCase();
-          global.discordCommands[cmd.name] = cmd;
+          const names = Array.isArray(cmd.command) && cmd.command.length ? cmd.command.map(String) : [String(cmd.name)];
+          for (const n of names) global.discordCommands[n] = cmd;
         }
       } catch (error) {
         console.error(error);

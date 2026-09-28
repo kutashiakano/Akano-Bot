@@ -22,9 +22,10 @@ async function toPng320(buf) {
 }
 
 export default define({
-  name: ["sticker"],
+  name: ["sticker", "wm"],
   category: "sticker",
-  description: "Make sticker",
+  description: "Turn an image into a sticker",
+  examples: [ "/sticker (attach image)" ],
   options: [
     { name: "image", type: 11, description: "Image", required: false },
     { name: "url", type: 3, description: "URL", required: false },

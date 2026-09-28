@@ -26,7 +26,7 @@ const CATS = {
     label: "Music",
     icon: "music",
     blurb: "YouTube Music playback with queue, autoplay, lyrics, and dashboard controls.",
-    usage: "Join a voice channel, then /p <song>. Pick from the list, control via buttons."
+    usage: "Join a voice channel, then /play <song>. Pick from the list, control via buttons."
   },
   images: {
     label: "Images",
@@ -50,8 +50,11 @@ const CATS = {
 
 function groupCommands() {
   const cmds = Object.values(global.discordCommands || {});
+  const seen = new Set;
   const map = new Map;
   for (const c of cmds) {
+    if (seen.has(c)) continue;
+    seen.add(c);
     const cat = (c.category || c.tags?.[0] || "tools").toLowerCase();
     if (!map.has(cat)) map.set(cat, []);
     map.get(cat).push(c);
@@ -100,7 +103,52 @@ function catEmbed(client, cat) {
   return { embed: e, files: files };
 }
 
+function findCommand(q) {
+  const key = String(q || "").trim().toLowerCase().replace(/^\//, "");
+  if (!key) return null;
+  const cmds = global.discordCommands || {};
+  if (cmds[key]) return cmds[key];
+  for (const c of Object.values(cmds)) {
+    const names = Array.isArray(c.command) && c.command.length ? c.command.map(String) : [String(c.name)];
+    if (names.map(n => n.toLowerCase()).includes(key)) return c;
+  }
+  return null;
+}
+
+function usageOf(c) {
+  const name = Array.isArray(c.name) ? c.name[0] : c.name;
+  const opts = Array.isArray(c.options) ? c.options : [];
+  const subs = opts.filter(o => o.type === 1);
+  if (subs.length) return "/" + name + " <" + subs.map(s => s.name).join("|") + ">";
+  const args = opts.filter(o => o.type !== 1).map(o => (o.required ? "<" : "[") + o.name + (o.required ? ">" : "]")).join(" ");
+  return ("/" + name + (args ? " " + args : "")).trim();
+}
+
+function detailEmbed(c) {
+  const name = Array.isArray(c.name) ? c.name[0] : c.name;
+  const names = Array.isArray(c.command) && c.command.length ? c.command.map(String) : [String(name)];
+  const aliases = names.filter(n => n !== name);
+  const lines = [ "**Usage:** `" + usageOf(c) + "`" ];
+  if (aliases.length) lines.push("**Aliases:** " + aliases.map(a => "`/" + a + "`").join(" "));
+  const ex = Array.isArray(c.examples) && c.examples.length ? c.examples : null;
+  if (ex) lines.push("", "**Examples:**", ...ex.map(e => "`" + e + "`"));
+  const cat = (c.category || c.tags?.[0] || "tools").toLowerCase();
+  if (meta(cat) && CATS[cat]) lines.push("", "**Category:** " + meta(cat).label);
+  const e = ui.embed().setColor("#5865F2").setTitle("/" + name).setDescription((c.description || c.help || "No description.") + "\n\n" + lines.join("\n")).setFooter({ text: "Tip: type / and pick the command — no need to memorize" });
+  return e;
+}
+
 async function execute(interaction) {
+  const q = interaction.options?.getString ? interaction.options.getString("command") : null;
+  if (q) {
+    const c = findCommand(q);
+    if (!c) {
+      await interaction.reply({ content: "No command named `" + String(q).slice(0, 50) + "`. Try /help to browse categories.", flags: 64 }).catch(() => {});
+      return;
+    }
+    await interaction.reply({ embeds: [detailEmbed(c)], flags: 64 }).catch(() => {});
+    return;
+  }
   const { embed } = mainEmbed();
   const map = groupCommands();
   const cats = [...map.keys()].sort().slice(0, 25);
@@ -148,6 +196,11 @@ export default define({
   name: ["help"],
   category: "tools",
   description: "The one guide: categories with explanations and usage",
-  options: [],
+  options: [ {
+    name: "command",
+    type: 3,
+    description: "Command name for usage + examples (e.g. play)",
+    required: false
+  } ],
   run: async ctx => execute(ctx.interaction)
 });

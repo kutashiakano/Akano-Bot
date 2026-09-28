@@ -207,7 +207,8 @@ import { defineBot as define } from "@kutashiakanocanzy/sdk";
 export default define({
   name: [ "dl" ],
   category: "tools",
-  description: "Download media via yt-dlp (YouTube, TikTok, IG, X, FB, Spotify, Pinterest, 1752 sites)",
+  description: "Download video/audio (YouTube, TikTok, IG, X, Spotify)",
+  examples: [ "/dl https://www.tiktok.com/..." ],
   options: [ {
     name: "url",
     type: 3,

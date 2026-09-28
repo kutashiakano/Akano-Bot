@@ -216,9 +216,9 @@ export default {
     client.once("clientReady", async () => {
       try {
         global.discord = client;
-        const commandsData = Object.values(global.discordCommands).filter(cmd => cmd && cmd.name && cmd.execute && Array.isArray(cmd.options)).map(cmd => {
+        const commandsData = Object.entries(global.discordCommands).filter(([, cmd]) => cmd && cmd.name && cmd.execute && Array.isArray(cmd.options)).map(([key, cmd]) => {
           const d = {
-            name: cmd.name,
+            name: key,
             description: cmd.description,
             options: cmd.options || []
           };

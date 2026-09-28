@@ -4,9 +4,9 @@ import { formatDuration, bar } from "./utils.js";
 import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
-  name: [ "np" ],
+  name: [ "nowplaying", "np" ],
   category: "music",
-  help: "Show info about the currently playing song",
+  help: "Show the current track",
   options: [],
   run: async ctx => {
     const interaction = ctx.interaction;

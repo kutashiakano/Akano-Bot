@@ -658,9 +658,10 @@ async function execute(interaction) {
 import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
-  name: [ "p" ],
+  name: [ "play", "p" ],
   category: "music",
-  description: "Play music from YouTube, YouTube Music, Spotify, SoundCloud, or any supported URL",
+  description: "Play a track (search, YouTube, Spotify, SoundCloud)",
+  examples: [ "/play bohemian rhapsody", "/play https://open.spotify.com/track/..." ],
   options: [ {
     name: "query",
     type: 3,

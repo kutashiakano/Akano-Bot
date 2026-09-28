@@ -330,7 +330,8 @@ async function handleModal(interaction) {
 const cmd = define({
   name: ["confess"],
   category: "tools",
-  description: "Anonymous confessions with moderation, reports, and review queue",
+  description: "Send an anonymous confession",
+  examples: [ "/confess send titip salam buat Rina", "/confess reply 3733 halo juga" ],
   options: [
     { name: "send", type: 1, description: "Send an anonymous confession", options: [{ name: "message", type: 3, description: "Your confession (posted anonymously)", required: true }, { name: "media", type: 11, description: "Optional image or video to attach", required: false }] },
     { name: "reply", type: 1, description: "Reply anonymously to a confession", options: [{ name: "id", type: 3, description: "Confession number or message link", required: true }, { name: "message", type: 3, description: "Your reply (posted anonymously)", required: true }, { name: "to", type: 4, description: "Quote a specific reply number, example 1 for #2.1", required: false }, { name: "media", type: 11, description: "Optional image or video to attach", required: false }, { name: "color", type: 3, description: "Hex like #9B59B6, CSS name like red, or empty for default", required: false }] },

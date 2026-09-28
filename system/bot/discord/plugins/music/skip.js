@@ -3,7 +3,7 @@ import { card, discord as dcSdk } from "@kutashiakanocanzy/sdk";
 import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
 export default define({
-  name: [ "skip" ],
+  name: [ "skip", "s" ],
   category: "music",
   description: "Skip the currently playing song",
   options: [],

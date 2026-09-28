@@ -73,9 +73,10 @@ async function askGemini(prompt, userId, imagePath) {
 }
 
 export default define({
-  name: [ "gemini" ],
+  name: [ "gemini", "ask" ],
   category: "tools",
-  description: "Chat with Gemini AI (memory per user) or set AI auto-chat channels",
+  description: "Ask Gemini AI (remembers you)",
+  examples: [ "/gemini buatkan pantun", "/ask what is black hole" ],
   options: [
     { name: "chat", type: 1, description: "Ask Gemini anything, text or image", options: [{ name: "prompt", type: 3, description: "Your question or message", required: false }, { name: "media", type: 11, description: "Optional image for Gemini to see", required: false }] },
     { name: "channel", type: 1, description: "Manage AI auto-chat channels (staff)", options: [{ name: "action", type: 3, description: "Add, remove, or show", required: true, choices: [{ name: "add", value: "add" }, { name: "remove", value: "remove" }, { name: "show", value: "show" }] }, { name: "target", type: 7, description: "Channel for add/remove", required: false }] },

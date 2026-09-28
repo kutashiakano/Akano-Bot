@@ -10,7 +10,7 @@ function buildVolumeBar(percent) {
 }
 
 export default define({
-  name: [ "queue" ],
+  name: [ "queue", "q" ],
   category: "music",
   help: "Show the current music queue",
   options: [ {
