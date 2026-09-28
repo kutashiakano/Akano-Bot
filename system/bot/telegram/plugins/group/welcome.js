@@ -1,6 +1,5 @@
 import database from "../../../../database/index.js";
-import { core as fmt, telegram as tgsdk } from "@kutashiakanocanzy/sdk";
-import { renderTelegramWelcome } from "../../lib/welcome-canvas.js";
+import { core as fmt, telegram as tgsdk, cards } from "@kutashiakanocanzy/sdk";
 
 import { defineBot as define } from "@kutashiakanocanzy/sdk";
 
@@ -97,12 +96,7 @@ export default define({
       const tpl = g.welcomeText || global.settings?.telegram?.groupManager?.welcomeText;
       const text = buildText(tpl, ctx.from, ctx.chat, owner, desc, count);
       try {
-        const buf = await renderTelegramWelcome(ctx.api, ctx.from, ctx.chat, {
-          count: count,
-          desc: desc,
-          welcomeTitle: g.welcomeTitle,
-          welcomeCaption: g.welcomeCaption
-        });
+        const buf = await cards.welcome(ctx.from?.first_name || "User", ctx.chat?.title || "Group", Number(count) || 0).catch(() => null);
         if (buf) {
           const file = tgsdk.mediaFile(buf, "welcome.png");
           return ctx.replyWithPhoto(file, {
