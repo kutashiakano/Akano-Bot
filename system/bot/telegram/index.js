@@ -3,7 +3,7 @@ import fs from "fs";
 import os from "os";
 import NodeCache from "node-cache";
 import { pathToFileURL } from "url";
-import logger from "./logger.js";
+import logger from "./lib/logger.js";
 import handler from "./handler.js";
 import { telegram as tgsdk } from "@kutashiakanocanzy/sdk";
 import database from "../../database/index.js";
