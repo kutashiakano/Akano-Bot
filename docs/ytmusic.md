@@ -1,4 +1,4 @@
-# YouTube Music — Dokumentasi Lengkap (Discord) · Indonesia
+# YouTube Music — Full Documentation (Discord) · English
 
 Akano Bot ships a **complete YouTube Music experience** for Discord that works with **your own YouTube account** — no Google API key, no Google Cloud Console project, no third-party service.
 
@@ -60,4 +60,4 @@ Akano Bot ships a **complete YouTube Music experience** for Discord that works w
 | Token invalid after a long idle | Re-run `/account login`; auto-refresh handles normal expiry |
 | Likes not appearing | Ensure you signed in with the account that owns the liked videos |
 
-Related: [docs/cookies.id.md](cookies.id.md) · [docs/adding-a-plugin.id.md](adding-a-plugin.id.md) · `README` → "YouTube Music — Deep Dive"
+Related: [cookies.md](cookies.md) · [adding-a-plugin.md](adding-a-plugin.md) · `README` → "YouTube Music — Deep Dive"

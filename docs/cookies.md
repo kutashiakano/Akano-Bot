@@ -1,33 +1,27 @@
-# Cookies.txt — Mengunduh Media Terproteksi
+# Cookies.txt — Downloading Protected Media (English)
 
-Beberapa sumber memerlukan sesi login untuk mengunduh. Akano Bot membaca file `cookies.txt` di **root proyek** menggunakan format standar **Netscape HTTP Cookie File** (format yang sama yang dipakai yt-dlp dan gallery-dl).
+Some sources require a login session to download. Akano Bot reads a `cookies.txt` from the project root using the standard **Netscape HTTP Cookie File** format (the same format yt-dlp and gallery-dl accept natively).
 
-> File `cookies.txt` sudah ada di `.gitignore` — jangan di-commit.
+## Which sites need it
 
----
-
-## Situs yang butuh cookies
-
-| Sumber | Butuh cookies? | Catatan |
+| Source | Cookies required | Notes |
 | --- | --- | --- |
-| Instagram | ya | Reels, post, story akun private / age-gated |
-| Facebook | ya | Hampir semua video |
-| X / Twitter | ya | Hampir semua media |
-| TikTok | opsional | Ada fallback native; cookies membantu di beberapa region |
-| Pinterest | biasanya | Pin publik bisa tanpa cookies |
-| YouTube / YT Music | tidak | Pakai yt-dlp + yt-dlp-ejs; tidak butuh cookies untuk media publik |
+| Instagram | yes | Reels, posts, stories of private/age-gated accounts |
+| Facebook | yes | Most videos |
+| X / Twitter | yes | Most media |
+| TikTok | optional | Native fallback exists; cookies help with some regions |
+| Pinterest | usually | Public pins work without |
+| YouTube / YT Music | no | Uses yt-dlp + yt-dlp-ejs; no cookies needed for public media |
 
----
+## File location — important
 
-## Letak file — penting
-
-**Satu-satunya lokasi yang dibaca bot adalah root proyek:**
+**The only location the bot reads is the project root:**
 
 ```
 Akano-Bot/
 ├── index.js
 ├── package.json
-├── cookies.txt          ← taruh di sini (sejajar index.js)
+├── cookies.txt          ← put it here (next to index.js)
 ├── system/
 │   └── bot/
 │       ├── discord/plugins/tools/downloader.js      → ../../../../../cookies.txt
@@ -36,12 +30,12 @@ Akano-Bot/
 │           ├── Instagram.js  → ../../../../../cookies.txt
 │           ├── tiktok.js     → ../../../../../cookies.txt
 │           └── youtube.js    → ../../../../../cookies.txt
-└── docs/cookies.md
+└── cookies.id.md
 ```
 
-Penjelasan path di kode (semua resolve ke `Akano-Bot/cookies.txt`):
+Code paths (all resolve to `Akano-Bot/cookies.txt`):
 
-| File kode | Baris | Path di kode |
+| Code file | Line | Path in code |
 | --- | --- | --- |
 | `system/bot/discord/plugins/tools/downloader.js` | ~221 | `path.join(__dirname, "../../../../../cookies.txt")` |
 | `system/bot/telegram/plugins/downloader/index.js` | ~132 | `path.join(__dirname, "../../../../../cookies.txt")` |
@@ -49,22 +43,20 @@ Penjelasan path di kode (semua resolve ke `Akano-Bot/cookies.txt`):
 | `system/bot/whatsapp/plugins/downloader/tiktok.js` | 5 | `path.join(__dirname, "../../../../../cookies.txt")` |
 | `system/bot/whatsapp/plugins/downloader/youtube.js` | 5 | `path.join(__dirname, "../../../../../cookies.txt")` |
 
-> `__dirname` = folder file tersebut. `../../../../../` naik 5 level sampai root proyek. Jika file tidak ada, bot otomatis fallback ke unduhan anonim (hanya media publik).
+> `__dirname` = folder of that file. `../../../../../` goes up 5 levels to the project root. If the file is missing, the bot falls back to anonymous downloads (public media only).
 
-**Jangan taruh di `system/cookies.txt` atau `system/bot/cookies.txt`** — lokasi lama tersebut sudah tidak dibaca lagi sejak unifikasi path.
-
----
-
-## Cara mendapatkan `cookies.txt`
-
-1. Install ekstensi browser yang export format Netscape — mis. [Get cookies.txt LOCALLY](https://github.com/kairi003/Get-cookies.txt-LOCALLY) (Firefox/Chrome).
-2. Login ke situs tujuan (Instagram / Facebook / X) di browser tersebut.
-3. Export dan **simpan sebagai `cookies.txt` di root proyek** (sejajar `index.js`).
-4. Restart bot — tidak perlu konfigurasi lain.
+**Do not put it in `system/cookies.txt` or `system/bot/cookies.txt`** — those legacy locations are no longer read after path unification.
 
 ---
 
-## Format file
+## Obtaining `cookies.txt`
+
+1. Install a browser extension that exports cookies in the Netscape format — e.g. [Get cookies.txt LOCALLY](https://github.com/kairi003/Get-cookies.txt-LOCALLY) (Firefox/Chrome).
+2. Log in to the site (Instagram / Facebook / X).
+3. Export and save as `cookies.txt` in the **project root** (next to `index.js`).
+4. Restart the bot — no other configuration required.
+
+## Format
 
 ```text
 # Netscape HTTP Cookie File
@@ -73,32 +65,22 @@ Penjelasan path di kode (semua resolve ke `Akano-Bot/cookies.txt`):
 .domain.com	TRUE	/	FALSE	1699999999	NAME	VALUE
 ```
 
-- Satu cookie per baris, field dipisah tab: domain, flag include-subdomains, path, flag secure, expiry (unix), name, value.
-- Bot meneruskan file ini langsung ke yt-dlp/gallery-dl, jadi **urutan dan field harus persis** — selalu export, jangan tulis manual.
-
----
+- One cookie per line, fields separated by tabs: domain, include-subdomains flag, path, secure flag, expiry (unix), name, value.
+- The bot passes this file directly to yt-dlp/gallery-dl, so **order and exact fields matter** — always export, never hand-write.
 
 ## Troubleshooting
 
-| Gejala | Solusi |
+| Symptom | Fix |
 | --- | --- |
-| Gagal dengan "login required" | Refresh `cookies.txt` — cookies kadaluarsa setelah **~30 hari** |
-| "HTTP Error 403" di Instagram/Facebook | Re-export tepat setelah login di sesi browser fresh |
-| "Invalid cookies" | Update ekstensi browser dan re-export; pastikan file diawali header `# Netscape HTTP Cookie File` |
-| Error copyright / embargo | Bot tidak akan bypass blokir legal; gunakan sumber lain |
-| File tidak terbaca | Pastikan path `Akano-Bot/cookies.txt` benar (cek `ls -l cookies.txt` di root), permission readable |
+| Download fails with "login required" | Refresh `cookies.txt` — cookies expire after **~30 days** |
+| "HTTP Error 403" on Instagram/Facebook | Re-export right after logging in on a fresh browser session |
+| "Invalid cookies" | Update your browser extension and re-export; check the file starts with the `# Netscape HTTP Cookie File` header |
+| File not found | Verify `Akano-Bot/cookies.txt` exists (`ls -l cookies.txt` at root), readable permissions |
+| Copyright/embargo errors | The bot will not bypass legal blocks; use a different source |
 
----
+## Security
 
-## Keamanan
+- `cookies.txt` contains your session tokens — **do not commit it**. It is gitignored.
+- If the file is missing or empty, Akano Bot simply skips it and falls back to anonymous downloads (public media only).
 
-- `cookies.txt` berisi token sesi — **jangan share / commit**. Sudah di-ignore git.
-- Jika file hilang atau kosong, Akano Bot skip cookies dan fallback ke mode anonim.
-- Ganti cookies secara berkala dan jangan pakai akun utama untuk scraping intensif.
-
----
-
-## Terkait
-
-- [cookies.id.md](cookies.id.md) — versi Bahasa Inggris
-- [ytmusic.id.md](ytmusic.id.md) · [adding-a-plugin.md](adding-a-plugin.md)
+Related: [cookies.id.md](cookies.id.md) — Indonesian version · [ytmusic.md](ytmusic.md) · [adding-a-plugin.md](adding-a-plugin.md)

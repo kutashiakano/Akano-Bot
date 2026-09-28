@@ -1,63 +1,63 @@
-# YouTube Music — Full Documentation (Discord) · English
+# YouTube Music — Dokumentasi Lengkap (Discord) · Indonesia
 
-Akano Bot ships a **complete YouTube Music experience** for Discord that works with **your own YouTube account** — no Google API key, no Google Cloud Console project, no third-party service.
+Akano Bot membawa pengalaman **YouTube Music lengkap** untuk Discord yang berjalan dengan **akun YouTube milikmu sendiri** — tanpa Google API key, tanpa project Google Cloud Console, tanpa layanan pihak ketiga.
 
-## How sign-in works (TV OAuth)
+## Cara kerja sign-in (TV OAuth)
 
-1. The user runs `/account login` in Discord. The bot generates a pairing code using the **YouTube TV device flow** — the same OAuth flow a smart TV uses.
-2. The user visits `youtube.com/pair` and enters the pairing code.
-3. The resulting OAuth tokens are stored **per-user**, encrypted with `YT_SESSION_KEY`, inside the bot database.
-4. The bot refreshes the token automatically when it expires. `refreshAccessToken` (from youtubei.js) scrapes the client id/secret from `youtube.com/tv` — so **no Google Console setup is needed**.
+1. Pengguna menjalankan `/account login` di Discord. Bot membuat kode pairing menggunakan **alur device TV YouTube** — alur OAuth yang sama dipakai smart TV.
+2. Pengguna membuka `youtube.com/pair` dan memasukkan kode pairing.
+3. Token OAuth yang dihasilkan disimpan **per-user**, dienkripsi dengan `YT_SESSION_KEY`, di dalam database bot.
+4. Bot me-refresh token otomatis saat kedaluwarsa. `refreshAccessToken` (dari youtubei.js) mengambil client id/secret dari `youtube.com/tv` — jadi **tidak perlu setup Google Console sama sekali**.
 
 > [!NOTE]
-> The TV scope grants full access (`youtube` + `youtube-paid-content`). Likes, playlists and radio all work with this token. This was found by calling the raw `youtubei/v1` endpoints with a Bearer token — the official youtubei.js music parser ignores TV renderers (`tileRenderer`), which is why the plain `ytmusic.liked` API used to return empty results.
+> Scope TV memberi akses penuh (`youtube` + `youtube-paid-content`). Like, playlist dan radio semuanya jalan dengan token ini. Ini ditemukan dengan memanggil endpoint mentah `youtubei/v1` memakai Bearer token — parser musik resmi youtubei.js mengabaikan renderer TV (`tileRenderer`), makanya API `ytmusic.liked` polos dulu mengembalikan hasil kosong.
 
-## What the user can do
+## Yang bisa dilakukan pengguna
 
-| Feature | Command | Notes |
+| Fitur | Command | Catatan |
 | --- | --- | --- |
-| Sign in / out | `/account login`, `/account logout` | 5-minute pairing window |
-| Private library panel | `/account` | Ephemeral — visible only to the owner; every interaction is owner-gated |
-| Liked songs | `/account liked` | Streamed straight from your YouTube Music liked videos |
-| Your playlists | `/account playlists` | Browse → open → play or add songs |
-| Like/unlike from Discord | Like button on `/account` panel and `/ym` tracks | `like/like` endpoint, params `like` / `indifferent` |
-| Add to playlist | Add button in the library panel | `browse/edit_playlist` + `ACTION_ADD_VIDEO` |
-| Charts | `/ym charts` | Guest browse of `FEmusic_charts` (Trending 20, Daily Top Music Videos, Top 100, …) |
-| Moods & genres | `/ym moods` | Chill, Energize, Focus, Party, Sad, Sleep, Workout + genre tiles → playlist picker |
-| Radio | `/ym radio` | Seamless radio built from the current track or any search query (`next` endpoint + `RDAMVM` playlist) |
-| Search your library | `/lib` | Routes playlist/liked/charts through the TV API when signed in |
+| Masuk / keluar | `/account login`, `/account logout` | Jendela pairing 5 menit |
+| Panel library pribadi | `/account` | Ephemeral — hanya terlihat pemiliknya; setiap interaksi di-gate owner |
+| Lagu disukai | `/account liked` | Streaming langsung dari video yang disukai di YouTube Music |
+| Playlist milikmu | `/account playlists` | Jelajahi → buka → putar atau tambah lagu |
+| Like/unlike dari Discord | Tombol Like di panel `/account` dan track `/ym` | endpoint `like/like`, params `like` / `indifferent` |
+| Tambah ke playlist | Tombol Add di panel library | `browse/edit_playlist` + `ACTION_ADD_VIDEO` |
+| Charts | `/ym charts` | Jelajah guest `FEmusic_charts` (Trending 20, Daily Top Music Videos, Top 100, …) |
+| Moods & genre | `/ym moods` | Chill, Energize, Focus, Party, Sad, Sleep, Workout + tile genre → pemilih playlist |
+| Radio | `/ym radio` | Radio mulus dari track berjalan atau query apa pun (endpoint `next` + playlist `RDAMVM`) |
+| Cari di library | `/lib` | Mengarahkan playlist/liked/charts lewat TV API saat sudah sign-in |
 
-## Implementation (`system/scrapers/src/ytsession.js`)
+## Implementasi (`system/scrapers/src/ytsession.js`)
 
-- **`tvReq`** — raw `https://www.youtube.com/youtubei/v1/...` POST with `Authorization: Bearer <token>`, `TVHTML5` client context and a Firefox UA. Auto-refreshes on HTTP 401.
-- **`tvRaw`** — generic `browse` wrapper (library, playlists, `VL<id>` playlist detail).
-- **`walk` / `tileTitle` / `findDeep`** — JSON walkers that collect `tileRenderer` nodes the way the real TV app renders them.
-- **`likes`, `plists`, `plist`** — liked songs, playlist list (IDs are returned without the `VL` prefix), and a single playlist's tracks.
-- **`like`, `addPl`** — like/unlike a song, add a video to one of your playlists.
-- **`moods`, `moodPls`** — guest `WEB_REMIX` browse with the public ytmusicapi key; mood tiles use `musicNavigationButtonRenderer` (the title lives in `buttonText`, and every mood shares one `browseId` — the **params** is the actual selector).
-- **`radio`** — `next` endpoint with `playlistId: RDAMVM<videoId>`; the seed track is filtered out before enqueueing.
-- **`newPl`** — playlist **creation** is deliberately blocked by Google for TV devices (`400 Precondition check failed`), so it returns a friendly explanation instead.
+- **`tvReq`** — POST mentah `https://www.youtube.com/youtubei/v1/...` dengan `Authorization: Bearer <token>`, konteks klien `TVHTML5` dan UA Firefox. Auto-refresh saat HTTP 401.
+- **`tvRaw`** — wrapper `browse` generik (library, playlist, detail playlist `VL<id>`).
+- **`walk` / `tileTitle` / `findDeep`** — JSON walker yang mengumpulkan node `tileRenderer` persis seperti render aplikasi TV asli.
+- **`likes`, `plists`, `plist`** — lagu disukai, daftar playlist (ID dikembalikan tanpa prefix `VL`), dan track satu playlist.
+- **`like`, `addPl`** — like/unlike lagu, tambah video ke playlist milikmu.
+- **`moods`, `moodPls`** — jelajah guest `WEB_REMIX` dengan key ytmusicapi publik; tile mood memakai `musicNavigationButtonRenderer` (judul ada di `buttonText`, dan semua mood berbagi satu `browseId` — **params**-nya yang jadi selector sebenarnya).
+- **`radio`** — endpoint `next` dengan `playlistId: RDAMVM<videoId>`; track seed difilter sebelum masuk antrean.
+- **`newPl`** — pembuatan playlist **sengaja diblokir** Google untuk perangkat TV (`400 Precondition check failed`), jadi dikembalikan penjelasan ramah.
 
 ## Environment variables
 
-| Variable | Purpose |
+| Variable | Tujuan |
 | --- | --- |
-| `YT_SESSION_KEY` | 32-char hex used to encrypt per-user OAuth tokens (`openssl rand -hex 16`) |
+| `YT_SESSION_KEY` | hex 32-char untuk mengenkripsi token OAuth per-user (`openssl rand -hex 16`) |
 
-## Music playback with the account
+## Pemutaran musik dengan akun
 
-- `/p <query|url>` plays with smart Spotify-link resolution; the YTM account token is used automatically when the result needs it.
-- `/ym` family (charts, moods, radio, search) plays directly through the engine (`system/bot/discord/plugins/music/engine.js`).
-- Playback, queue, volume, loop, shuffle and autoplay state are saved to disk and restored after restart.
+- `/p <query|url>` diputar dengan resolusi link Spotify pintar; token akun YTM dipakai otomatis saat hasil membutuhkannya.
+- Keluarga `/ym` (charts, moods, radio, search) diputar langsung lewat engine (`system/bot/discord/plugins/music/engine.js`).
+- State playback, antrean, volume, loop, shuffle dan autoplay disimpan ke disk dan dipulihkan setelah restart.
 
 ## Troubleshooting
 
-| Symptom | Fix |
+| Gejala | Perbaikan |
 | --- | --- |
-| `/ym` says "sign in first" | Run `/account login` once; charts and moods work without login, radio needs an account |
-| Pairing code expired | Re-run `/account login` (5-minute window) |
-| "400 Precondition check failed" | This is Google blocking playlist *creation* for TV devices — by design |
-| Token invalid after a long idle | Re-run `/account login`; auto-refresh handles normal expiry |
-| Likes not appearing | Ensure you signed in with the account that owns the liked videos |
+| `/ym` bilang "sign in first" | Jalankan `/account login` sekali; charts dan moods jalan tanpa login, radio butuh akun |
+| Kode pairing kedaluwarsa | Jalankan ulang `/account login` (jendela 5 menit) |
+| "400 Precondition check failed" | Ini Google yang memblokir *pembuatan* playlist untuk perangkat TV — by design |
+| Token invalid setelah idle lama | Jalankan ulang `/account login`; auto-refresh menangani expiry normal |
+| Like tidak muncul | Pastikan sign-in dengan akun pemilik video yang di-like |
 
-Related: [docs/cookies.id.md](cookies.id.md) · [docs/adding-a-plugin.id.md](adding-a-plugin.id.md) · `README` → "YouTube Music — Deep Dive"
+Related: [cookies.md](cookies.md) · [adding-a-plugin.md](adding-a-plugin.md) · `README` → "YouTube Music — Deep Dive"

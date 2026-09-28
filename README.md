@@ -10,7 +10,7 @@
 
 **Keywords:** `whatsapp bot` `telegram bot` `discord bot` `baileys` `multi-platform bot` `whatsapp bot framework` `telegram bot framework` `discord bot framework` `ai chat bot` `gemini bot` `media downloader` `youtube downloader` `tiktok downloader` `instagram downloader` `group management` `moderation bot` `music bot` `youtube music` `automod` `sticker bot`
 
-> **Language:** [English](README.md) · [Bahasa Indonesia](readme-id.md) · [Docs: Adding a Plugin](docs/adding-a-plugin.id.md) · [Docs: Menambahkan Plugin](docs/adding-a-plugin.md)
+> **Language:** [English](README.md) · [Bahasa Indonesia](docs/README.id.md) · [Docs: Adding a Plugin](docs/adding-a-plugin.md) · [Docs: Menambahkan Plugin](docs/adding-a-plugin.id.md)
 
 ---
 

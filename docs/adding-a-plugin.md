@@ -1,36 +1,32 @@
-# Adding a Plugin
+# Adding a Plugin (English)
 
-Satu file plugin, jalan di **tiga platform** (WhatsApp, Telegram, Discord) tanpa modifikasi. Format unified ini dibuat lewat `define()` dari `system/bot/plugin.js`, dan tidak perlu tahu platform apa yang sedang berjalan (platform agnostic — lihat AGENTS.md §2).
+One plugin file, runs on **all three platforms** (WhatsApp, Telegram, Discord) with zero modifications. The unified format is built with `define()` from `system/bot/plugin.js`, and the plugin never needs to know which platform is currently running (platform agnostic — see AGENTS.md §2).
 
-Semua plugin disimpan di `system/bot/<platform>/plugins/` (atau subfolder di dalamnya). Jangan pernah membuat folder terpisah per platform.
+All plugins live in `system/bot/<platform>/plugins/` (or a subfolder). Never create a separate folder per platform.
 
----
-
-## Quick Start
-
-Contoh canonical gaya Akano dengan `usage`, `async`, dan `use`. `define()` menerima key `run` atau `async` (alias), dan memanggilnya dengan **satu objek ctx** yang bisa langsung di-destructure.
+The canonical file shape (this is the exact standard every plugin in this repo follows):
 
 ```javascript
-// system/bot/whatsapp/plugins/tools/ping.js (atau folder platform lain)
-const { define } = require("../../../sdk"); // depth 2 folder; lihat §7
+// system/bot/whatsapp/plugins/tools/ping.js (or any platform folder)
+const { define } = require("../../../sdk"); // depth-2 folder; see §7
 
 module.exports = define({
-  usage: ["ping"],       // command / alias (bisa pakai name: [...] juga)
-  use: "text",           // hint input yang dibutuhkan (tampil di menu)
-  category: "tools",     // tag kategori
-  help: "Cek respon bot",
-  wait: true,            // tampilkan react 🕒 saat proses
-  // options + required: divalidasi di SEMUA platform, hasilnya masuk ke ctx.named
+  usage: ["ping"],       // command / alias (name: [...] also works)
+  use: "text",           // input hint shown in the menu
+  category: "tools",     // menu category
+  help: "Check bot response",
+  wait: true,            // shows a 🕒 react while processing
+  // options + required are validated on ALL platforms, mapped into ctx.named
   options: [
-    { name: "text", desc: "Teks tambahan (opsional)", required: false },
+    { name: "text", desc: "Extra text (optional)", required: false },
   ],
   async: async ({ text, args, named, reply, Utils, sock }) => {
-    // text  : string, hasil join args
-    // args  : array argumen posisi
-    // named : { text: "..." } hasil mapping dari options
-    // reply : kirim pesan balasan (resolve safe di semua platform)
-    // Utils : = fmt (system/bot/format.js), pakai Utils.texted / Utils.example
-    // sock  : client aktif platform ini (WA: sock, TG: bot, Discord: client)
+    // text  : string, join of all positional args
+    // args  : array of positional arguments
+    // named : { text: "..." } mapped from options
+    // reply : send a reply (safe-resolving on every platform)
+    // Utils : = fmt (system/bot/format.js), use Utils.texted / Utils.example
+    // sock  : the live platform client (WA socket, TG bot, Discord client)
     try {
       const msg = text ? `${text}\n\n` : "";
       const status = named.text || args[0] || "online";
@@ -39,182 +35,109 @@ module.exports = define({
           `\t◦  *Status* : ✅ ${Utils.texted("mono", status)}`
       );
     } catch (e) {
-      return reply(Utils.jsonFormat(e)); // fail-soft, jangan throw
+      return reply(Utils.jsonFormat(e)); // fail-soft, never throw
     }
   },
 });
 ```
 
-> Catatan: **semua plugin di repo ini sudah memakai bentuk canonical `define()` ini** (key `usage`/`name`, `category`, `help`, gates, `options`, handler `async`). Bentuk lama per-platform (`module.exports = handler` + `handler.help/tags/command` di WA, `module.exports = { run: async (ctx, args) => ... }` di TG, `module.exports = { execute(interaction) }` di Discord) sudah dikonversi otomatis ke bentuk ini. Plugin baru cukup langsung pakai `define()` seperti contoh di atas.
+> Note: all plugins in this repository consistently use this canonical `define()` shape (name/usage keys, category, help, gates, options, async handler). The old per-platform shapes (`module.exports = handler` + `handler.help/tags/command` on WA, `module.exports = { run: async (ctx, args) => ... }` on TG, `module.exports = { execute(interaction) }` on Discord) were converted to it automatically.
 
 ---
 
 ## Full Option Reference
 
-Semua key di bawah adalah key milik objek `m` yang dilewatkan ke `define(m)`:
+Every key below is a member of the object `m` passed to `define(m)`:
 
-| Key | Tipe | Default | Behavior |
+| Key | Type | Default | Behavior |
 | --- | --- | --- | --- |
-| `name` | string \| string[] | `"unnamed"` | Nama command + alias. `names[0]` adalah nama utama. |
-| `usage` | string \| string[] | — | Alias dari `name` (dipakai sebagai nama utama & trigger). |
-| `command` | string \| string[] | — | Fallback bila `name` dan `usage` tidak ada. |
-| `category` | string | `"tools"` | Kategori, menjadi `tags[0]` (untuk menu). |
-| `help` | string \| string[] | — | Deskripsi; fallback ke `desc`, lalu join nama. |
-| `desc` / `description` | string | — | Alias untuk `help`. |
-| `options` | array | `[]` | `{ name, type?, desc?, required?, choices? }`. `type` default `3` (string). **Option `required: true` divalidasi otomatis di semua platform** — di WA/TG dipetakan posisional dari `args` ke `ctx.named`, yang missing akan menolak pesan dengan pesan "Missing required ...". |
-| `owner` | boolean | `false` | Hanya owner bot yang boleh pakai. |
-| `rowner` | boolean | `false` | Gate owner (reserved, divalidasi middleware). |
-| `premium` | boolean | `false` | Hanya pengguna premium. |
-| `group` | boolean | `false` | Hanya di dalam grup. |
-| `admin` | boolean | `false` | Hanya admin grup. |
-| `private` | boolean | `false` | Hanya chat pribadi. |
-| `botAdmin` | boolean | `false` | Bot harus jadi admin. |
-| `reg` | boolean | `false` | User harus terdaftar dulu. |
-| `limit` | boolean | `false` | Menghabiskan limit harian user. |
-| `cooldown` | number | `0` | Cooldown dalam milidetik. |
-| `example` / `use` | string | `""` | `example = m.example \|\| m.use`; `use` juga disimpan terpisah (hint input). Dipakai menu/help. |
-| `wait` | boolean | `false` | Tampilkan react/pesan 🕒 saat diproses. |
-| `hidden` | boolean | `false` | Sembunyikan dari daftar menu. |
-| `error` | number | `0` | Penghitung error (passthrough ke registry). |
-| `before` | `async (ctx, extra) => boolean` | — | **Pre-hook** — dijalankan sebelum `run`. Return `true` untuk stop. Tersedia di **semua platform**: WA `before(m, { budy })` (dipanggil di `handler.js:368/434` untuk `plugins.before` global & `pl.before` per-plugin), TG `before(ctx, { budy })` (`handler.js:164`), DC `before(interaction, { budy })` (`handler.js:229` — `budy` = `interaction.options.getString("query")`). |
-| `run` / `async` | `async (ctx) => {}` | no-op | **Executor.** Keduanya diterima; `async` adalah alias gaya Akano. Dijalankan dengan satu argumen `ctx`. |
+| `name` | string \| string[] | `"unnamed"` | Command name + aliases. `names[0]` is the main name. |
+| `usage` | string \| string[] | — | Alias of `name` (used as main name & trigger). |
+| `command` | string \| string[] | — | Fallback when `name` and `usage` are absent. |
+| `category` | string | `"tools"` | Category, becomes `tags[0]` (menu grouping). |
+| `help` | string \| string[] | — | Description; falls back to `desc`, then joined names. |
+| `use` | string | — | Usage hint shown in menus; becomes `example` shortcut. |
+| `example` | string | — | Full example line (`%cmd` is replaced with the prefix/command). |
+| `options` | array | `[]` | Slash-command options (name, type, desc, required, choices). Mapped to `named` on all platforms. |
+| `run` | fn | no-op | Executor. Receives one ctx argument. |
+| `async` | fn | no-op | Alias of `run`. |
+| `owner` | bool | `false` | Owner-only gate. |
+| `rowner` | bool | `false` | Real-owner-only gate. |
+| `premium` | bool | `false` | Premium-only gate. |
+| `group` | bool | `false` | Group-only gate. |
+| `admin` | bool | `false` | Group-admin gate (TG/DC). |
+| `botAdmin` | bool | `false` | Bot must be group admin (WA). |
+| `private` | bool | `false` | Private-chat-only gate. |
+| `reg` | bool | `false` | User must be registered. |
+| `cooldown` | number | `0` | Cooldown in ms (TG/DC). |
+| `wait` | bool | `false` | Shows 🕒 while processing. |
+| `hidden` | bool | `false` | Hides the command from menus. |
+| `before` | `async (ctx, extra) => bool` | — | Optional pre-hook (**all platforms**): return `true` to stop. WA `before(m, { budy })` (`handler.js:368/434` — `plugins.before` global & `pl.before` per-plugin), TG `before(ctx, { budy })` (`handler.js:164`), DC `before(interaction, { budy })` (`handler.js:229`, `budy` = `options.getString("query")`). |
+| any other key | — | — | Passed through onto the exported phase object. |
 
-Key lain yang tidak ada di daftar tetap **di-pass-through** (mis. `customPrefix`, `exp`, `fail`) dan tersedia di objek plugin.
+## Execution context (ctx)
 
----
+The handler receives **one object** you can destructure. Same fields on every platform:
 
-## The ctx Object
-
-Objek `ctx` (satu-satunya argumen `run`/`async`) berisi:
-
-| Field | Platform | Keterangan |
-| --- | --- | --- |
-| `platform` | semua | `"discord"` \| `"whatsapp"` \| `"telegram"`. |
-| `m` | WA | Pesan WA mentah (punya `m.reply`, `m.sender`, `m.pushName`, `m.chat`). |
-| `that` | WA | Module handler lama (untuk `this`). |
-| `props` | WA | Props command (`cmd`): `{ args, text, command, sock, isOwner, isPrems, isAdmin, isBotAdmin }`. |
-| `ctx` | TG | Context Telegram (punya `ctx.reply`, `ctx.from`, dst). |
-| `interaction` | Discord | Objek `Interaction` discord.js. |
-| `args` | semua | Array argumen posisi. |
-| `named` | semua | Object hasil mapping dari `options` (key = nama option). |
-| `text` | semua | `args.join(" ")` (WA: `cmd.text`). |
-| `command` | WA, TG | Nama command yang dipanggil (TG diambil dari `ctx.match[0]`, prefix `/` di-strip). |
-| `user` | semua | WA: `m.sender`; TG: `ctx.from.id`; Discord: `interaction.user`. |
-| `userId` | Discord | `interaction.user.id`. |
-| `guild` / `channel` | Discord | Guild & channel tempat command dijalankan. |
-| `sock` / `client` | semua | Client aktif: WA `cmd.sock`, TG `ctx.telegram`, Discord `interaction.client`. |
-| `Utils` | semua | Module `system/bot/format.js` (=`fmt`). |
-| `setting` | semua | `global.settings \|\| {}`. |
-| `Config` | semua | `global.config \|\| null`. |
-| `reply(content, extra?)` | semua | Reply pesan. Discord: `extra.ephemeral` untuk reply tersembunyi. Selalu resolve (tidak throw). |
-| `editReply(content)` | Discord | Edit reply setelah `deferReply()`/reply. |
-| `usage()` | semua | String `"nama <opt> [opt]"` dibangun dari nama utama + options. |
-| `fmt` | semua | Sama dengan `Utils`. |
-| `mbuilder`, `bbuilder`, `abuilder`, `ebuilder`, `modal`, `textInput` | semua | Builder Discord (`StringSelectMenuBuilder`, `ButtonBuilder`, `ActionRowBuilder`, `EmbedBuilder`, `ModalBuilder`, `TextInputBuilder`) — di-spread langsung ke ctx dari `system/bot/djs.js`. |
-
----
-
-## Visual Style Guidelines
-
-Salinan verbatim dari **AGENTS.md §1.5** — wajib dipatuhi **SEMUA** plugin:
-
-> - **Error / Warning**: Gunakan emoji `🚩` (Contoh: `Utils.texted('bold', '🚩 Invalid input.')`)
-> - **Processing / React**: Gunakan emoji `🕒` saat mengirim react atau pesan menunggu.
-> - **Section Header**: Gunakan karakter `乂` diikuti spasi dan teks kapital dengan spasi antar huruf (Contoh: `乂  *U S E R - P R O F I L E*`)
-> - **List Bullet**: Gunakan karakter tab (`\t`) diikuti karakter `◦` dan spasi (Contoh: `\t◦  *Name* : ${m.pushName}`)
-> - **Menu Tree**: Gunakan struktur pohon `┌  ◦`, `│  ◦`, dan `└  ◦` untuk daftar command.
-> - **Emphasis**: Selalu gunakan `Utils.texted('bold', text)` untuk menonjolkan kata kunci.
-> - **Footer**: Selalu akhiri pesan informasi panjang dengan variabel footer (misal: `global.footer` atau `setting.footer`).
-
-Contoh penerapan (kombinasi `乂`, tab + `◦`, footer):
-
-```javascript
-let caption = `乂  *U S E R - P R O F I L E*\n\n`;
-caption += `\t◦  *Name* : ${m.pushName}\n`;
-caption += `\t◦  *Limit* : ${Utils.formatNumber(u.limit)}\n\n`;
-caption += global.footer;
-```
-
----
-
-## SDK & Shortcuts
-
-`system/bot/sdk/index.js` menyediakan **satu import** untuk semua kebutuhan:
-
-```javascript
-const sdk = require("../../../sdk"); // depth 2 folder, sesuaikan kedalaman
-const { define, Utils, fmt } = sdk;
-```
-
-Ekspor SDK (lihat `system/bot/sdk/index.js`):
-
-| Member | Keterangan |
+| Field | Description |
 | --- | --- |
-| `define` | API plugin unified (dari `system/bot/plugin.js`). |
-| `Utils` / `fmt` | Module `system/bot/format.js`. |
-| `version` | Versi dari `package.json`. |
-| `settings()` / `config()` | `global.settings` / `global.config`. |
-| `owners()` | Array owner (WA + Discord + TG). |
-| `Database` / `getDB()` | Abstraksi database (`system/database`). |
-| `wa()` / `ok()` | Socket WhatsApp (`global.sock`). |
-| `walib()` | Lazy `require("../whatsapp/lib")` — gabungan lib WA ke SDK biar simple: `makeWASocket`, `utils` (`downloadStatus`), `converter` (`ffmpeg`/`sticker`), `serializer` (`serializeM`/`smsg`), `auth`/`socket`/`events`. Dipakai WA plugin via `sdk.walib().utils` atau `require("../../lib")` tetap jalan. |
-| `tg()` | Bot Telegram (`global.telegramBot.bot`). |
-| `dc()` | Client Discord (`global.discordBot.client`). |
-| `libs()` | `{ baileys, grammy, discord }` (lazy require, aman null). |
-| `Builders()` | Builder Discord dari `system/bot/djs.js`. |
-| `mbuilder` ... `textInput` | Getter langsung untuk builder Discord. |
+| `platform` | `"whatsapp"` \| `"telegram"` \| `"discord"` |
+| `m` / `ctx` / `interaction` | Native message (WA), Telegram context, or Discord interaction |
+| `args` | Positional arguments array (options values on Discord) |
+| `named` | `{}` mapped from `options` — `options` therefore work on WA/TG too |
+| `text` | Joined args string |
+| `command` | Triggered command name |
+| `user` | Sender id (WA number, TG id, DC user object) |
+| `isOwner`, `isPrems`, `isAdmin`, `isBotAdmin` | Computed permission flags (WA) |
+| `sock` / `client` | Live client: Baileys socket, Telegram bot, or discord.js client |
+| `reply(text)` | Safe reply helper (resolves on all platforms) |
+| `editReply(text)` | Discord: edit the pending reply |
+| `Utils` | = `fmt` (formatters) |
+| `setting` / `Config` | Runtime settings / config |
+| `usage()` | Generated usage string from name + options |
 
-Shortcut penting:
+On Discord the builders are attached to `sock`/`client` for compact imports:
 
-- Builder Discord juga **di-spread ke ctx** — `const { mbuilder, abuilder } = c;` langsung jalan. Atau ambil via `require("<path>/djs")` (lihat §7).
-- `Utils.texted(style, text)` — style: `bold`, `italic`, `mono`, `strike`, `underline`, `quote`, `code` (format.js:53).
-- `Utils.example(isPrefix, command, botname)` — `"Contoh: .cmd botname"` (format.js:136).
-- `Utils.sec(title)` + `Utils.panel(title, lines)` untuk section/menu.
-- `Utils.status(key)` — pesan gate siap pakai (`owner`, `group`, `limit`, dll).
-- `Utils.toDate(ms)`, `toTime(ms)`, `timeReverse(ms)`, `formatNumber(n)`, `isUrl(str)`, `jsonFormat(err)`.
-
-> ⚠️ **JANGAN** mengimpor `baileys`, `grammy`, atau `discord.js` langsung dari dalam folder plugin (AGENTS.md §10). Semua akses lewat `djs.js` / `sdk` / ctx (`sock`, `client`).
-
----
-
-## Platform-Specific Request Shapes
-
-Satu `define()` dijalankan berbeda per platform:
-
-- **WhatsApp** — `run(ctx)` dipanggil sekali per pesan. `ctx` berisi `{ m, that, props, args, named, text, command, user, sock, isOwner, isPrems, isAdmin, isBotAdmin, reply, ... }`. Handler lama `module.exports = handler` (dengan `handler.help/tags/command`) di-wrap jadi `run: (c) => orig.apply(c.that, [c.m, c.props])`.
-- **Telegram** — `run(ctx)` dengan `ctx.ctx` = context telegram (punya `.reply`), `args` = argumen posisi, `command` tanpa `/`. Handler lama `run: async (ctx, args)` di-wrap jadi `run: async (c) => orig.run(c.ctx, c.args)`.
-- **Discord** — `run(ctx)` dengan `ctx.interaction` + `userId/guild/channel` + `editReply` + builder spread. Plugin gaya lama `module.exports = { name, description, options, execute(interaction) }` di-wrap jadi `run: (c) => orig.execute(c.interaction)`. Builder diambil dari `require(".../djs")` atau langsung dari ctx (`c.mbuilder`); objek discord.js (client, rest, guild) diakses via `ctx.client` / `ctx.interaction`.
-
-**Relative import paths** (verifikasi langsung dari layout folder):
-
-| Lokasi plugin | `plugin.js` | `sdk` | `djs.js` | `database` |
-| --- | --- | --- | --- | --- |
-| `system/bot/<platform>/plugins/x.js` (depth 1) | `require("../../plugin")` | `require("../../sdk")` | `require("../../djs")` | `require("../../../database")` |
-| `system/bot/<platform>/plugins/<sub>/x.js` (depth 2) | `require("../../../plugin")` | `require("../../../sdk")` | `require("../../../djs")` | `require("../../../../database")` |
-
-Contoh nyata di repo:
-
-```javascript
-// system/bot/discord/plugins/tools/status.js (depth 2)
-const { EmbedBuilder, ChannelType } = global.djs;
-const database = require("../../../../database");
-
-// system/bot/whatsapp/plugins/tools/ping.js (depth 2)
-const { define } = require("../../../plugin");
-
-// system/bot/telegram/plugins/downloader/youtube.js (depth 2)
-const { define } = require("../../../plugin");
+```js
+const { mbuilder, bbuilder, abuilder, ebuilder, modal, textInput } = sock;
+// StringSelectMenuBuilder / ButtonBuilder / ActionRowBuilder / EmbedBuilder / ModalBuilder / TextInputBuilder
 ```
 
-Aturan: dari file plugin, naik `..` sekali per level folder (`plugins/` = level 1 → 1x `..`), lalu temukan target di `system/bot/` (`plugin.js`, `djs.js`, `sdk/`) atau `system/` (`database`).
+## Visual Style (must be consistent — AGENTS.md §1.5)
 
-> Builder Discord **tidak di-import** — `global.djs` dipasang saat boot (satu sumber: `system/bot/djs.js`), dan di dalam handler pakai `sock.mbuilder/bbuilder/abuilder/ebuilder`.
+- 🚩 for error/warning replies, 🕒 for processing/wait messages.
+- 乂 as section header, ◦ as bullet, menu tree with ┌/│/└.
+- Use `Utils.texted('bold', ...)`, `Utils.example(...)`, `Utils.status(...)`.
 
-## Dokumen lain
+## SDK (`system/bot/sdk`)
 
-- [adding-a-plugin.id.md](adding-a-plugin.id.md) — versi Bahasa Inggris
-- [cookies.md](cookies.md) — `cookies.txt` untuk unduhan Instagram/Facebook/X (lengkap dengan letak file `../../../../../cookies.txt`)
-- [cookies.id.md](cookies.id.md) — English version
-- [ytmusic.id.md](ytmusic.id.md) — dokumentasi lengkap YouTube Music (Discord)
+Plugins need just **one import**:
 
-> **package.json**: edit langsung `Akano-Bot/package.json` — dependency yang tidak pernah di-`require` sudah dihapus (`discord-gamecord`, `libsodium-wrappers`, `link-preview-js`, `lowdb`, `opusscript`, `prism-media`). Jika menambah plugin baru dan butuh package baru, cukup `npm i <pkg>` lalu `require` via SDK/`libs()` — jangan import langsung di plugin (ikuti AGENTS.md §10).
+```js
+const { define, Utils, mbuilder, abuilder, Database, wa, tg, dc, libs } = require("../../../sdk");
+
+module.exports = define({
+  usage: ["ping"],
+  category: "tools",
+  async: async ({ args, named, reply, sock }) => {
+    // ...
+  },
+});
+```
+
+SDK exports: `define`, `Utils` (= `fmt`), `fmt`, `settings()`, `config()`, `owners()`, `Database`/`getDB()`, live platform accessors `wa()`/`ok()`/`walib()`/`tg()`/`dc()`, lazy `libs()` (`{ baileys, grammy, discord }`), and the Discord builders. `walib()` is the WA lib merged into the SDK (`makeWASocket`, `utils`, `converter`, `serializer`, etc. — lazy `require("../whatsapp/lib")`).
+
+## Import path cheatsheet
+
+| File location | define / sdk | djs builders | database |
+| --- | --- | --- | --- |
+| `plugins/x.js` | `../../plugin` (or `../../sdk`) | `global.djs` | `../../../database` |
+| `plugins/<sub>/x.js` | `../../../plugin` (or `../../../sdk`) | `global.djs` | `../../../../database` |
+
+> Builders are never imported directly: `global.djs` is attached at boot (single source `system/bot/djs.js`), and inside handlers prefer `sock.mbuilder/bbuilder/abuilder/ebuilder`.
+
+See also:
+
+- [adding-a-plugin.id.md](adding-a-plugin.id.md) — Indonesian version
+- [cookies.id.md](cookies.id.md) — cookies.txt for downloads
+- [ytmusic.id.md](ytmusic.id.md) — full YouTube Music (Discord) documentation

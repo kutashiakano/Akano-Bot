@@ -10,7 +10,7 @@
 
 **Kata kunci:** `bot whatsapp` `bot telegram` `bot discord` `baileys` `bot multi-platform` `framework bot whatsapp` `framework bot telegram` `framework bot discord` `bot chat ai` `bot gemini` `pengunduh media` `pengunduh youtube` `pengunduh tiktok` `pengunduh instagram` `manajemen grup` `bot moderasi` `bot musik` `youtube music` `automod` `bot stiker`
 
-> **Bahasa:** [English](README.md) · [Bahasa Indonesia](readme-id.md) · [Docs: Adding a Plugin](docs/adding-a-plugin.id.md) · [Docs: Menambahkan Plugin](docs/adding-a-plugin.md)
+> **Bahasa:** [English](../README.md) · [Bahasa Indonesia](README.id.md) · [Docs: Adding a Plugin](adding-a-plugin.md) · [Docs: Menambahkan Plugin](adding-a-plugin.id.md)
 
 ---
 
