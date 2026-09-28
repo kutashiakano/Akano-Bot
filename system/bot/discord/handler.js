@@ -645,7 +645,7 @@ export default {
         const sid = String(interaction.customId || "");
         if (sid.startsWith("music_dash_addpl_pick:")) {
           try {
-            const { default: engine } = await import("./plugins/music/engine.js");
+            const engine = await import("./plugins/music/engine.js");
             const q = engine.queues.get(interaction.guildId);
             const fakeQ = q || {
               textChannel: interaction.channel,
