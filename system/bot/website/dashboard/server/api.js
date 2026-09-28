@@ -12,7 +12,30 @@ import database from "../../../../database/index.js";
 import cleaner from "../../../../core/cleaner.js";
 import canvasMod from "../../../../scrapers/src/canvas.js";
 
-const PKG_FILE = path.join(import.meta.dirname, "../../../../../package.json");
+const COOKIES_PATH = path.join(import.meta.dirname, "../../../../../cookies.txt");
+
+function cookiesStatus() {
+  try {
+    if (fs.existsSync(COOKIES_PATH)) {
+      const st = fs.statSync(COOKIES_PATH);
+      const n = String(fs.readFileSync(COOKIES_PATH, "utf8")).split("\n").filter(l => l.trim() && !l.trim().startsWith("#")).length;
+      return { installed: true, count: n, sizeKB: Math.round(st.size / 1024 * 10) / 10, updated: st.mtime.toISOString().slice(0, 10) };
+    }
+  } catch {}
+  return { installed: false, count: 0, sizeKB: 0, updated: null };
+}
+
+function validateCookies(text) {
+  const lines = String(text || "").split("\n").map(l => l.trim()).filter(Boolean);
+  if (!lines.length) return { ok: false, reason: "Empty file." };
+  const head = lines.find(l => l.startsWith("#"));
+  if (!head || !/netscape/i.test(head)) return { ok: false, reason: "Missing '# Netscape HTTP Cookie File' header." };
+  const rows = lines.filter(l => !l.startsWith("#"));
+  if (!rows.length) return { ok: false, reason: "No cookie rows found." };
+  const bad = rows.filter(l => l.split("\t").length < 6);
+  if (bad.length > rows.length / 2) return { ok: false, reason: "Rows are not tab-separated (broken copy-paste?)." };
+  return { ok: true, count: rows.length };
+}
 const SCHEMA_FILE = path.join(import.meta.dirname, "..", "config", "schema.json");
 
 let _PN = null;
@@ -1027,6 +1050,7 @@ function handleApi(req, res, url, send) {
   }
   if (p === "/api/audit") return send(res, 200, store.readAudit(120));
   if (p === "/api/backups") return send(res, 200, store.listBackups());
+  if (p === "/api/cookies") return send(res, 200, cookiesStatus());
   return null;
 }
 
@@ -1046,6 +1070,21 @@ async function handleAction(req, res, url, body, send) {
       ok: true,
       message: "Exiting; supervisor should restart."
     });
+  }
+  if (p === "/api/cookies/save") {
+    try {
+      const content = String((body && body.content) || "");
+      if (!content.trim()) return send(res, 400, { ok: false, message: "Empty content." });
+      if (content.length > 60000) return send(res, 400, { ok: false, message: "Too large (max 60KB)." });
+      const v = validateCookies(content);
+      if (!v.ok) return send(res, 400, { ok: false, message: "Invalid cookies.txt: " + v.reason });
+      if (fs.existsSync(COOKIES_PATH)) fs.copyFileSync(COOKIES_PATH, COOKIES_PATH + ".bak");
+      fs.writeFileSync(COOKIES_PATH, content.replace(/\r\n/g, "\n"));
+      store.audit("cookies.save", v.count + " cookies");
+      return send(res, 200, { ok: true, count: v.count, status: cookiesStatus() });
+    } catch (e) {
+      return send(res, 500, { ok: false, message: String((e && e.message) || e).slice(0, 160) });
+    }
   }
   if (p === "/api/settings/save") {
     try {

@@ -46,7 +46,7 @@ const ICONS = {
   about: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>'
 };
 
-const NAV = [ [ "overview", "Overview" ], [ "chat", "Unified Chat" ], [ "connections", "Connections" ], [ "system", "Monitoring" ], [ "tunnel", "Public Web" ], [ "settings", "Settings" ], [ "broadcast", "Broadcast" ], [ "plugins", "Plugins" ], [ "logs", "Logs" ], [ "about", "About" ] ];
+const NAV = [ [ "overview", "Overview" ], [ "chat", "Unified Chat" ], [ "connections", "Connections" ], [ "system", "Monitoring" ], [ "tunnel", "Public Web" ], [ "cookies", "Cookies" ], [ "settings", "Settings" ], [ "broadcast", "Broadcast" ], [ "plugins", "Plugins" ], [ "logs", "Logs" ], [ "about", "About" ] ];
 
 function svg(name, size = 18, cls = "") {
   return `<svg class="ic ${cls}" data-ic="${name}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="${size}" height="${size}">${ICONS[name] || ""}</svg>`;
@@ -742,6 +742,7 @@ function renderPage() {
     plugins: pagePlugins,
     logs: pageLogs,
     settings: pageSettings,
+    cookies: pageCookies,
     tunnel: pageTunnel,
     system: pageSystem,
     audit: pageAudit,
@@ -1290,6 +1291,50 @@ async function pageSettings() {
     } catch (err) {
       toast("Save failed: " + err.message);
     }
+  });
+}
+
+async function pageCookies() {
+  let st = { installed: false, count: 0, sizeKB: 0, updated: null };
+  try { st = await api("/api/cookies"); } catch (e) { toast("Failed to load cookies status: " + e.message, "err"); }
+  $("#content").innerHTML = `
+    <div class="hero reveal"><div class="kicker">yt-dlp login</div><h2>Login <em>cookies.</em></h2><p>Some videos need a logged-in session. Paste or upload <span class="mono">cookies.txt</span> (Netscape format) — no laptop needed, works from your phone browser.</p></div>
+    <div class="grid g2">
+      <section class="card reveal">
+        <div class="section-head"><h3>Status</h3><span class="tag ${st.installed ? "ok" : "warn"}">${st.installed ? "installed" : "none"}</span></div>
+        ${st.installed ? `<p class="mono">🍪 ${st.count} cookies · ${st.sizeKB} KB · updated ${esc(st.updated || "—")}</p><p class="small dim">Old file is kept as <span class="mono">cookies.txt.bak</span> on every save.</p>` : `<p class="small dim">No cookies installed. Music + downloader run without login (some videos may fail).</p>`}
+      </section>
+      <section class="card reveal">
+        <div class="section-head"><h3>From phone in 3 steps</h3></div>
+        <ol class="small mut" style="padding-left:18px;line-height:1.8">
+          <li>Install <b>Get cookies.txt</b> (Android) or a cookie-export extension (Kiwi/Yandex).</li>
+          <li>Login YouTube in that browser → export <span class="mono">cookies.txt</span>.</li>
+          <li>Upload the file below (or paste its text) → Save.</li>
+        </ol>
+      </section>
+    </div>
+    <section class="card reveal" style="margin-top:16px">
+      <div class="section-head"><h3>Install / replace</h3></div>
+      <div class="field-row"><label>Upload cookies.txt</label><input type="file" id="ckFile" accept=".txt,text/plain" class="fld"></div>
+      <div class="field-row" style="margin-top:10px"><label>Or paste content</label><textarea class="fld mono" id="ckText" rows="8" placeholder="# Netscape HTTP Cookie File&#10;..." style="font-size:12px"></textarea></div>
+      <div class="actions" style="margin-top:12px"><button class="btn primary" id="ckSave">Save cookies</button><span class="mono dim small" id="ckMsg"></span></div>
+    </section>`;
+  $("#ckFile").addEventListener("change", e => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => { $("#ckText").value = String(r.result || ""); };
+    r.readAsText(f);
+  });
+  $("#ckSave").addEventListener("click", async () => {
+    const content = $("#ckText").value;
+    const msg = $("#ckMsg");
+    msg.textContent = "saving...";
+    try {
+      const r = await api("/api/cookies/save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content }) });
+      toast(`Saved ${r.count} cookies`, "ok");
+      pageCookies();
+    } catch (e) { msg.textContent = ""; toast(e.message, "err"); }
   });
 }
 
