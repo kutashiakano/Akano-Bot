@@ -246,7 +246,7 @@ export default {
           }
         }
         try {
-          const { default: engine } = await import("./plugins/music/engine.js");
+          const engine = await import("./plugins/music/engine.js");
           await engine.rstSessions(client);
         } catch (e) {
           global.logError("discord.rstSessions", e);
