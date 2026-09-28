@@ -337,6 +337,54 @@ async function handleSearchSelection(interaction, query) {
   });
 }
 
+async function quickPlay(msg, query) {
+  const q0 = String(query || "").trim().replace(/`/g, "");
+  if (!q0) return;
+  const fake = {
+    guild: msg.guild,
+    guildId: msg.guildId,
+    member: msg.member,
+    user: msg.author,
+    channel: msg.channel,
+    client: msg.client
+  };
+  const session = await sesh(msg.author.id);
+  let results = [];
+  try {
+    results = await buildSearchResults(q0, session);
+  } catch {
+    results = [];
+  }
+  if (!results.length) {
+    await msg.reply("No results found for `" + q0.slice(0, 80) + "`. Try another title.").catch(() => {});
+    return;
+  }
+  const first = results[0];
+  const res = await playPanel(fake, {
+    videoId: first.id,
+    title: first.title,
+    thumbnail: first.thumbnail
+  });
+  if (res && res.error) {
+    await msg.reply({ embeds: [ res.error ] }).catch(() => {});
+    return;
+  }
+  try {
+    await msg.delete().catch(() => {});
+  } catch {}
+  try {
+    const q = queues.get(msg.guildId);
+    if (q && q.currentSong) {
+      await msg.channel.send({
+        embeds: [ nowPlaying(q, 0) ],
+        components: controlButtons(q)
+      }).catch(() => {});
+    } else if (res && res.embed) {
+      await msg.channel.send({ embeds: [ res.embed ] }).catch(() => {});
+    }
+  } catch {}
+}
+
 async function execute(interaction) {
   try {
     await interaction.deferReply();
@@ -730,5 +778,6 @@ export default define({
     }
   },
   playPanel: playPanel,
+  quickPlay: quickPlay,
   run: async ctx => execute(ctx.interaction)
 });

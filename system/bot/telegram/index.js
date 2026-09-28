@@ -176,7 +176,18 @@ class TelegramBot {
         logger.error(`Bot error (${d.kind}:${d.updateType})`, d.error);
       });
       await this.loadPlugins();
-      const IMPORTANT_COMMANDS = [ "start", "menu", "dl", "gemini", "lyrics", "ping", "register" ];
+      const IMPORTANT_COMMANDS = [ "start", "menu", "help", "dl", "gemini", "lyrics", "register", "rules", "ping" ];
+      const SHORT_DESC = {
+        start: "Start the bot",
+        menu: "Browse commands by category",
+        help: "Browse commands by category",
+        dl: "Download video or audio from link",
+        gemini: "Ask Gemini AI",
+        lyrics: "Find song lyrics",
+        register: "Register your account",
+        rules: "Show group rules",
+        ping: "Check bot is alive"
+      };
       const commandsList = [];
       const seen = new Set;
       for (const [name, plugin] of Object.entries(global.telegramPlugins)) {
@@ -187,7 +198,7 @@ class TelegramBot {
             seen.add(cmd.toLowerCase());
             commandsList.push({
               command: cmd.toLowerCase(),
-              description: plugin.help || "No description"
+              description: SHORT_DESC[cmd.toLowerCase()] || plugin.help || "No description"
             });
           }
         }

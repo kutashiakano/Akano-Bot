@@ -19,6 +19,37 @@ function toMenuHtml(src) {
 
 const PAGE_SIZE = 8;
 
+const SHOWCASE = {
+  downloader: {
+    pitch: "Download video/audio from YouTube, TikTok, IG, X, FB.",
+    examples: [ "/dl https://www.tiktok.com/...", "/dl <youtube-url> -a (audio only)" ]
+  },
+  ai: {
+    pitch: "Chat with Gemini AI — remembers you, sees images.",
+    examples: [ "/gemini buatkan pantun", "/ask what is black hole" ]
+  },
+  group: {
+    pitch: "Group tools: rules, moderation, welcome, antiflood.",
+    examples: [ "/rules", "/register", "/report (reply a message)" ]
+  },
+  tools: {
+    pitch: "Lyrics, QR, polls, image effects, utilities.",
+    examples: [ "/lyrics bohemian rhapsody", "/ping" ]
+  },
+  sticker: {
+    pitch: "Turn images into stickers.",
+    examples: [ "/sticker (reply an image)" ]
+  },
+  info: {
+    pitch: "Bot info, status, profile.",
+    examples: [ "/menu", "/ping" ]
+  }
+};
+
+function showcaseFor(catKey) {
+  return SHOWCASE[String(catKey || "").toLowerCase()] || null;
+}
+
 function buildCategories(ctx) {
   const isPrivate = ctx.chat?.type === "private";
   const list = Object.values(global.telegramPlugins || {}).filter(p => p && !p.disabled && !(isPrivate && p.group));
@@ -59,10 +90,23 @@ function buildMainMenu(ctx) {
   const m = Math.floor(uptime % 36e5 / 6e4);
   const s = Math.floor(uptime % 6e4 / 1e3);
   const header = `𖦹₊ ⊹ Hi, ${username} ᡣ𐭩\n` + `I am an automated system (Telegram Bot) here to help you every day\n\n` + `      /)    /)\n` + `    (｡•ㅅ•｡)〝₎₎ Welcome To The Dashboard ✦₊ ˊ˗\n` + ` ╭∪─∪────────────── ✦ ⁺.\n` + `│  ◦ Bot      : ${botname} v${version}\n` + `│  ◦ Mode     : ${ctx.chat?.type === "private" ? "Private Chat" : "Group"}\n` + `│  ◦ Uptime   : ${h}h ${m}m ${s}s\n` + `│  ◦ Date     : ${dateStr}\n` + `│  ◦ Commands : ${totalCmds} in ${catKeys.length} categories\n` + `┗\n\n`;
-  const catList = catKeys.map((k, i) => `│ ◦ ${i + 1}. ${k.toUpperCase()}`).join("\n");
+  const catList = `Tap a category below — examples first, no manual needed.`;
   const body = `┏「 Categories 」\n` + `${catList}\n` + `┗¸\n\n`;
-  const footer = `₊˚˖ Tip: use the buttons below — swipe to browse each category!`;
+  const footer = `₊˚˖ Tip: tap a button, copy the example, done.`;
   return header + body + footer;
+}
+
+function buildMainKeyboard(catKeys) {
+  const rows = [];
+  for (let i = 0; i < catKeys.length; i += 2) {
+    const row = catKeys.slice(i, i + 2).map(k => ({
+      text: k.toUpperCase(),
+      callback_data: `menu:cat:${k}:0`
+    }));
+    rows.push(row);
+  }
+  rows.push([ { text: "Status", callback_data: "menu:status" }, { text: "Close", callback_data: "menu:close" } ]);
+  return { inline_keyboard: rows };
 }
 
 function buildCategoryPage(ctx, catKey, page = 0) {
@@ -73,6 +117,10 @@ function buildCategoryPage(ctx, catKey, page = 0) {
   const pager = sdkMenu.paginate(cmds, page + 1, PAGE_SIZE);
   const items = pager.items.map(cmd => ({ command: cmd, use: cat.help[cmd] || "" }));
   let text = `┏「 ${catKey.toUpperCase()} 」\n`;
+  const sc = showcaseFor(catKey);
+  if (sc && page === 0) {
+    text += `${sc.pitch}\n\nEx:\n${sc.examples.map(e => `◦ ${e}`).join("\n")}\n\n「 All commands 」\n`;
+  }
   text += sdkMenu.box(items, "/") + "\n";
   text += `┗¸\n`;
   if (pager.totalPages > 1) {
@@ -170,6 +218,24 @@ async function renderEntry(ctx, idx = 0) {
   }
 }
 
+async function renderCategory(ctx, catKey, page = 0) {
+  const r = buildCategoryPage(ctx, catKey, page);
+  if (!r) return;
+  const kb = buildCategoryInlineKeyboard(r.catKey, r.pageIndex, r.totalPages);
+  try {
+    await ctx.editMessageCaption({
+      caption: toMenuHtml(r.text),
+      parse_mode: "HTML",
+      reply_markup: kb
+    });
+  } catch (e) {
+    await ctx.editMessageText(toMenuHtml(r.text), {
+      parse_mode: "HTML",
+      reply_markup: kb
+    }).catch(() => {});
+  }
+}
+
 function buildStatusInlineKeyboard() {
   return {
     inline_keyboard: [ [ {
@@ -194,6 +260,10 @@ export default define({
     if (data === "menu:main" || data.startsWith("menu:main:")) {
       const idx = parseInt(data.split(":")[2] || "0") || 0;
       await renderEntry(ctx, idx);
+    } else if (data.startsWith("menu:cat:")) {
+      const parts = data.split(":");
+      await renderCategory(ctx, parts[2] || "", parseInt(parts[3] || "0") || 0);
+      try { await ctx.answerCallbackQuery().catch(() => {}); } catch {}
     } else if (data === "menu:status") {
       const botname = global.botname;
       const startTime = global.telegramBot?.startTime || Date.now();
@@ -222,8 +292,9 @@ export default define({
   run: async ctx => {
     if (!ctx.session) ctx.session = {};
     ctx.session[SESSION_KEY] = {};
-    const entries = buildEntries(ctx);
-    const kb = buildSwipeKeyboard(0, entries.length);
+    const categories = buildCategories(ctx);
+    const catKeys = Object.keys(categories).sort();
+    const kb = buildMainKeyboard(catKeys);
     const menuText = buildMainMenu(ctx);
     await ctx.reply(toMenuHtml(menuText), {
       parse_mode: "HTML",

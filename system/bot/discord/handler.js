@@ -730,6 +730,28 @@ export default {
           const text = String(message.content || "").trim();
           const hasPic = !!(message.attachments && message.attachments.some(a => a && a.url && String(a.contentType || "").startsWith("image/")));
           const isReply = !!(message.reference && message.reference.messageId);
+          if (text && !text.startsWith("/") && !text.startsWith("!") && !hasPic) {
+            try {
+              const db = database.get();
+              const { songRequestChannel } = await import("./plugins/music/songreq.js");
+              const reqCh = songRequestChannel(db, String(message.guild.id));
+              if (reqCh && reqCh === String(message.channel.id)) {
+                const g = gateCheck(db, String(message.guild.id), String(message.channel.id), String(message.author.id), { name: "play", category: "music" });
+                if (!g) {
+                  const playCmd = global.discordCommands["play"];
+                  if (playCmd && typeof playCmd.quickPlay === "function") {
+                    if (!global.songReqCd) global.songReqCd = new Map;
+                    const ck = "songreq:" + String(message.author.id);
+                    if (Date.now() - (global.songReqCd.get(ck) || 0) >= 3000) {
+                      global.songReqCd.set(ck, Date.now());
+                      playCmd.quickPlay(message, text).catch(() => {});
+                    }
+                    return;
+                  }
+                }
+              }
+            } catch (e) {}
+          }
           if ((text || hasPic || isReply) && !text.startsWith("/") && !text.startsWith("!")) {
             const db = database.get();
             const chans = db.discord?.servers?.[String(message.guild.id)]?.settings?.aiChannels;
