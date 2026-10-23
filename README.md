@@ -1024,7 +1024,3 @@ system/
 ## License
 
 Custom — free to use and modify. **Credit required** — mention original authors. **No verbatim copies** without meaningful changes. See [`LICENSE`](LICENSE).
-
----
-
-**Akano-Bot** — WhatsApp bot, Telegram bot, Discord bot, Baileys multi-platform bot framework. AI chat, media downloader, YouTube downloader, TikTok downloader, Instagram downloader, group management, moderation, Discord music, YouTube Music. Built for GitHub search: `whatsapp bot` `telegram bot` `discord bot` `baileys bot` `multi-platform bot` `whatsapp bot framework` `ai chat bot` `media downloader bot` `youtube music bot` `discord music bot` `group management bot` `moderation bot` `sticker bot`.
