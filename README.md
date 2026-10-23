@@ -1,4 +1,4 @@
-# Akano-Bot — Multi-Platform WhatsApp Bot, Telegram Bot & Discord Bot
+# Akano-Bot — Multi-Platform Bot
 
 > **WhatsApp bot + Telegram bot + Discord bot in one codebase.** Built on **[Akano SDK](https://www.npmjs.com/package/@kutashiakanocanzy/sdk)** — one SDK for sessions, plugins, rich messages and media conversion. AI chat, media downloader, YouTube Music, Discord music player, group management, moderation, sticker maker and modular plugin system — production-ready multi-platform bot framework.
 
