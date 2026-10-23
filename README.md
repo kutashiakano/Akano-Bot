@@ -8,10 +8,6 @@
 ![License](https://img.shields.io/badge/License-Custom-808080?style=flat)
 ![Platform](https://img.shields.io/badge/Platform-Multi--Platform-808080?style=flat)
 
-**Keywords:** `whatsapp bot` `telegram bot` `discord bot` `baileys` `multi-platform bot` `whatsapp bot framework` `telegram bot framework` `discord bot framework` `ai chat bot` `gemini bot` `media downloader` `youtube downloader` `tiktok downloader` `instagram downloader` `group management` `moderation bot` `music bot` `youtube music` `automod` `sticker bot`
-
-> **Language:** [English](README.md) · [Bahasa Indonesia](docs/README.id.md) · [Docs: Adding a Plugin](docs/adding-a-plugin.md) · [Docs: Menambahkan Plugin](docs/adding-a-plugin.id.md)
-
 ---
 
 ## Quick Start — WhatsApp Bot, Telegram Bot, Discord Bot
